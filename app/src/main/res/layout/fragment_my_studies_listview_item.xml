@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--标题栏-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:src="@drawable/icon_t" />
+
+        <TextView
+            android:id="@+id/fragment_my_studies_listview_item_textView1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="16sp"
+            tools:text="测试标题" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="查看详情"
+            android:textColor="#555555"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="6dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/icon_sy_arrow" />
+    </LinearLayout>
+    <!--细分割线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d1d1d1" />
+
+    <ImageView
+        android:id="@+id/fragment_my_studies_listview_item_imageview3"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_margin="12dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/sy_pic_lit_banner" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="共88课时"
+        android:textColor="#555555"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <!--粗线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#f1f1f1" />
+</LinearLayout>

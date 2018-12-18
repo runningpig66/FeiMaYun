@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?><!--标题栏--><!--标题栏-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="@drawable/head_bg3x"
+        android:orientation="horizontal">
+
+        <!--顶部的状态栏预留-->
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="25dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/view"
+            android:orientation="horizontal">
+            <!--返回按钮的布局-->
+            <RelativeLayout
+                android:id="@+id/headtitle_layout"
+                android:layout_width="48dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="15dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/btn_return_white" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/headtitle_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="18sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <!--标题栏下方的分割线-->
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1px"-->
+    <!--android:background="#d1d1d1" />-->
+</LinearLayout>

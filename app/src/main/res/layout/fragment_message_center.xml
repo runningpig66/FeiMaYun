@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><!--消息中心item-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <include layout="@layout/headtitle_layout" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/messageCenter_refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlEnableLoadMore="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--标题栏下方的分割线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#d1d1d1" />
+
+            <ListView
+                android:id="@+id/fragment_message_center_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/fragment_message_center_layout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/none_message_imageview"
+                    android:layout_width="175dp"
+                    android:layout_height="175dp"
+                    android:src="@drawable/none_message" />
+
+                <TextView
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/none_message_imageview"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="暂无消息"
+                    android:textColor="#515151"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>

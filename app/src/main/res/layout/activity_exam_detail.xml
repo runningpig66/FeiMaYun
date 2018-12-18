@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <include layout="@layout/headtitle_layout" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/activity_exam_detail_textview1"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="12:00:00" />
+
+            <LinearLayout
+                android:id="@+id/activity_exam_detail_imageview3"
+                android:layout_width="67dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="34dp"
+                    android:src="@drawable/exambook" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <!--灰色的分割粗线-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#f0f0f0" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_exam_detail_viewpager1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d1d1d1" />
+
+    <!--底部按钮-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#ffffff">
+
+        <RelativeLayout
+            android:id="@+id/activity_exam_detail_layout3"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp">
+
+            <ImageView
+                android:id="@+id/activity_exam_detail_imageview1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/activity_exam_detail_left_gray" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/activity_exam_detail_textview2"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_orange_border"
+                android:gravity="center"
+                android:text="保存不提交"
+                android:textColor="#ee7708"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/activity_exam_detail_textview3"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_orange"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="提交"
+                android:textColor="#ffffff"
+                android:textSize="16sp"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/activity_exam_detail_layout4"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp">
+
+            <ImageView
+                android:id="@+id/activity_exam_detail_imageview2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/activity_exam_detail_right_orange" />
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

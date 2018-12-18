@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--正式发布-->
+    <!--<string name="vhall_app_key">a17fb7802e17d124340045ac955b4242</string>-->
+    <!--<string name="vhall_app_secret_key">8613b16d8de8164c005cfc9bbc1bc28e</string>-->
+
+    <!--测试-->
+    <string name="vhall_app_key">3c67b6b22f65a48efc845b290cfc6674</string>
+    <string name="vhall_app_secret_key">341408fc55b9ee848a0b62e44b6d4a14</string>
+</resources>

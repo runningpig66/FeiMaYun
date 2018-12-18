@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">光环云课堂</string>
+    <string name="vhall_login_first">请登录~</string>
+    <string name="log_change_quality_success">切换清晰度成功</string>
+    <string name="log_change_quality_fail">切换清晰度失败</string>
+
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/headtitle_layout" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/activityExamList_refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/activity_exam_list_listview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/eeeeee"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:scrollbars="none" />
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--顶部右侧的关闭图片-->
+    <ImageView
+        android:id="@+id/dialog_live_imageview1"
+        android:layout_width="35dp"
+        android:layout_height="64dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/dialog_live_close" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_live_bg"
+        android:orientation="vertical">
+
+        <!--标题栏title，显示“请选择”-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:text="请选择"
+            android:textColor="#333333"
+            android:textSize="14dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/message_center_imageview1"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/message_notread"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="17dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/message_center_gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/message_center_textview1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="7dp"
+                    android:paddingRight="10dp"
+                    android:textColor="#333333"
+                    android:textSize="14sp"
+                    tools:text="个电饭锅电饭锅电饭锅电饭锅电饭锅极乐世界福利啦啊恶劣环境发货啦好风景" />
+
+                <TextView
+                    android:id="@+id/message_center_textview2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#cccccc"
+                    android:textSize="12sp"
+                    tools:text="2017 - 9 - 12" />
+
+                <TextView
+                    android:id="@+id/message_center_textview3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
+                    android:lineSpacingExtra="7dp"
+                    android:textColor="#7c7c7c"
+                    android:textSize="14sp"
+                    tools:text="个电饭锅电饭锅电饭锅电饭锅电饭锅极乐世界福是分身乏术的回复是东方航空飞机好看的肌肤还是抠脚大汉开始就开始疯狂双方就开始疯狂双方就开始放假开始地方就开始放开手利啦啊恶劣环境发货啦好风景" />
+
+                <TextView
+                    android:id="@+id/more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:textColor="#ee7708"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:text="查看更多 >>" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="20dp"
+            android:background="#e5e5e5" />
+    </LinearLayout>
+</RelativeLayout>

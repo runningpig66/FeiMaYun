@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?><!--我的学习item-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="185dp"
+        android:background="@drawable/data_bg"
+        android:scaleType="centerCrop">
+
+        <!--顶部的状态栏预留-->
+        <View
+            android:id="@+id/activity_information_view"
+            android:layout_width="match_parent"
+            android:layout_height="25dp" />
+
+        <RelativeLayout
+            android:id="@+id/activity_information_view2"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/activity_information_view">
+
+            <RelativeLayout
+                android:id="@+id/activity_information_layout2"
+                android:layout_width="40dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/btn_return_white" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:text="个人资料"
+                android:textColor="#ffffff"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/activity_information_imageView2"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_below="@id/activity_information_view2"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/data_head"
+            app:civ_border_color="#ffffff"
+            app:civ_border_width="1dp" />
+
+        <TextView
+            android:id="@+id/activity_information_textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_information_imageView2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="用户名"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="姓名："
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/activity_information_editText1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7.5"
+                android:background="@null"
+                android:hint="显示昵称"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:textColor="#bbbbbb"
+                android:textColorHint="#bbbbbb"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/activity_information_imageView3"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/data_icon_bj" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="20dp"
+            android:background="#d1d4db" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="手机号："
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/activity_information_editText2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7.5"
+                android:background="@null"
+                android:hint="显示手机号"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="11"
+                android:maxLines="1"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:textColor="#bbbbbb"
+                android:textColorHint="#bbbbbb"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/activity_information_imageView4"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:gravity="right">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/data_icon_bj" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="20dp"
+            android:background="#d1d4db" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="密码："
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/activity_information_editText3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7.5"
+                android:background="@null"
+                android:hint="******"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLength="16"
+                android:maxLines="1"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:textColor="#bbbbbb"
+                android:textColorHint="#bbbbbb"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/activity_information_imageView5"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:gravity="right">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/data_icon_bj" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="20dp"
+            android:background="#d1d4db" />
+    </LinearLayout>
+
+    <!--退出-->
+    <LinearLayout
+        android:id="@+id/activity_information_layout4"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/loginbutton_orange"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="退出"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

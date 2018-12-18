@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--标题栏-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="12dp">
+
+        <ImageView
+            android:id="@+id/livelist_listview_imageview1"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/livelist_topimg_orange" />
+
+        <TextView
+            android:id="@+id/livelist_listview_textview1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/livelist_listview_imageview1"
+            android:text="2018-09-28 13:30:30"
+            android:textColor="@color/orange"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/livelist_listview_imageview2"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_below="@id/livelist_listview_imageview1"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/sy_pic_lit_banner" />
+
+
+    <TextView
+        android:id="@+id/livelist_listview_textview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="5dp"
+        android:text="班主任直播测试"
+        android:textColor="#000"
+        android:textSize="14sp"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/livelist_listview_textview3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="观看人数：728"
+            android:textColor="#999"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/livelist_listview_textview4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:text="可查看回放"
+            android:textColor="#999"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <!--粗线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#f1f1f1" />
+</LinearLayout>

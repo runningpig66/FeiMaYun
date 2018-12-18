@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <include layout="@layout/headtitle_layout" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_analysis_viewpager1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d1d1d1" />
+
+    <!--底部按钮-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff">
+
+        <RelativeLayout
+            android:id="@+id/activity_analysis_layout3"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp">
+
+            <ImageView
+                android:id="@+id/activity_analysis_imageview1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/activity_exam_detail_left_gray" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/activity_analysis_layout4"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp">
+
+            <ImageView
+                android:id="@+id/activity_analysis_imageview2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/activity_exam_detail_right_orange" />
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

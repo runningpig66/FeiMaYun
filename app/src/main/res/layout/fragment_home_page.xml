@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?><!--首页item-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
+
+    <!--顶部的状态栏预留-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="#000000" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/homepage_refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlEnableLoadMore="false">
+
+        <!--整个页面包含在ScrollView中-->
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+            <!--ScrollView只能有一个子项item-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--首页顶部ViewPager布局-->
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <!--6个方格-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <cn.aura.feimayun.view.HomePageFragment_ViewPage2
+                        android:id="@+id/fragment_home_page_viewpager2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="15dp" />
+                    <!--切换的圆点-->
+                    <LinearLayout
+                        android:id="@+id/fragment_home_page_layout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="15dp"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:gravity="center"
+                        android:orientation="horizontal" />
+                </LinearLayout>
+                <!--灰色的分割粗线-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#f0f0f0" />
+                <!--固定布局 P3页面-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
+                    <!--直播中心-->
+                    <LinearLayout
+                        android:id="@+id/live"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_horizontal"
+                            android:adjustViewBounds="true"
+                            android:maxWidth="52dp"
+                            android:maxHeight="30dp"
+                            android:src="@drawable/p3_icon_live" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="直播中心"
+                            android:textColor="#555555"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    <!--考试中心-->
+                    <LinearLayout
+                        android:id="@+id/exam"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_horizontal"
+                            android:adjustViewBounds="true"
+                            android:maxWidth="52dp"
+                            android:maxHeight="30dp"
+                            android:src="@drawable/p3_icon_exam" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="考试中心"
+                            android:textColor="#555555"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    <!--答疑中心-->
+                    <LinearLayout
+                        android:id="@+id/answer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_horizontal"
+                            android:adjustViewBounds="true"
+                            android:maxWidth="52dp"
+                            android:maxHeight="30dp"
+                            android:src="@drawable/p3_icon_answer" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="答疑中心"
+                            android:textColor="#555555"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    <!--敬请期待-->
+                    <LinearLayout
+                        android:id="@+id/more"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_horizontal"
+                            android:adjustViewBounds="true"
+                            android:maxWidth="52dp"
+                            android:maxHeight="30dp"
+                            android:src="@drawable/p3_icon_more" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="敬请期待"
+                            android:textColor="#555555"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--灰色的分割粗线-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#f0f0f0" />
+                <!--P4页：下方的ListView，它的子项包含GridView-->
+                <ListView
+                    android:id="@+id/p_4_listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gray_border"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/double_listview_textview1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
+            tools:text="五大过程组——监控过程组11111111111111111111111" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正确率:"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/double_listview_textview2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
+            tools:text="100%" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d1d1d1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/double_listview_textview4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:textSize="16sp"
+                tools:text="总题:2" />
+
+            <TextView
+                android:id="@+id/double_listview_textview7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:textSize="16sp"
+                tools:text="错题:2" />
+
+            <TextView
+                android:id="@+id/double_listview_textview8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:textSize="16sp"
+                tools:text="正题:2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/double_listview_textview6"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_orange_border"
+                android:gravity="center"
+                android:text="正题解析"
+                android:textColor="#ee7708"
+                android:textSize="16sp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/double_listview_textview5"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_orange"
+                android:gravity="center"
+                android:text="错题解析"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <!--<TextView-->
+            <!--android:id="@+id/double_listview_textview5"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/button_orange_border"-->
+            <!--android:gravity="center"-->
+            <!--android:text="错题解析"-->
+            <!--android:textColor="#ee7708"-->
+            <!--android:textSize="16sp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/double_listview_textview6"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/button_orange"-->
+            <!--android:gravity="center"-->
+            <!--android:text="正题解析"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="16sp"-->
+            <!--android:visibility="visible" />-->
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
