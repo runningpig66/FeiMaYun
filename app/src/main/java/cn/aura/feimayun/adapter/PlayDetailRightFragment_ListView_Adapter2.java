@@ -2,6 +2,7 @@ package cn.aura.feimayun.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.timmy.tdialog.TDialog;
+import com.timmy.tdialog.base.BindViewHolder;
+import com.timmy.tdialog.listener.OnViewClickListener;
+
+import java.io.File;
 import java.util.List;
 
 import cn.aura.feimayun.R;
@@ -20,6 +26,9 @@ import cn.aura.feimayun.activity.ExamDetailActivity;
 import cn.aura.feimayun.activity.PlayDetailActivity;
 import cn.aura.feimayun.bean.PlayDetailBean;
 import cn.aura.feimayun.util.OnClickListener;
+import cn.aura.feimayun.util.Util;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * 描述：PlayDeatilRightFragment中ListView的适配器
@@ -40,7 +49,7 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
     public PlayDetailRightFragment_ListView_Adapter2(Context context, List<PlayDetailBean> detailBeans, String sid, String uid, String isBuy) {
         this.activity = (PlayDetailActivity) context;
         this.detailBeans = detailBeans;
-        printList(detailBeans);
+//        printList(detailBeans);
         this.sid = sid;
         this.uid = uid;
         this.isBuy = isBuy;
@@ -52,20 +61,19 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (detailBeans == null) {
-            return 0;
-        } else {
-            return detailBeans.size();
-        }
+        return detailBeans == null ? 0 : detailBeans.size();
+    }
+
+    public void setData(List<PlayDetailBean> detailBeans, String sid, String uid, String isBuy) {
+        this.detailBeans = detailBeans;
+        this.sid = sid;
+        this.uid = uid;
+        this.isBuy = isBuy;
     }
 
     @Override
     public PlayDetailBean getItem(int position) {
-        if (detailBeans == null) {
-            return null;
-        } else {
-            return detailBeans.get(position);
-        }
+        return detailBeans.get(position);
     }
 
     @Override
@@ -166,7 +174,7 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
                                             detailBeans.remove(position + 1);//关闭二级
                                         }
                                         playDetailBean.setOpen(false);//删完二级，将一级设置为关闭状态
-                                        printList(detailBeans);
+//                                        printList(detailBeans);
                                     } else {//如果当前一级是关闭状态，则打开二级
                                         for (int i = 0; i < children2List.size(); i++) {
                                             detailBeans.add(position + i + 1, children2List.get(i));
@@ -214,7 +222,6 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
                 if (playDetailBean.getSort().equals(sid)) {//如果是上次播放的视频,子项sort和play的data下的sid比较
                     switch (playDetailBean.getFtype()) {//视频图标设置为橘色
                         case "video":
-
                             viewHolder1.fragment_playdeatil_right_listview1_item1_imageview1.setImageResource(R.drawable.course_arrow_o);
                             break;
                         case "test":
@@ -347,12 +354,66 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
                                     if (uid.equals("")) {
                                         Toast.makeText(activity, R.string.vhall_login_first, Toast.LENGTH_SHORT).show();
                                     } else {
-                                        String sid2 = playDetailBean.getStore_id();
-                                        String tid = playDetailBean.getTid();
-                                        Intent intent = new Intent(activity, ExamDetailActivity.class);
-                                        intent.putExtra("sid", sid2);
-                                        intent.putExtra("tid", tid);
-                                        activity.startActivity(intent);
+                                        //TODO
+                                        final String sid2 = playDetailBean.getStore_id();
+                                        final String tid = playDetailBean.getTid();
+                                        String uid = Util.getUid();
+                                        String fileName = "paper" + sid2 + tid + uid;//由题库id+试卷id共同构建的唯一文件名
+
+                                        File file = new File("/data/data/" + activity.getPackageName() + "/shared_prefs", fileName + ".xml");
+                                        boolean fileExists = file.exists();
+                                        SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, MODE_PRIVATE);
+                                        int write = sharedPreferences.getInt("write", 0);//默认为0，说明用户清空了这张表中的内容，这时应该走服务器端的字段
+                                        //文件完整性检查，后期可以更加完善
+                                        boolean fileOk = write > 0;
+                                        if (fileExists && fileOk) {//如果异常文件存在，并且文件完整
+                                            //异常文件存在，准备dialog的文字信息
+                                            View view = LayoutInflater.from(activity).inflate(R.layout.dialog_call, null);
+                                            TextView dialog_call_textview1 = view.findViewById(R.id.dialog_call_textview1);//大标题
+                                            TextView dialog_call_textview2 = view.findViewById(R.id.dialog_call_textview2);//小标题
+                                            //根据异常文件中的error判断出错的类型，设置提示dialog的文字
+                                            dialog_call_textview1.setText("温馨提示");
+                                            dialog_call_textview2.setText("本地有该试卷答题记录，\n是否继续答题？");
+                                            new TDialog.Builder(activity.getSupportFragmentManager())
+                                                    .setDialogView(view)
+//                            .setLayoutRes(R.layout.dialog_call)
+                                                    .setScreenWidthAspect(activity, 0.7f)
+                                                    .addOnClickListener(R.id.dialog_call_confirm, R.id.dialog_call_cancel)
+                                                    .setOnViewClickListener(new OnViewClickListener() {
+                                                        @Override
+                                                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                                                            switch (view.getId()) {
+                                                                case R.id.dialog_call_cancel:
+                                                                    //执行服务器返回的流程
+                                                                    Intent intentExamDetailActivity = new Intent(activity, ExamDetailActivity.class);
+                                                                    intentExamDetailActivity.putExtra("sid", sid2);
+                                                                    intentExamDetailActivity.putExtra("tid", tid);
+                                                                    intentExamDetailActivity.putExtra("loadLocalFile", false);
+                                                                    activity.startActivity(intentExamDetailActivity);
+                                                                    tDialog.dismiss();
+                                                                    break;
+                                                                case R.id.dialog_call_confirm:
+                                                                    //执行本地答题记录
+                                                                    Intent intentExamDetailActivity2 = new Intent(activity, ExamDetailActivity.class);
+                                                                    intentExamDetailActivity2.putExtra("sid", sid2);
+                                                                    intentExamDetailActivity2.putExtra("tid", tid);
+                                                                    intentExamDetailActivity2.putExtra("loadLocalFile", true);
+                                                                    activity.startActivity(intentExamDetailActivity2);
+                                                                    tDialog.dismiss();
+                                                                    break;
+                                                            }
+                                                        }
+                                                    })
+                                                    .create()
+                                                    .show();
+                                        } else {
+                                            //TODO 未购买的不进答题页面
+                                            Intent intentExamDetailActivity = new Intent(activity, ExamDetailActivity.class);
+                                            intentExamDetailActivity.putExtra("sid", sid2);
+                                            intentExamDetailActivity.putExtra("tid", tid);
+                                            intentExamDetailActivity.putExtra("loadLocalFile", false);
+                                            activity.startActivity(intentExamDetailActivity);
+                                        }
                                     }
                                     break;
                             }

@@ -13,8 +13,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,29 +27,31 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.PlayDetailActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.Util;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * 录播详情界面：简介
  */
 public class PlayDetailLeftFragment extends Fragment implements View.OnClickListener {
+    private static Handler handleBuyLessons;
     private PlayDetailActivity context;
     private Map<String, String> detailDataMap;
     private Map<String, String> detailTeacherMap;
-    private List<String> imgList;
-
     private View view;
     private TextView fragment_playdeatil_left_textView6;
-
-    private Handler handleBuyLessons;
+    private ImageView fragment_playdeatil_left_circleImageView;
+    private TextView fragment_playdeatil_left_textView1;
+    private TextView fragment_playdeatil_left_textView2;
+    private TextView fragment_playdeatil_left_textView3;
+    private TextView fragment_playdeatil_left_textView4;
+    private com.tencent.smtt.sdk.WebView fragment_playdeatil_left_webview;
 
     @SuppressLint("HandlerLeak")
     private void handle() {
@@ -95,7 +96,6 @@ public class PlayDetailLeftFragment extends Fragment implements View.OnClickList
         super.onCreate(savedInstanceState);
 
         handle();
-
         Bundle bundle = getArguments();
         if (bundle != null) {
             detailDataMap = new HashMap<>();
@@ -113,28 +113,34 @@ public class PlayDetailLeftFragment extends Fragment implements View.OnClickList
             }
 
         }
+    }
 
+    public void setData(Map<String, String> detailDataMap, Map<String, String> detailTeacherMap) {
+        this.detailDataMap = detailDataMap;
+        this.detailTeacherMap = detailTeacherMap;
+        initView();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_playdeatil_left, container, false);
+        fragment_playdeatil_left_circleImageView = view.findViewById(R.id.fragment_playdeatil_left_circleImageView);
+        fragment_playdeatil_left_textView1 = view.findViewById(R.id.fragment_playdeatil_left_textView1);
+        fragment_playdeatil_left_textView2 = view.findViewById(R.id.fragment_playdeatil_left_textView2);
+        fragment_playdeatil_left_textView3 = view.findViewById(R.id.fragment_playdeatil_left_textView3);
+        fragment_playdeatil_left_textView4 = view.findViewById(R.id.fragment_playdeatil_left_textView4);
+        fragment_playdeatil_left_webview = view.findViewById(R.id.fragment_playdeatil_left_textView5);
+        fragment_playdeatil_left_textView6 = view.findViewById(R.id.fragment_playdeatil_left_textView6);
+        fragment_playdeatil_left_textView6.setOnClickListener(this);
         initView();
         return view;
     }
 
     private void initView() {
-        CircleImageView fragment_playdeatil_left_circleImageView = view.findViewById(R.id.fragment_playdeatil_left_circleImageView);
-        TextView fragment_playdeatil_left_textView1 = view.findViewById(R.id.fragment_playdeatil_left_textView1);
-        TextView fragment_playdeatil_left_textView2 = view.findViewById(R.id.fragment_playdeatil_left_textView2);
-        TextView fragment_playdeatil_left_textView3 = view.findViewById(R.id.fragment_playdeatil_left_textView3);
-        TextView fragment_playdeatil_left_textView4 = view.findViewById(R.id.fragment_playdeatil_left_textView4);
-        WebView fragment_playdeatil_left_webview = view.findViewById(R.id.fragment_playdeatil_left_textView5);
-        fragment_playdeatil_left_textView6 = view.findViewById(R.id.fragment_playdeatil_left_textView6);
-        fragment_playdeatil_left_textView6.setOnClickListener(this);
-
-        Glide.with(context).load(detailTeacherMap.get("biger")).into(fragment_playdeatil_left_circleImageView);
+        if (Util.isOnMainThread()) {
+            Glide.with(MyApplication.context).load(detailTeacherMap.get("biger")).into(fragment_playdeatil_left_circleImageView);
+        }
         fragment_playdeatil_left_textView1.setText(detailDataMap.get("name"));
         fragment_playdeatil_left_textView2.setText((int) Double.parseDouble(detailDataMap.get("hours")) + "课时");
         fragment_playdeatil_left_textView3.setText("主讲教师：" + detailTeacherMap.get("name"));
@@ -142,17 +148,14 @@ public class PlayDetailLeftFragment extends Fragment implements View.OnClickList
 
         String aboutString = detailDataMap.get("about");
         String des2 = Util.getNewContent(aboutString);
-        WebSettings webSettings = fragment_playdeatil_left_webview.getSettings();
-        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         fragment_playdeatil_left_webview.loadData(des2, "text/html; charset=UTF-8", null);
 
         if (detailDataMap.get("isBuy").equals("0")) {//如果是没有购买
             Double rprice = Double.parseDouble(detailDataMap.get("rprice"));
             if (rprice == 0) {//如果是免费课程，直接购买并播放，并隐藏立即咨询按钮
                 String uid = Util.getUid();
-                if (uid.equals("")) {
+                if (!uid.equals("")) {
 //                    Toast.makeText(context, R.string.vhall_login_first, Toast.LENGTH_SHORT).show();
-                } else {
                     String ids = detailDataMap.get("id");
                     String order_price = detailDataMap.get("price");
                     String pay_price = detailDataMap.get("rprice");
@@ -212,5 +215,13 @@ public class PlayDetailLeftFragment extends Fragment implements View.OnClickList
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = (PlayDetailActivity) context;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (fragment_playdeatil_left_webview != null) {
+            fragment_playdeatil_left_webview.destroy();
+        }
+        super.onDestroy();
     }
 }

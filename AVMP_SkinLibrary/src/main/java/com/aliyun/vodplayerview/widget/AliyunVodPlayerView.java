@@ -786,11 +786,14 @@ public class AliyunVodPlayerView extends RelativeLayout implements ITheme {
             @Override
             public void onSingleTap() {
                 //单击事件，显示控制栏
-                if (mControlView.getVisibility() != VISIBLE) {
-                    mControlView.show();
-                } else {
-                    mControlView.hide(ControlView.HideType.Normal);
+                if (mControlView != null) {
+                    if (mControlView.getVisibility() != VISIBLE) {
+                        mControlView.show();
+                    } else {
+                        mControlView.hide(ControlView.HideType.Normal);
+                    }
                 }
+
             }
 
             @Override
@@ -906,7 +909,7 @@ public class AliyunVodPlayerView extends RelativeLayout implements ITheme {
         mAliyunVodPlayer.setOnTimeExpiredErrorListener(new IAliyunVodPlayer.OnTimeExpiredErrorListener() {
             @Override
             public void onTimeExpiredError() {
-                VcPlayerLog.d(TAG, "过期了！！");
+                VcPlayerLog.d(TAG, "过期了！");
                 if (mOutTimeExpiredErrorListener != null) {
                     mOutTimeExpiredErrorListener.onTimeExpiredError();
                 }
@@ -2080,6 +2083,9 @@ public class AliyunVodPlayerView extends RelativeLayout implements ITheme {
         }
     }
 
+    public void setTipsViewVisivle() {
+        mTipsView.showReplayTipView();//重播的框框
+    }
 
     /**
      * UI播放器支持的主题

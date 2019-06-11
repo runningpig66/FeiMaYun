@@ -1,1 +1,1 @@
-include ':app', ':AVMP_SkinLibrary'
+include ':app', ':AVMP_SkinLibrary', ':RCLayout'

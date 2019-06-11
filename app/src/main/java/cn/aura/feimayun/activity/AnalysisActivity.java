@@ -1,13 +1,16 @@
 package cn.aura.feimayun.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +34,7 @@ import cn.aura.feimayun.fragment.AnalysisActivity_ViewPager1_Fragment;
 import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.view.JZExoPlayer;
+import cn.aura.feimayun.view.MyGuideView;
 import cn.aura.feimayun.view.ProgressDialog;
 import cn.jzvd.Jzvd;
 
@@ -62,6 +66,7 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                     Toast.makeText(AnalysisActivity.this, "请检查网络连接_Error17", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                 } else {
                     parseJSON1(msg.obj.toString());
@@ -75,6 +80,7 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                     Toast.makeText(AnalysisActivity.this, "请检查网络连接_Error18", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                 } else {
                     parseJSON2(msg.obj.toString());
@@ -94,6 +100,7 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                 listsList = new ArrayList<>();
                 if (jsonObject.has("data")) {
                     JSONObject dataObject = jsonObject.getJSONObject("data");
+
                     if (dataObject.has("radio")) {
                         JSONObject radioObject = dataObject.getJSONObject("radio");
                         if (radioObject.has("lists")) {
@@ -127,6 +134,11 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                                 }
                                 listsList.add(listsMap);
                             }
+                        }
+                    } else if (dataObject.has("short")) {
+                        Toast.makeText(this, "请到PC端查看~", Toast.LENGTH_SHORT).show();
+                        if (activity_analysis_imageview2 != null) {
+                            activity_analysis_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
                         }
                     }
                 }
@@ -184,12 +196,12 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
+                progressDialog = null;
             }
-        } finally {
+        } catch (JSONException e) {
+            e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
                 progressDialog = null;
@@ -209,38 +221,50 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                 listsList = new ArrayList<>();
                 if (jsonObject.has("data")) {
                     JSONObject dataObject = jsonObject.getJSONObject("data");
-                    if (dataObject.has("lists")) {
-                        JSONArray listsArray = dataObject.getJSONArray("lists");
-                        for (int i = 0; i < listsArray.length(); i++) {
-                            JSONObject listsObject = listsArray.getJSONObject(i);
-                            Map<String, String> listsMap = new HashMap<>();
-                            listsMap.put("id", listsObject.getString("id"));
-                            listsMap.put("company_id", listsObject.getString("company_id"));
-                            listsMap.put("subject", listsObject.getString("subject"));
-                            listsMap.put("options", listsObject.getString("options"));
-                            listsMap.put("right", listsObject.getString("right"));
-                            listsMap.put("analysis", listsObject.getString("analysis"));
-                            listsMap.put("my_ans", listsObject.getString("my_ans"));
-                            listsMap.put("no", listsObject.getString("no"));
-                            listsMap.put("tpid", listsObject.getString("tpid"));
-                            if (listsObject.has("video")) {
-                                listsMap.put("video", listsObject.getString("video"));
+                    String name = "";
+                    if (dataObject.has("name")) {
+                        name = dataObject.getString("name");
+                    }
+                    if (name.equals("简答题")) {
+                        Toast.makeText(this, "请到PC端查看~", Toast.LENGTH_SHORT).show();
+                        if (activity_analysis_imageview2 != null) {
+                            activity_analysis_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                        }
+                    } else if (name.equals("单选题")) {
+                        if (dataObject.has("lists")) {
+                            JSONArray listsArray = dataObject.getJSONArray("lists");
+                            for (int i = 0; i < listsArray.length(); i++) {
+                                JSONObject listsObject = listsArray.getJSONObject(i);
+                                Map<String, String> listsMap = new HashMap<>();
+                                listsMap.put("id", listsObject.getString("id"));
+                                listsMap.put("company_id", listsObject.getString("company_id"));
+                                listsMap.put("subject", listsObject.getString("subject"));
+                                listsMap.put("options", listsObject.getString("options"));
+                                listsMap.put("right", listsObject.getString("right"));
+                                listsMap.put("analysis", listsObject.getString("analysis"));
+                                listsMap.put("my_ans", listsObject.getString("my_ans"));
+                                listsMap.put("no", listsObject.getString("no"));
+                                listsMap.put("tpid", listsObject.getString("tpid"));
+                                if (listsObject.has("video")) {
+                                    listsMap.put("video", listsObject.getString("video"));
+                                }
+                                if (listsObject.has("sub_img")) {//题干图片
+                                    JSONArray sub_imgArray = listsObject.getJSONArray("sub_img");
+                                    listsMap.put("sub_img", sub_imgArray.toString());
+                                }
+                                if (listsObject.has("option_list")) {//选项
+                                    JSONArray option_listArray = listsObject.getJSONArray("option_list");
+                                    listsMap.put("option_list", option_listArray.toString());
+                                }
+                                if (listsObject.has("ana_img")) {//解析图片
+                                    JSONArray ana_imgArray = listsObject.getJSONArray("ana_img");
+                                    listsMap.put("ana_img", ana_imgArray.toString());
+                                }
+                                listsList.add(listsMap);
                             }
-                            if (listsObject.has("sub_img")) {//题干图片
-                                JSONArray sub_imgArray = listsObject.getJSONArray("sub_img");
-                                listsMap.put("sub_img", sub_imgArray.toString());
-                            }
-                            if (listsObject.has("option_list")) {//选项
-                                JSONArray option_listArray = listsObject.getJSONArray("option_list");
-                                listsMap.put("option_list", option_listArray.toString());
-                            }
-                            if (listsObject.has("ana_img")) {//解析图片
-                                JSONArray ana_imgArray = listsObject.getJSONArray("ana_img");
-                                listsMap.put("ana_img", ana_imgArray.toString());
-                            }
-                            listsList.add(listsMap);
                         }
                     }
+
                 }
 
                 //初始化ViewPager
@@ -296,12 +320,12 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
+                progressDialog = null;
             }
-        } finally {
+        } catch (JSONException e) {
+            e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
                 progressDialog = null;
@@ -315,6 +339,21 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_analysis);
 
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {//正常启动
+
+            SharedPreferences spf = getSharedPreferences("my_guide_record", Context.MODE_PRIVATE);
+            boolean hasShown = spf.getBoolean("has_shown_analysis", false);
+
+            if (!hasShown) {
+                ViewGroup root = getWindow().getDecorView().findViewById(R.id.root);
+                MyGuideView myGuideView = new MyGuideView(this);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                root.addView(myGuideView, params);
+            }
+            //记录下来
+            SharedPreferences.Editor editor = spf.edit();
+            editor.putBoolean("has_shown_analysis", true);
+            editor.apply();
+
             Jzvd.setMediaInterface(new JZExoPlayer());
 
             handler();
@@ -351,7 +390,6 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         }
-
     }
 
     @Override

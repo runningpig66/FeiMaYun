@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.CoursePackageActivity;
@@ -50,7 +51,7 @@ public class CourseListFragment extends Fragment {
     private SmartRefreshLayout fragment_courselist_refreshlayou;
     private int position;
     private List<Map<String, String>> lmList_List;
-    private List<Map<String, String>> data_List;
+    private List<Map<String, String>> data_List = new ArrayList<>();
     private RecyclerView courselist_viewpager_recyclerview1;
     private RelativeLayout fragment_courselist_layout1;
     private boolean isFirstIn = true;
@@ -166,7 +167,8 @@ public class CourseListFragment extends Fragment {
                 fragment_courselist_layout1.setVisibility(View.GONE);
                 courselist_viewpager_recyclerview1.setVisibility(View.VISIBLE);
                 //获取到页面data数据，初始化gridview
-                initGridView();
+                adapter.setData_List(data_List);
+                adapter.notifyDataSetChanged();
             }
             fragment_courselist_refreshlayou.finishRefresh(true);
         } catch (JSONException e) {
@@ -185,26 +187,34 @@ public class CourseListFragment extends Fragment {
             //获取序列化的bean对象
             List_Bean bean = (List_Bean) bundle.getSerializable("bean");
             //从bean对象中取出需要的list数据
-            lmList_List = bean.getList();
-            data_List = new ArrayList<>();
+            lmList_List = Objects.requireNonNull(bean).getList();
         }
+
     }
 
     //在界面可见时再加载网络数据
     @Override
     public void onStart() {
         super.onStart();
-        //得到lmList_List和position，开始请求页面数据
-        String series;
-        String id = lmList_List.get(position).get("id");
-        if (position == 0) {
-            series = "series_2";
-        } else {
-            series = "series_3";
+        if (!isFirstIn) {
+            //得到lmList_List和position，开始请求页面数据
+            String series;
+            String id = lmList_List.get(position).get("id");
+            if (position == 0) {
+                series = "series_2";
+            } else {
+                series = "series_3";
+            }
+            Map<String, String> paramsMap = new HashMap<>();
+            paramsMap.put(series, id);
+            RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
         }
-        Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put(series, id);
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isFirstIn = false;
     }
 
     @Nullable
@@ -218,7 +228,22 @@ public class CourseListFragment extends Fragment {
             return view;
         }
         view = inflater.inflate(R.layout.fragment_courselist, container, false);
+        fragment_courselist_layout1 = view.findViewById(R.id.fragment_courselist_layout1);
         fragment_courselist_refreshlayou = view.findViewById(R.id.fragment_courselist_refreshlayou);
+        courselist_viewpager_recyclerview1 = view.findViewById(R.id.courselist_viewpager_recyclerview1);
+
+        //得到lmList_List和position，开始请求页面数据
+        String series;
+        String id = lmList_List.get(position).get("id");
+        if (position == 0) {
+            series = "series_2";
+        } else {
+            series = "series_3";
+        }
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put(series, id);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
+
         fragment_courselist_refreshlayou.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -234,63 +259,110 @@ public class CourseListFragment extends Fragment {
                 RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
             }
         });
+//        if (isFirstIn) {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
+        courselist_viewpager_recyclerview1.setLayoutManager(gridLayoutManager);
+        adapter = new CouseListViewPagerRvAdapter(context, null);
+        courselist_viewpager_recyclerview1.setAdapter(adapter);
+        GridItemDecoration divider = new GridItemDecoration.Builder(context)
+                .setVerticalSpan(R.dimen.dp5)
+                .setColorResource(R.color.eeeeee)
+                .setShowLastLine(false)
+                .build();
+        courselist_viewpager_recyclerview1.addItemDecoration(divider);
+//        isFirstIn = false;
 
-        courselist_viewpager_recyclerview1 = view.findViewById(R.id.courselist_viewpager_recyclerview1);
-        fragment_courselist_layout1 = view.findViewById(R.id.fragment_courselist_layout1);
+        adapter.setItemClickListener(new CouseListViewPagerRvAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //添加课程列表页面点击事件
+                String data_id = data_List.get(position).get("id");
+                String data_teach_type = data_List.get(position).get("teach_type");
+                switch (Integer.parseInt(data_teach_type)) {
+                    case 1://直播
+                        Intent intentLiveActivity = new Intent(context, WatchActivity.class);
+                        intentLiveActivity.putExtra("data_id", data_id);
+                        intentLiveActivity.putExtra("data_teach_type", data_teach_type);
+                        startActivity(intentLiveActivity);
+                        break;
+                    case 2://录播
+                        Intent intentPlayDeatilActivity = new Intent(context, PlayDetailActivity.class);
+                        intentPlayDeatilActivity.putExtra("data_id", data_id);
+                        intentPlayDeatilActivity.putExtra("data_teach_type", data_teach_type);
+                        startActivity(intentPlayDeatilActivity);
+                        break;
+                    case 3://课程包
+                        Intent intentCoursePackageActivity = new Intent(context, CoursePackageActivity.class);
+                        intentCoursePackageActivity.putExtra("data_id", data_id);
+                        intentCoursePackageActivity.putExtra("data_teach_type", data_teach_type);
+                        startActivity(intentCoursePackageActivity);
+                        break;
+                    case 4://面授
+                        Intent intentFaceToFaceActivity = new Intent(context, FaceToFaceActivity.class);
+                        intentFaceToFaceActivity.putExtra("data_id", data_id);
+                        intentFaceToFaceActivity.putExtra("data_teach_type", data_teach_type);
+                        startActivity(intentFaceToFaceActivity);
+                        break;
+                }
+            }
+        });
+//        } else {
+//            adapter.notifyDataSetChanged();
+//        }
         return view;
     }
 
-    private void initGridView() {
-        if (isFirstIn) {
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
-            courselist_viewpager_recyclerview1.setLayoutManager(gridLayoutManager);
-            adapter = new CouseListViewPagerRvAdapter(context, data_List);
-            courselist_viewpager_recyclerview1.setAdapter(adapter);
-            GridItemDecoration divider = new GridItemDecoration.Builder(context)
-                    .setVerticalSpan(R.dimen.dp5)
-                    .setColorResource(R.color.eeeeee)
-                    .setShowLastLine(false)
-                    .build();
-            courselist_viewpager_recyclerview1.addItemDecoration(divider);
-            isFirstIn = false;
-
-            adapter.setItemClickListener(new CouseListViewPagerRvAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    //添加课程列表页面点击事件
-                    String data_id = data_List.get(position).get("id");
-                    String data_teach_type = data_List.get(position).get("teach_type");
-                    switch (Integer.parseInt(data_teach_type)) {
-                        case 1://直播
-                            Intent intentLiveActivity = new Intent(context, WatchActivity.class);
-                            intentLiveActivity.putExtra("data_id", data_id);
-                            intentLiveActivity.putExtra("data_teach_type", data_teach_type);
-                            startActivity(intentLiveActivity);
-                            break;
-                        case 2://录播
-                            Intent intentPlayDeatilActivity = new Intent(context, PlayDetailActivity.class);
-                            intentPlayDeatilActivity.putExtra("data_id", data_id);
-                            intentPlayDeatilActivity.putExtra("data_teach_type", data_teach_type);
-                            startActivity(intentPlayDeatilActivity);
-                            break;
-                        case 3://课程包
-                            Intent intentCoursePackageActivity = new Intent(context, CoursePackageActivity.class);
-                            intentCoursePackageActivity.putExtra("data_id", data_id);
-                            intentCoursePackageActivity.putExtra("data_teach_type", data_teach_type);
-                            startActivity(intentCoursePackageActivity);
-                            break;
-                        case 4://面授
-                            Intent intentFaceToFaceActivity = new Intent(context, FaceToFaceActivity.class);
-                            intentFaceToFaceActivity.putExtra("data_id", data_id);
-                            intentFaceToFaceActivity.putExtra("data_teach_type", data_teach_type);
-                            startActivity(intentFaceToFaceActivity);
-                            break;
-                    }
-                }
-            });
-        } else {
-            adapter.notifyDataSetChanged();
-        }
+    //    private void initGridView() {
+//        if (isFirstIn) {
+//            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
+//            courselist_viewpager_recyclerview1.setLayoutManager(gridLayoutManager);
+//            adapter = new CouseListViewPagerRvAdapter(context, data_List);
+//            courselist_viewpager_recyclerview1.setAdapter(adapter);
+//            GridItemDecoration divider = new GridItemDecoration.Builder(context)
+//                    .setVerticalSpan(R.dimen.dp5)
+//                    .setColorResource(R.color.eeeeee)
+//                    .setShowLastLine(false)
+//                    .build();
+//            courselist_viewpager_recyclerview1.addItemDecoration(divider);
+//            isFirstIn = false;
+//
+//            adapter.setItemClickListener(new CouseListViewPagerRvAdapter.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(View view, int position) {
+//                    //添加课程列表页面点击事件
+//                    String data_id = data_List.get(position).get("id");
+//                    String data_teach_type = data_List.get(position).get("teach_type");
+//                    switch (Integer.parseInt(data_teach_type)) {
+//                        case 1://直播
+//                            Intent intentLiveActivity = new Intent(context, WatchActivity.class);
+//                            intentLiveActivity.putExtra("data_id", data_id);
+//                            intentLiveActivity.putExtra("data_teach_type", data_teach_type);
+//                            startActivity(intentLiveActivity);
+//                            break;
+//                        case 2://录播
+//                            Intent intentPlayDeatilActivity = new Intent(context, PlayDetailActivity.class);
+//                            intentPlayDeatilActivity.putExtra("data_id", data_id);
+//                            intentPlayDeatilActivity.putExtra("data_teach_type", data_teach_type);
+//                            startActivity(intentPlayDeatilActivity);
+//                            break;
+//                        case 3://课程包
+//                            Intent intentCoursePackageActivity = new Intent(context, CoursePackageActivity.class);
+//                            intentCoursePackageActivity.putExtra("data_id", data_id);
+//                            intentCoursePackageActivity.putExtra("data_teach_type", data_teach_type);
+//                            startActivity(intentCoursePackageActivity);
+//                            break;
+//                        case 4://面授
+//                            Intent intentFaceToFaceActivity = new Intent(context, FaceToFaceActivity.class);
+//                            intentFaceToFaceActivity.putExtra("data_id", data_id);
+//                            intentFaceToFaceActivity.putExtra("data_teach_type", data_teach_type);
+//                            startActivity(intentFaceToFaceActivity);
+//                            break;
+//                    }
+//                }
+//            });
+//        } else {
+//            adapter.notifyDataSetChanged();
+//        }
 
 //        DividerItemDecoration divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
 //        divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.recyclerview_decoration)));
@@ -337,5 +409,5 @@ public class CourseListFragment extends Fragment {
 //            adapter.notifyDataSetChanged();
 //        }
 
-    }
+//    }
 }

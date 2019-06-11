@@ -7,12 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +32,7 @@ public class ExamListAcitivty_ListView1_Adapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return dataList.size();
+        return dataList == null ? 0 : dataList.size();
     }
 
     @Override
@@ -57,13 +53,13 @@ public class ExamListAcitivty_ListView1_Adapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.activity_exam_list_listview1_item, null);
         }
         TextView activity_exam_list_listview1_item_textview1 = convertView.findViewById(R.id.activity_exam_list_listview1_item_textview1);
-        ImageView activity_exam_list_listview1_item_imageview1 = convertView.findViewById(R.id.activity_exam_list_listview1_item_imageview1);
+//        ImageView activity_exam_list_listview1_item_imageview1 = convertView.findViewById(R.id.activity_exam_list_listview1_item_imageview1);
         TextView activity_exam_list_listview1_item_textview2 = convertView.findViewById(R.id.activity_exam_list_listview1_item_textview2);
         TextView activity_exam_list_listview1_item_textview3 = convertView.findViewById(R.id.activity_exam_list_listview1_item_textview3);
         activity_exam_list_listview1_item_textview1.setText(dataList.get(position).get("name"));
 
-        RequestOptions options = new RequestOptions().centerCrop();
-        Glide.with(activity).load(dataList.get(position).get("bg_img")).apply(options).into(activity_exam_list_listview1_item_imageview1);
+//        RequestOptions options = new RequestOptions().centerCrop();
+//        Glide.with(activity).load(dataList.get(position).get("bg_img")).apply(options).into(activity_exam_list_listview1_item_imageview1);
         activity_exam_list_listview1_item_textview2.setText(
                 "试卷数量:" + dataList.get(position).get("tp_total") + "个  " +
                         "试题数量:" + dataList.get(position).get("test_total") + "道  " +

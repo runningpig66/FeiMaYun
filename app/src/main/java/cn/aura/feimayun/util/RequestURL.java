@@ -22,10 +22,11 @@ import java.util.UUID;
  */
 
 public class RequestURL {
-
-    public static final String version = "4";
+    public static final String version = "12";
     private static final String osName = "Android";
-    private static final String verName = "feimayun181213";
+    private static final String verName = "1.6";
+    private static boolean isTest = true;//测试？
+    private static String apidString = isTest ? "school.feimayun.com" : "yun.aura.cn";
 
     //在子线程中访问网络，GET访问
     public static void sendGET(final String urlPath, final Handler handler) {
@@ -54,9 +55,7 @@ public class RequestURL {
                     connection.setRequestProperty("osName", osName);
                     connection.setRequestProperty("verName", verName);
                     connection.setRequestProperty("version", version);
-
-                    connection.setRequestProperty("apid", "yun.aura.cn");
-//                    connection.setRequestProperty("apid", "us.aura.cn");
+                    connection.setRequestProperty("apid", apidString);
                     //连接超时，单位毫秒
                     connection.setConnectTimeout(4000);
                     //读取超时，单位毫秒
@@ -148,9 +147,7 @@ public class RequestURL {
                     connection.setRequestProperty("osName", osName);
                     connection.setRequestProperty("verName", verName);
                     connection.setRequestProperty("version", version);
-
-                    connection.setRequestProperty("apid", "yun.aura.cn");
-//                    connection.setRequestProperty("apid", "us.aura.cn");
+                    connection.setRequestProperty("apid", apidString);
 
                     //发送POST请求必须设置如下两行：需要输出，需要输入
                     connection.setDoInput(true);
@@ -244,7 +241,7 @@ public class RequestURL {
                     conn.setRequestProperty("osName", osName);
                     conn.setRequestProperty("verName", verName);
                     conn.setRequestProperty("version", version);
-                    conn.setRequestProperty("apid", "yun.aura.cn");
+                    conn.setRequestProperty("apid", apidString);
 
                     //     if(files.size()!= 0) {
                     //当文件不为空，把文件包装并且上传
@@ -338,7 +335,7 @@ public class RequestURL {
                     conn.setRequestProperty("osName", osName);
                     conn.setRequestProperty("verName", verName);
                     conn.setRequestProperty("version", version);
-                    conn.setRequestProperty("apid", "yun.aura.cn");
+                    conn.setRequestProperty("apid", apidString);
 
                     //     if(files.size()!= 0) {
                     //当文件不为空，把文件包装并且上传
@@ -424,9 +421,7 @@ public class RequestURL {
                     connection.setRequestProperty("osName", osName);
                     connection.setRequestProperty("verName", verName);
                     connection.setRequestProperty("version", version);
-
-                    connection.setRequestProperty("apid", "yun.aura.cn");
-//                    connection.setRequestProperty("apid", "us.aura.cn");
+                    connection.setRequestProperty("apid", apidString);
                     //连接超时，单位毫秒
                     connection.setConnectTimeout(4000);
                     //读取超时，单位毫秒

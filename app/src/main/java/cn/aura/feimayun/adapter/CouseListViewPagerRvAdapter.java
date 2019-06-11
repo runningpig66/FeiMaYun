@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.application.MyApplication;
+import cn.aura.feimayun.util.Util;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.graphics.Paint.STRIKE_THRU_TEXT_FLAG;
@@ -37,6 +39,10 @@ public class CouseListViewPagerRvAdapter extends RecyclerView.Adapter<CouseListV
         this.mOnItemClickListener = listener;
     }
 
+    public void setData_List(List<Map<String, String>> data_List) {
+        this.data_List = data_List;
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,9 +54,11 @@ public class CouseListViewPagerRvAdapter extends RecyclerView.Adapter<CouseListV
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         Map<String, String> map = data_List.get(position);
 
-        RequestOptions options = new RequestOptions()
-                .fitCenter();
-        Glide.with(context).load(map.get("bg_url")).apply(options).into(holder.courselist_viewpager_gridview_bg_url);
+        RequestOptions options = new RequestOptions().fitCenter();
+        if (Util.isOnMainThread()) {
+            Glide.with(MyApplication.context).load(map.get("bg_url")).apply(options).into(holder.courselist_viewpager_gridview_bg_url);
+        }
+
         holder.courselist_viewpager_gridview_name.setText(map.get("name"));
         holder.courselist_viewpager_gridview_price.setPaintFlags(ANTI_ALIAS_FLAG);
         holder.courselist_viewpager_gridview_price.setPaintFlags(STRIKE_THRU_TEXT_FLAG);

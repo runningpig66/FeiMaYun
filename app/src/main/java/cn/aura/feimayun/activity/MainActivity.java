@@ -91,9 +91,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.obj.toString().equals("网络异常")) {
-//                    Toast.makeText(MainActivity.this, "请检查网络连接_Error08", Toast.LENGTH_LONG).show();
-                } else {
+                if (!msg.obj.toString().equals("网络异常")) {
                     parseUpdate(msg.obj.toString());
                 }
             }
@@ -112,7 +110,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                     targetUrl = url.replaceFirst("yun", "us");
 
-                    @SuppressLint("InflateParams") View view = LayoutInflater.from(this).inflate(R.layout.dialog_call, null);
+                    View view = LayoutInflater.from(this).inflate(R.layout.dialog_call, null);
                     TextView dialog_call_textview1 = view.findViewById(R.id.dialog_call_textview1);
                     TextView dialog_call_textview2 = view.findViewById(R.id.dialog_call_textview2);
                     dialog_call_textview1.setText("发现新版本");
@@ -130,7 +128,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                             break;
                                         case R.id.dialog_call_confirm:
                                             //开始下载新版本
-
                                             //申请权限
                                             if (EasyPermissions.hasPermissions(MainActivity.this, PERMS_WRITE)) {
                                                 listener(downLoadApk(MainActivity.this, "下载更新", targetUrl));
@@ -138,16 +135,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                                 EasyPermissions.requestPermissions(MainActivity.this, "下载更新需要开启部分权限",
                                                         0x1000, PERMS_WRITE);
                                             }
-
-//                                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                                                    != PackageManager.PERMISSION_GRANTED) {
-//                                                ActivityCompat.requestPermissions(MainActivity.this,
-//                                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0X1127);
-//                                            } else {
-//                                                listener(downLoadApk(MainActivity.this, "下载更新", targetUrl));
-//                                            }
-
-
                                             tDialog.dismiss();
                                             break;
                                     }
@@ -169,11 +156,14 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             handle();
-
             initView();
-            initData();
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initData();
     }
 
     @Override
@@ -212,16 +202,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    private void initData() {
-        fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        defaultChildShow(fragmentTransaction);
-        selector1_rb.setChecked(true);
-
-        //开始版本检查
-        RequestURL.sendUpdate("https://app.feimayun.com/version/version", mHandler);
-    }
-
     private void initView() {
         activity_main_layout_redpoint = findViewById(R.id.activity_main_layout_redpoint);//未读消息小圆点
         rg_bt = findViewById(R.id.rg_bt);
@@ -230,6 +210,16 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         selector3_rb = findViewById(R.id.selector3_rb);
         selector4_rb = findViewById(R.id.selector4_rb);
         rg_bt.setOnCheckedChangeListener(this);
+
+        fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        defaultChildShow(fragmentTransaction);
+        selector1_rb.setChecked(true);
+    }
+
+    private void initData() {
+        //开始版本检查
+        RequestURL.sendUpdate("https://app.feimayun.com/version/version", mHandler);
     }
 
     //设置默认加载页
@@ -249,7 +239,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             //进入软件显示首页e
             fragmentTransaction.show(homePageFragment);
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     //隐藏所有fragment
@@ -346,30 +336,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    //    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode) {
-//            case 0X1111:
-//                //有注册权限且允许用户安装
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    openAPK(fileName);
-//                } else {
-//                    //将用户引导至安装未知应用界面
-//                    Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-//                    startActivityForResult(intent, 0x2222);
-//                }
-//                break;
-//            case 0X1127:
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    listener(downLoadApk(MainActivity.this, "下载更新", targetUrl));
-//                } else {
-//                    Toast.makeText(this, "更新需要开启权限", Toast.LENGTH_SHORT).show();
-//                }
-//                break;
-//        }
-//    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -385,11 +351,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     listener(downLoadApk(MainActivity.this, "下载更新", targetUrl));
                 }
                 break;
-//            case 0x1001:
-//                if (EasyPermissions.hasPermissions(this, PERMS_CAMERA)) {
-//                    myStudiesFragment.toCamera();
-//                }
-//                break;
         }
 
     }
@@ -416,20 +377,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     Toast.makeText(this, "权限拒绝无法下载更新", Toast.LENGTH_SHORT).show();
                 }
                 break;
-//            case 0x1001:
-//                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-//                    new AppSettingsDialog.Builder(this)
-//                            .setRequestCode(0x1001)
-//                            .setTitle("拍照需要开启打开相机权限")
-//                            .setRationale("您已拒绝开启部分权限，这将导致无法打开相机，是否打开设置界面开启权限？")
-//                            .setNegativeButton("取消")
-//                            .setPositiveButton("确认")
-//                            .build()
-//                            .show();
-//                } else {
-//                    Toast.makeText(this, "权限拒绝无法打开相机", Toast.LENGTH_SHORT).show();
-//                }
-//                break;
         }
 
     }
@@ -536,13 +483,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     Toast.makeText(this, "权限拒绝无法更新", Toast.LENGTH_SHORT).show();
                 }
                 break;
-//            case 0x1001:
-//                if (EasyPermissions.hasPermissions(this, PERMS_CAMERA)) {
-//                    myStudiesFragment.toCamera();
-//                } else {
-//                    Toast.makeText(this, "权限拒绝无法打开相机", Toast.LENGTH_SHORT).show();
-//                }
-//                break;
         }
     }
 

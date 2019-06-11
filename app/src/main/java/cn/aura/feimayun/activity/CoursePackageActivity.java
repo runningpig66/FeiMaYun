@@ -41,10 +41,10 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
     private TextView activity_course_package_textview2;
     private TextView activity_course_package_textview3;
     private TextView activity_course_package_textview4;
-    private ListView activity_course_package_listview1;
     //存放intent中获取到的数据
     private String data_id;
     private String data_teach_type;
+    private CoursePackageActivity_ListView1_Adapter adapter;
 
     @SuppressLint("HandlerLeak")
     private void handler() {
@@ -55,6 +55,7 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
                     Toast.makeText(CoursePackageActivity.this, "请检查网络连接_Error25", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                 } else {
                     parseJSON(msg.obj.toString());
@@ -74,6 +75,8 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
                 JSONObject dataObject = jsonObject.getJSONObject("data");
                 dataMap.put("id", dataObject.getString("id"));
                 dataMap.put("data_id", dataObject.getString("data_id"));
+                dataMap.put("series_1", dataObject.getString("series_1"));
+                dataMap.put("series_2", dataObject.getString("series_2"));
                 dataMap.put("title", dataObject.getString("title"));
                 dataMap.put("number", dataObject.getString("number"));
                 dataMap.put("rprice", dataObject.getString("rprice"));
@@ -131,26 +134,26 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
 
                 //得到数据，开始初始化控件内容
                 activity_course_package_textview1.setText(dataMap.get("name"));
-
                 RequestOptions options = new RequestOptions().fitCenter();
-                Glide.with(this).load(dataMap.get("bg_url")).apply(options).into(activity_course_package_imageview1);
+                if (Util.isOnMainThread()) {
+                    Glide.with(MyApplication.context).load(dataMap.get("bg_url")).apply(options).into(activity_course_package_imageview1);
+                }
                 activity_course_package_textview2.setText("课程视频共" + dataMap.get("mediaTotal") + "个");
                 activity_course_package_textview3.setText("模拟题库共" + dataMap.get("paperTotal") + "套试卷");
                 activity_course_package_textview4.setText("专项答疑共" + dataMap.get("dyTotal") + "条");
 
-                String dataId = dataMap.get("id");
-                CoursePackageActivity_ListView1_Adapter adapter =
-                        new CoursePackageActivity_ListView1_Adapter(this, catalogueList, dataId);
-                activity_course_package_listview1.setAdapter(adapter);
+                adapter.setData(catalogueList, dataMap.get("id"), dataMap.get("series_1"), dataMap.get("series_2"));
+                adapter.notifyDataSetChanged();
+            }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
             }
         } catch (JSONException e) {
             e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
-            }
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
+                progressDialog = null;
             }
         }
     }
@@ -162,18 +165,14 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
         setContentView(R.layout.activity_course_package);
 
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
-            handler();
-
             Intent intent = getIntent();
             data_id = intent.getStringExtra("data_id");
             data_teach_type = intent.getStringExtra("data_teach_type");
-
-            initView();
-
+            handler();
             //网络请求、初始化数据
             initData();
+            initView();
         }
-
     }
 
     //发送网络请求
@@ -185,14 +184,13 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
         paramsMap.put("teach_type", data_teach_type);
         paramsMap.put("uid", uid);
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.show();
-
         RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleNetwork, paramsMap);
-
     }
 
     private void initView() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.show();
+
         //返回按钮布局
         RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);
         headtitle_layout.setOnClickListener(this);
@@ -205,7 +203,10 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
         activity_course_package_textview2 = findViewById(R.id.activity_course_package_textview2);
         activity_course_package_textview3 = findViewById(R.id.activity_course_package_textview3);
         activity_course_package_textview4 = findViewById(R.id.activity_course_package_textview4);
-        activity_course_package_listview1 = findViewById(R.id.activity_course_package_listview1);
+        ListView activity_course_package_listview1 = findViewById(R.id.activity_course_package_listview1);
+
+        adapter = new CoursePackageActivity_ListView1_Adapter(this);
+        activity_course_package_listview1.setAdapter(adapter);
     }
 
     @Override

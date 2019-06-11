@@ -1,10 +1,10 @@
 package cn.aura.feimayun.vhall.chat;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.util.VhallUtil;
 import cn.aura.feimayun.vhall.util.emoji.EmojiUtils;
+import cn.aura.feimayun.vhall.watch.WatchActivity;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -38,31 +40,28 @@ import static android.app.Activity.RESULT_OK;
 public class ChatFragment extends Fragment implements ChatContract.ChatView {
 
     public static final int CHAT_EVENT_CHAT = 1;
-    public static final int CHAT_EVENT_QUESTION = 2;
-
-    public static final int CHAT_NORMAL = 0x00;
-    public static final int CHAT_SURVEY = 0x01;
+    //    public static final int CHAT_EVENT_QUESTION = 2;
     public final int RequestLogin = 0;
     ListView lv_chat;
-    List<ChatServer.ChatInfo> chatData;
+    List<ChatServer.ChatInfo> chatData = new ArrayList<>();
     ChatAdapter chatAdapter = new ChatAdapter();
     //    QuestionAdapter questionAdapter = new QuestionAdapter();
     boolean isquestion = false;
     int status = -1;
     TextView test_send_custom;
+    private String vhall_account = "1";
     private ChatContract.ChatPresenter mPresenter;
-    private Activity mActivity;
-
-    private boolean flag = false;
-
+    private WatchActivity mActivity;
     private ImageView iv_emoji;
     private TextView text_chat_content;
+    private boolean isVisiable = false;
 
-    public static ChatFragment newInstance(int status, boolean isquestion) {
+    public static ChatFragment newInstance(int status, boolean isquestion, String vhall_account) {
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("question", isquestion);
         bundle.putInt("state", status);
+        bundle.putString("vhall_account", vhall_account);
         chatFragment.setArguments(bundle);
         return chatFragment;
     }
@@ -70,17 +69,16 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mActivity = (Activity) context;
+        mActivity = (WatchActivity) context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chatData = new ArrayList<ChatServer.ChatInfo>();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.vhall_chat_fragment, container, false);
         lv_chat = view.findViewById(R.id.lv_chat);
         test_send_custom = view.findViewById(R.id.test_send_custom);
@@ -102,6 +100,13 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
                 }
             }
         });
+
+//        isquestion = getArguments().getBoolean("question");
+        if (getArguments() != null) {
+            status = getArguments().getInt("state");
+            vhall_account = getArguments().getString("vhall_account");
+        }
+
         iv_emoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +115,7 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
                     String uid = Util.getUid();
                     if (!uid.equals("")) {
                         //登录微吼账号，用于聊天
-                        String username = "wxh" + uid;
+                        String username = vhall_account.equals("1") ? "wxh" + uid : "sch" + uid;
                         String userpass = "1q2w3e4r5t6y7u8i9o";
 
                         VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
@@ -137,7 +142,7 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
                     String uid = Util.getUid();
                     if (!uid.equals("")) {
                         //登录微吼账号，用于聊天
-                        String username = "wxh" + uid;
+                        String username = vhall_account.equals("1") ? "wxh" + uid : "sch" + uid;
                         String userpass = "1q2w3e4r5t6y7u8i9o";
 
                         VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
@@ -156,64 +161,99 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
                 mPresenter.showChatView(false, null, 0);
             }
         });
-//        isquestion = getArguments().getBoolean("question");
-        status = getArguments().getInt("state");
-        if (isquestion) {
-//            lv_chat.setAdapter(questionAdapter);
-        } else {
+
+        if (!isquestion) {
             lv_chat.setAdapter(chatAdapter);
+//            lv_chat.setAdapter(questionAdapter);
         }
+//        else {
+//            lv_chat.setAdapter(chatAdapter);
+//        }
     }
 
     @Override
     public void notifyDataChanged(final ChatServer.ChatInfo data) {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (chatData.size() > 30) {
-                    chatAdapter.notifyDataSetInvalidated();
+//        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+//            mActivity.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (chatData.size() > 30) {
+//                        chatAdapter.notifyDataSetInvalidated();
+//                        chatData.remove(0);
+//                        chatData.add(data);
+//                    } else {
+//                        chatAdapter.notifyDataSetInvalidated();
+//                        chatData.add(data);
+//                    }
+//                    if (isquestion) {
+////            questionAdapter.notifyDataSetChanged();
+//                    } else {
+//                        chatAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//            });
+//        }
+
+        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+            if (isVisiable) {
+                if (chatData.size() > 10)
                     chatData.remove(0);
-                    chatData.add(data);
-                } else {
-                    chatAdapter.notifyDataSetInvalidated();
-                    chatData.add(data);
-                }
-                if (isquestion) {
-//            questionAdapter.notifyDataSetChanged();
-                } else {
+                chatData.add(data);
+                if (!isquestion) {
                     chatAdapter.notifyDataSetChanged();
+//            questionAdapter.notifyDataSetChanged();
                 }
+//                else {
+//                    chatAdapter.notifyDataSetChanged();
+//                }
             }
-        });
+        }
     }
 
     @Override
     public void notifyDataChanged(final int type, final List<ChatServer.ChatInfo> list) {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                chatAdapter.notifyDataSetInvalidated();
+//        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+//            mActivity.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    chatAdapter.notifyDataSetInvalidated();
+//                    chatData.addAll(list);
+//                    if (type == CHAT_EVENT_CHAT) {
+//                        chatAdapter.notifyDataSetChanged();
+//                    }
+//            questionAdapter.notifyDataSetChanged();
+//                }
+//            });
+//        }
+        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+            if (isVisiable) {
                 chatData.addAll(list);
                 if (type == CHAT_EVENT_CHAT) {
                     chatAdapter.notifyDataSetChanged();
                 }
+//            else
 //            questionAdapter.notifyDataSetChanged();
             }
-        });
+        }
     }
-
 
     @Override
     public void showToast(String content) {
-//        if (this.isAdded())
-//            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
+        if (this.isAdded())
+            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void clearChatData() {
         if (chatData != null) {
             chatData.clear();
+            chatAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        return super.getUserVisibleHint();
     }
 
     @Override
@@ -225,9 +265,10 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
             case VhallUtil.WATCH_LIVE://观看直播界面发聊天和问答
                 if (chatEvent == ChatFragment.CHAT_EVENT_CHAT) {
                     mPresenter.sendChat(content);
-                } else if (chatEvent == ChatFragment.CHAT_EVENT_QUESTION) {
-                    mPresenter.sendQuestion(content);
                 }
+//                else if (chatEvent == ChatFragment.CHAT_EVENT_QUESTION) {
+//                    mPresenter.sendQuestion(content);
+//                }
                 break;
             case VhallUtil.WATCH_PLAYBACK://回放界面只能发评论(发评论必须保证登陆)
                 mPresenter.sendChat(content);
@@ -255,13 +296,25 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
         super.onDestroy();
         if (chatData != null) {
             chatData.clear();
+            chatAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        isVisiable = true;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        flag = false;
+        isVisiable = false;
     }
 
     //    class QuestionAdapter extends BaseAdapter {
@@ -382,7 +435,7 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 
         @Override
         public int getCount() {
-            return chatData.size();
+            return chatData == null ? 0 : chatData.size();
         }
 
         @Override
@@ -417,7 +470,9 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
             RequestOptions options = new RequestOptions()
                     .fitCenter()
                     .placeholder(R.drawable.live_userimg);
-            Glide.with(mActivity).load(data.avatar).apply(options).into(viewHolder.iv_chat_avatar);
+            if (Util.isOnMainThread()) {
+                Glide.with(MyApplication.context).load(data.avatar).apply(options).into(viewHolder.iv_chat_avatar);
+            }
 
             switch (data.event) {
                 case ChatServer.eventMsgKey:

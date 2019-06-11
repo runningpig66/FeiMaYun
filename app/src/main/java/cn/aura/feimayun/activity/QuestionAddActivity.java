@@ -62,9 +62,6 @@ public class QuestionAddActivity extends BaseActivity implements View.OnClickLis
             public void handleMessage(Message msg) {
                 if (msg.obj.toString().equals("网络异常")) {
                     Toast.makeText(QuestionAddActivity.this, "请检查网络连接_Error19", Toast.LENGTH_LONG).show();
-//                    if (progressDialog != null) {
-//                        progressDialog.dismiss();
-//                    }
                     isUploadNow = false;
                     tDialog.dismiss();
                 } else {
@@ -77,9 +74,6 @@ public class QuestionAddActivity extends BaseActivity implements View.OnClickLis
             public void handleMessage(Message msg) {
                 if (msg.obj.toString().equals("网络异常")) {
                     Toast.makeText(QuestionAddActivity.this, "请检查网络连接_Error20", Toast.LENGTH_LONG).show();
-//                    if (progressDialog != null) {
-//                        progressDialog.dismiss();
-//                    }
                     isUploadNow = false;
                     tDialog.dismiss();
                 } else {

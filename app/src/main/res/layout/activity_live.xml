@@ -2,22 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <!--顶部的状态栏预留-->
-    <View
-        android:id="@+id/activity_live_view"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:background="#000000" />
+    <!--<View-->
+        <!--android:id="@+id/activity_live_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:background="#000000" />-->
 
     <!--播放器窗口-->
     <cn.aura.feimayun.view.MoveFrameLayout
         android:id="@+id/contentVideo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/activity_live_view"
         android:background="@drawable/guanghuanguoji_auto"
         android:visibility="gone" />
 

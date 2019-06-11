@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +19,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.smtt.sdk.QbSdk;
 import com.vhall.business.VhallSDK;
 import com.vhall.vhalllive.pushlive.CameraFilterView;
 import com.yanzhenjie.album.Album;
@@ -101,7 +103,7 @@ public class MyApplication extends Application {
         super.onCreate();
         context = this;
         getParam();
-        VhallSDK.init(this, getResources().getString(R.string.vhall_app_key), getResources().getString(R.string.vhall_app_secret_key));
+//        VhallSDK.init(this, getResources().getString(R.string.vhall_app_key1), getResources().getString(R.string.vhall_app_secret_key1));
 //        VhallSDK.setLogEnable(true);
 
         Album.initialize(AlbumConfig.newBuilder(this)
@@ -118,7 +120,26 @@ public class MyApplication extends Application {
         String processName = getProcessName(android.os.Process.myPid());
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        CrashReport.initCrashReport(getApplicationContext(), "1694b47e8e", false);
+        CrashReport.initCrashReport(getApplicationContext(), "1694b47e8e", false, strategy);
+
+        //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
+
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+
+            @Override
+            public void onViewInitFinished(boolean arg0) {
+                // TODO Auto-generated method stub
+                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                Log.d("app", " onViewInitFinished is " + arg0);
+            }
+
+            @Override
+            public void onCoreInitFinished() {
+                // TODO Auto-generated method stub
+            }
+        };
+        //x5内核初始化接口
+        QbSdk.initX5Environment(getApplicationContext(), cb);
     }
 
     //程序终止时调用
@@ -168,7 +189,6 @@ public class MyApplication extends Application {
     }
 
     class MediaLoader implements AlbumLoader {
-
         @Override
         public void load(ImageView imageView, AlbumFile albumFile) {
             load(imageView, albumFile.getPath());
@@ -176,7 +196,7 @@ public class MyApplication extends Application {
 
         @Override
         public void load(ImageView imageView, String url) {
-            Glide.with(imageView.getContext())
+            Glide.with(MyApplication.context)
                     .load(url)
                     .into(imageView);
         }

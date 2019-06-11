@@ -51,7 +51,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         countDownTimer = new CountDownTimer(mCount * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                activity_register_textView1.setText("请稍后\n(" + millisUntilFinished / 1000 + "秒)");
+                activity_register_textView1.setText("请稍候\n(" + millisUntilFinished / 1000 + "秒)");
             }
 
             @Override

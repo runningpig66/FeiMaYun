@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +37,7 @@ public class FaceToFaceActivity extends BaseActivity implements View.OnClickList
     private TextView activity_face_to_face_textview4;
     private TextView activity_face_to_face_textview5;
     private TextView activity_face_to_face_textview6;
-    private WebView activity_face_to_face_webview;
+    private com.tencent.smtt.sdk.WebView activity_face_to_face_webview;
     private ImageView activity_face_to_face_imageview1;
     private ImageView activity_face_to_face_imageview2;
     //存放intent中获取到的数据
@@ -53,6 +53,7 @@ public class FaceToFaceActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(FaceToFaceActivity.this, "请检查网络连接_Error16", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
 //                    activity_paper_list_refreshLayout.finishRefresh(false);
 //                    activity_paper_list_refreshLayout.finishLoadMore(false);
@@ -91,23 +92,33 @@ public class FaceToFaceActivity extends BaseActivity implements View.OnClickList
 
                 //得到数据后，开始设置界面数据
                 activity_face_to_face_textview1.setText(dataMap.get("name"));
-                Glide.with(this).load(dataMap.get("bg_url")).into(activity_face_to_face_imageview1);
+                if (Util.isOnMainThread()) {
+                    RequestOptions options = new RequestOptions().fitCenter();
+                    Glide.with(MyApplication.context).load(dataMap.get("bg_url")).apply(options).into(activity_face_to_face_imageview1);
+                }
                 activity_face_to_face_textview2.setText("学习周期:" + dataMap.get("expire"));
                 activity_face_to_face_textview3.setText("上课地点:" + dataMap.get("address"));
                 activity_face_to_face_textview4.setText("开课时间:" + dataMap.get("lesson_time"));
-                Glide.with(this).load(teacherMap.get("biger")).into(activity_face_to_face_imageview2);
+                if (Util.isOnMainThread()) {
+                    RequestOptions options = new RequestOptions().fitCenter();
+                    Glide.with(MyApplication.context).load(teacherMap.get("biger")).apply(options).into(activity_face_to_face_imageview2);
+                }
                 activity_face_to_face_textview5.setText("主讲教师:" + teacherMap.get("name"));
                 activity_face_to_face_textview6.setText("课程数量:" + teacherMap.get("lessons"));
-                activity_face_to_face_webview.loadData(dataMap.get("about"), "text/html", "utf-8");
+
+                String aboutString = dataMap.get("about");
+                String des2 = Util.getNewContent(aboutString);
+                activity_face_to_face_webview.loadData(des2, "text/html; charset=UTF-8", null);
+            }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
             }
         } catch (JSONException e) {
             e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
-            }
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
+                progressDialog = null;
             }
         }
     }
@@ -178,6 +189,14 @@ public class FaceToFaceActivity extends BaseActivity implements View.OnClickList
             case R.id.headtitle_layout:
                 finish();
                 break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (activity_face_to_face_webview != null) {
+            activity_face_to_face_webview.destroy();
         }
     }
 }

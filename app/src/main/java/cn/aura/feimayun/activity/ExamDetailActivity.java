@@ -1,6 +1,7 @@
 package cn.aura.feimayun.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.NetworkInfo;
@@ -13,9 +14,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,6 +54,7 @@ import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.view.GridItemDecoration;
+import cn.aura.feimayun.view.MyGuideView;
 import cn.aura.feimayun.view.ProgressDialog;
 import cn.aura.feimayun.view.SelfDialog;
 import cn.aura.feimayun.view.SelfDialog2;
@@ -68,10 +72,13 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
     public long countDownMillis = 0;//全局记录剩余的秒数
     public String fileName;
     CountDownTimer countDownTimer;
+    //保存不提交 & 提交
+    TextView activity_exam_detail_textview2;
+    TextView activity_exam_detail_textview3;
     private ProgressDialog progressDialog;
     private boolean haveData = true;//根据返回status==0判断是否购买试卷
     private int lastAnswerPage = 0;//记录未答题最小的page
-    private Map<String, String> answerMap = new TreeMap<>();
+    private TreeMap<Integer, String> answerMap = new TreeMap<>();
     private List<Boolean> mList = new LinkedList<>();//记录是否选择
     private String sid;
     private String tid;
@@ -83,11 +90,11 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
     private ImageView activity_exam_detail_imageview2;//右箭头
     private ViewPager activity_exam_detail_viewpager1;
     private boolean loadLocalFile = false;
-
     private SelfDialog mSelfDialog;//提交时没有做题，提示是否重新做题
     private SelfDialog2 mSelfDialog2;//未联网时提示本地保存
     private boolean isConnected = true;//记录当前网络是否连接
     private LinearLayout activity_exam_detail_imageview3;//答题卡
+    private ViewGroup root;
 
     @SuppressLint("HandlerLeak")
     private void handler() {
@@ -98,6 +105,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(ExamDetailActivity.this, "请检查网络连接_Error26", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                 } else {
                     parseJSON(msg.obj.toString());
@@ -111,6 +119,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(ExamDetailActivity.this, "请检查网络连接_Error27", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                 } else {
                     parseJSONSave1Test(msg.obj.toString());
@@ -124,9 +133,8 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(ExamDetailActivity.this, "请检查网络连接_Error28", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
-//                    activity_paper_list_refreshLayout.finishRefresh(false);
-//                    activity_paper_list_refreshLayout.finishLoadMore(false);
                 } else {
                     parseJSONSave2Test(msg.obj.toString());
                 }
@@ -146,7 +154,6 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                 if (file.exists()) {
                     file.delete();
                 }
-
                 countDownTimer.cancel();//暂停计时
                 JSONObject dataObject = jsonObject.getJSONObject("data");
                 String id = dataObject.getString("id");
@@ -186,7 +193,6 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                 if (file.exists()) {
                     file.delete();
                 }
-
                 //提交成功，延时关闭试题页面
                 Toast.makeText(this, "保存做题记录成功", Toast.LENGTH_SHORT).show();
                 countDownTimer.cancel();//暂停计时
@@ -206,7 +212,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void parseJSON(final String s) {
-        //TODO 开始解析
+//        Util.d("021103", s);
         try {
             JSONTokener jsonTokener = new JSONTokener(s);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -277,261 +283,294 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                             listsList.add(listsMap);
                         }
                         editor.putInt("write", write);
-                        editor.commit();
-                    }
-                }
-
-                //初始化计时相关
-                String answer_time = dataMap.get("answer_time");
-
-                if (loadLocalFile) {//从异常文件中读取选项状态
-                    SharedPreferences sharedPreferences = getSharedPreferences(fileName, MODE_PRIVATE);
-                    answer_time = sharedPreferences.getString("time", "");
-                } else {
-                    SharedPreferences.Editor editor = getSharedPreferences(fileName, MODE_PRIVATE).edit();
-                    editor.putString("time", answer_time);
-                    editor.commit();
-                }
-
-                int mCount = 0;
-                if (answer_time != null) {
-                    mCount = Integer.valueOf(answer_time);//需要计时的总秒数
-                }
-                int totalMinutes = mCount / 60;//需要计时的总分钟数
-                int second = mCount % 60;//秒数
-                int hour = totalMinutes / 60;//小时数
-                int minute = totalMinutes % 60;//分钟数
-
-                String hourString = String.valueOf(hour);
-                String minuteString = String.valueOf(minute);
-                String secondString = String.valueOf(second);
-
-                //处理显示2位数字的文字
-                if (hour / 10 == 0) {
-                    hourString = "0" + hour;
-                }
-                if (minute / 10 == 0) {
-                    minuteString = "0" + minute;
-                }
-                if (second / 10 == 0) {
-                    secondString = "0" + second;
-                }
-
-                //初始化ViewPager
-                final List<Fragment> fragmentList = new ArrayList<>();
-
-                for (int i = 0; i < listsList.size(); i++) {
-                    ExamDetailActivity_ViewPager1_Fragment fragment = new ExamDetailActivity_ViewPager1_Fragment();
-
-                    List_Bean bean = new List_Bean();
-                    bean.setMap(listsList.get(i));
-
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("bean", bean);
-                    fragment.setArguments(bundle);
-                    fragmentList.add(fragment);
-
-                    //计算最小答题页面
-                    if (!listsList.get(i).get("checked").equals("")) {
-                        lastAnswerPage = i;
+                        editor.apply();
                     }
 
-                    //初始化服务器返回的答题数据
-                    String key = listsList.get(i).get("no_id");
-                    if (!listsList.get(i).get("checked").equals("")) {
-                        String val = listsList.get(i).get("checked");
-                        answerMap.put(key, val);
+                    //初始化计时相关
+                    String answer_time = dataMap.get("answer_time");
+
+                    if (loadLocalFile) {//从异常文件中读取选项状态
+                        SharedPreferences sharedPreferences = getSharedPreferences(fileName, MODE_PRIVATE);
+                        answer_time = sharedPreferences.getString("time", "");
+                    } else {
+                        SharedPreferences.Editor editor = getSharedPreferences(fileName, MODE_PRIVATE).edit();
+                        editor.putString("time", answer_time);
+                        editor.apply();
                     }
 
-                }
+                    int mCount = 0;
+                    if (answer_time != null) {
+                        mCount = Integer.valueOf(answer_time);//需要计时的总秒数
+                    }
+                    int totalMinutes = mCount / 60;//需要计时的总分钟数
+                    int second = mCount % 60;//秒数
+                    int hour = totalMinutes / 60;//小时数
+                    int minute = totalMinutes % 60;//分钟数
 
-                ExamDeatilActivity_ViewPager1_Adapter adapter = new ExamDeatilActivity_ViewPager1_Adapter(getSupportFragmentManager(), fragmentList);
-                activity_exam_detail_viewpager1.setAdapter(adapter);
-                activity_exam_detail_viewpager1.setOffscreenPageLimit(2);
-                //跳转到最后一道做的题的页面，方便继续做题
-                activity_exam_detail_viewpager1.setCurrentItem(lastAnswerPage);
-                activity_exam_detail_viewpager1.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                        if (position == 0) {
-                            if (listsList.size() == 1) {
-                                activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
-                                activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
-                            } else {
-                                activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
-                                activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
-                            }
-                        } else {//进入考试页面的position不为0说明是继续答题模式，跳转到了上次做的最后一题的位置
-                            if (position < listsList.size() - 1) {//如果不是最后一题
-                                activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
-                                activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
-                            } else {//上次做到了最后一题
-                                activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
-                                activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
-                            }
+                    String hourString = String.valueOf(hour);
+                    String minuteString = String.valueOf(minute);
+                    String secondString = String.valueOf(second);
+
+                    //处理显示2位数字的文字
+                    if (hour / 10 == 0) {
+                        hourString = "0" + hour;
+                    }
+                    if (minute / 10 == 0) {
+                        minuteString = "0" + minute;
+                    }
+                    if (second / 10 == 0) {
+                        secondString = "0" + second;
+                    }
+
+                    //初始化ViewPager
+                    final List<Fragment> fragmentList = new ArrayList<>();
+
+                    for (int i = 0; i < listsList.size(); i++) {
+                        ExamDetailActivity_ViewPager1_Fragment fragment = new ExamDetailActivity_ViewPager1_Fragment();
+
+                        List_Bean bean = new List_Bean();
+                        bean.setMap(listsList.get(i));
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("bean", bean);
+                        fragment.setArguments(bundle);
+                        fragmentList.add(fragment);
+
+                        //计算最小答题页面
+                        if (!listsList.get(i).get("checked").equals("")) {
+                            lastAnswerPage = i;
                         }
+
+                        //初始化服务器返回的答题数据
+                        String key = listsList.get(i).get("no_id");
+                        if (!listsList.get(i).get("checked").equals("")) {
+                            String val = listsList.get(i).get("checked");
+                            answerMap.put(Integer.parseInt(key), val);
+                        }
+
                     }
 
-                    @Override
-                    public void onPageSelected(int position) {//根据页面变化，设置下方左右箭头颜色
-                        if (listsList.size() > 1) {
+                    ExamDeatilActivity_ViewPager1_Adapter adapter = new ExamDeatilActivity_ViewPager1_Adapter(getSupportFragmentManager(), fragmentList);
+                    activity_exam_detail_viewpager1.setAdapter(adapter);
+                    activity_exam_detail_viewpager1.setOffscreenPageLimit(2);
+                    //跳转到最后一道做的题的页面，方便继续做题
+                    activity_exam_detail_viewpager1.setCurrentItem(lastAnswerPage);
+                    activity_exam_detail_viewpager1.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                             if (position == 0) {
+                                if (listsList.size() == 1) {
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                                } else {
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
+                                }
+                            } else {//进入考试页面的position不为0说明是继续答题模式，跳转到了上次做的最后一题的位置
+                                if (position < listsList.size() - 1) {//如果不是最后一题
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
+                                } else {//上次做到了最后一题
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {//根据页面变化，设置下方左右箭头颜色
+                            if (listsList.size() > 1) {
+                                if (position == 0) {
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
+                                } else if (position == listsList.size() - 1) {
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                                } else {
+                                    activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
+                                    activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
+                                }
+                            } else {
                                 activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
-                                activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
-                            } else if (position == listsList.size() - 1) {
-                                activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
                                 activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                            }
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+                        }
+                    });
+
+                    //初始倒计时时间
+                    activity_exam_detail_textview1.setText(hourString + ":" + minuteString + ":" + secondString);
+                    countDownTimer = new CountDownTimer(mCount * 1000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            //剩余的秒数
+                            countDownMillis = millisUntilFinished;
+                            //根据剩余秒数算出总分钟数
+                            long totalMinute = (millisUntilFinished / 1000) / 60;//剩余总分钟数
+                            long second = (millisUntilFinished / 1000) % 60;//剩余秒数
+                            long totalHour = totalMinute / 60;//剩余总小时数
+                            long minute = totalMinute % 60;//剩余分钟数
+
+                            String totalHourString = String.valueOf(totalHour);
+                            String minuteString = String.valueOf(minute);
+                            String secondString = String.valueOf(second);
+
+                            //处理显示2位数字的文字
+                            if (totalHour / 10 == 0) {
+                                totalHourString = "0" + totalHour;
+                            }
+                            if (minute / 10 == 0) {
+                                minuteString = "0" + minute;
+                            }
+                            if (second / 10 == 0) {
+                                secondString = "0" + second;
+                            }
+                            activity_exam_detail_textview1.setText(totalHourString + ":" + minuteString + ":" + secondString);
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            activity_exam_detail_textview1.setText("考试时间到");
+                            //强制提交
+                            //构建答案JSON
+                            Set<Integer> answerKeySet1 = answerMap.keySet();
+                            JSONArray answer1 = new JSONArray();
+                            for (Object anAnswerKeySet : answerKeySet1) {
+                                int key = (int) anAnswerKeySet;
+                                String val = answerMap.get(key).toLowerCase();
+                                String answerString = "{\"key\":\"" + key + "\",\"val\":\"" + val + "\"}";
+                                try {
+                                    JSONObject jsonObject = new JSONObject(answerString);
+                                    answer1.put(jsonObject);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            if (answerKeySet1.isEmpty()) {
+                                mSelfDialog = new SelfDialog(ExamDetailActivity.this);
+                                mSelfDialog.setTitle("考试时间到，您未答题");
+                                mSelfDialog.setMessage("是否重新答题");
+                                mSelfDialog.setYesOnclickListener("确认", new SelfDialog.onYesOnclickListener() {
+                                    @Override
+                                    public void onYesClick() {
+                                        countDownTimer.start();
+                                        mSelfDialog.dismiss();
+                                    }
+                                });
+                                mSelfDialog.setNoOnclickListener("取消", new SelfDialog.onNoOnclickListener() {
+                                    @Override
+                                    public void onNoClick() {
+                                        finish();
+                                        mSelfDialog.dismiss();
+                                    }
+                                });
+                                WindowManager.LayoutParams params = mSelfDialog.getWindow().getAttributes();
+                                params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
+                                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                mSelfDialog.getWindow().setAttributes(params);
+                                mSelfDialog.show();
                             } else {
-                                activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_orange);
-                                activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_orange);
-                            }
-                        } else {
-                            activity_exam_detail_imageview1.setImageResource(R.drawable.activity_exam_detail_left_gray);
-                            activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
-                        }
-                    }
+                                if (isConnected) {
+                                    //发送答案
+                                    Map<String, String> paramsMap2 = new HashMap<>();
+                                    paramsMap2.put("sid", sid);
+                                    paramsMap2.put("uid", uid);
+                                    paramsMap2.put("tid", tid);
+                                    paramsMap2.put("state", "1");
 
-                    @Override
-                    public void onPageScrollStateChanged(int state) {
-                    }
-                });
+                                    long timelest1 = countDownMillis / 1000;//剩余时间
+                                    long examtime1 = Long.parseLong(dataMap.get("answer_time"));//考试要求时间/秒
+                                    long result1 = examtime1 - timelest1;
 
-                //初始倒计时时间
-                activity_exam_detail_textview1.setText(hourString + ":" + minuteString + ":" + secondString);
-                countDownTimer = new CountDownTimer(mCount * 1000, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        //剩余的秒数
-                        countDownMillis = millisUntilFinished;
-                        //根据剩余秒数算出总分钟数
-                        long totalMinute = (millisUntilFinished / 1000) / 60;//剩余总分钟数
-                        long second = (millisUntilFinished / 1000) % 60;//剩余秒数
-                        long totalHour = totalMinute / 60;//剩余总小时数
-                        long minute = totalMinute % 60;//剩余分钟数
-
-                        String totalHourString = String.valueOf(totalHour);
-                        String minuteString = String.valueOf(minute);
-                        String secondString = String.valueOf(second);
-
-                        //处理显示2位数字的文字
-                        if (totalHour / 10 == 0) {
-                            totalHourString = "0" + totalHour;
-                        }
-                        if (minute / 10 == 0) {
-                            minuteString = "0" + minute;
-                        }
-                        if (second / 10 == 0) {
-                            secondString = "0" + second;
-                        }
-                        activity_exam_detail_textview1.setText(totalHourString + ":" + minuteString + ":" + secondString);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        activity_exam_detail_textview1.setText("考试时间到");
-                        //强制提交
-                        //构建答案JSON
-                        Set<String> answerKeySet1 = answerMap.keySet();
-                        JSONArray answer1 = new JSONArray();
-                        for (Object anAnswerKeySet : answerKeySet1) {
-                            String key = (String) anAnswerKeySet;
-                            String val = answerMap.get(key).toLowerCase();
-                            String answerString = "{\"key\":\"" + key + "\",\"val\":\"" + val + "\"}";
-                            try {
-                                JSONObject jsonObject = new JSONObject(answerString);
-                                answer1.put(jsonObject);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                    paramsMap2.put("times", result1 + "");
+                                    paramsMap2.put("answers", answer1.toString());
+                                    RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest2, paramsMap2);//提交
+                                } else {
+                                    if (mSelfDialog2 == null) {
+                                        mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
+                                        mSelfDialog2.setTitle("温馨提示");
+                                        mSelfDialog2.setMessage("当前无网络！答题记录将保存到本地");
+                                        mSelfDialog2.setYesOnclickListener("确认", new SelfDialog2.onYesOnclickListener() {
+                                            @Override
+                                            public void onYesClick() {
+                                                finish();
+                                            }
+                                        });
+                                        WindowManager.LayoutParams params = mSelfDialog2.getWindow().getAttributes();
+                                        params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
+                                        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                        mSelfDialog2.getWindow().setAttributes(params);
+                                    }
+                                    mSelfDialog2.show();
+                                }
                             }
                         }
-                        if (answerKeySet1.isEmpty()) {
-                            //TODO building
-                            mSelfDialog = new SelfDialog(ExamDetailActivity.this);
-                            mSelfDialog.setTitle("考试时间到，您未答题");
-                            mSelfDialog.setMessage("是否重新答题");
-                            mSelfDialog.setYesOnclickListener("确认", new SelfDialog.onYesOnclickListener() {
-                                @Override
-                                public void onYesClick() {
-                                    countDownTimer.start();
-                                    mSelfDialog.dismiss();
-                                }
-                            });
-                            mSelfDialog.setNoOnclickListener("取消", new SelfDialog.onNoOnclickListener() {
-                                @Override
-                                public void onNoClick() {
-                                    finish();
-                                    mSelfDialog.dismiss();
-                                }
-                            });
-                            WindowManager.LayoutParams params = mSelfDialog.getWindow().getAttributes();
-                            params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
-                            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                            mSelfDialog.getWindow().setAttributes(params);
-                            mSelfDialog.show();
-                            //TODO building
-                        } else {
-                            if (isConnected) {
-                                //发送答案
-                                Map<String, String> paramsMap2 = new HashMap<>();
-                                paramsMap2.put("sid", sid);
-                                paramsMap2.put("uid", uid);
-                                paramsMap2.put("tid", tid);
-                                paramsMap2.put("state", "1");
-
-                                long timelest1 = countDownMillis / 1000;//剩余时间
-                                long examtime1 = Long.parseLong(dataMap.get("answer_time"));//考试要求时间/秒
-                                long result1 = examtime1 - timelest1;
-
-                                paramsMap2.put("times", result1 + "");
-                                paramsMap2.put("answers", answer1.toString());
-                                RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest2, paramsMap2);//提交
-                            } else {
-                                if (mSelfDialog2 == null) {
-                                    mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
-                                    mSelfDialog2.setTitle("温馨提示");
-                                    mSelfDialog2.setMessage("当前无网络！答题记录将保存到本地");
-                                    mSelfDialog2.setYesOnclickListener("确认", new SelfDialog2.onYesOnclickListener() {
-                                        @Override
-                                        public void onYesClick() {
-                                            finish();
-                                        }
-                                    });
-                                    WindowManager.LayoutParams params = mSelfDialog2.getWindow().getAttributes();
-                                    params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
-                                    params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                                    mSelfDialog2.getWindow().setAttributes(params);
-                                }
-                                mSelfDialog2.show();
-                            }
-
-                        }
-
+                    }.start();//开始计时
+                } else if (dataObject.has("short")) {//简答题临时对策
+                    Toast.makeText(this, "请到PC端答题~", Toast.LENGTH_SHORT).show();
+//                    activity_exam_detail_textview2
+//                            activity_exam_detail_textview3
+                    if (activity_exam_detail_textview2 != null) {
+                        activity_exam_detail_textview2.setClickable(false);
                     }
-                }.start();//开始计时
+                    if (activity_exam_detail_textview3 != null) {
+                        activity_exam_detail_textview3.setClickable(false);
+                    }
+                    if (activity_exam_detail_imageview2 != null) {
+                        activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                    }
+                } else { //论文题没有标签，临时处理
+                    Toast.makeText(this, "请到PC端答题~", Toast.LENGTH_SHORT).show();
+//                    activity_exam_detail_textview2
+//                            activity_exam_detail_textview3
+                    if (activity_exam_detail_textview2 != null) {
+                        activity_exam_detail_textview2.setClickable(false);
+                    }
+                    if (activity_exam_detail_textview3 != null) {
+                        activity_exam_detail_textview3.setClickable(false);
+                    }
+                    if (activity_exam_detail_imageview2 != null) {
+                        activity_exam_detail_imageview2.setImageResource(R.drawable.activity_exam_detail_right_gray);
+                    }
+                }
             } else {
                 haveData = false;
                 Toast.makeText(this, jsonObject.get("msg").toString(), Toast.LENGTH_SHORT).show();
+            }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
             }
         } catch (JSONException e) {
             e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
-            }
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
+                progressDialog = null;
             }
         }
-
-        //TODO 结束解析
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_detail);
-
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+            SharedPreferences spf = getSharedPreferences("my_guide_record", Context.MODE_PRIVATE);
+            boolean hasShown = spf.getBoolean("has_shown_exam", false);
+            root = getWindow().getDecorView().findViewById(R.id.root);
+            if (!hasShown) {
+                MyGuideView myGuideView = new MyGuideView(this);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                root.addView(myGuideView, params);
+            }
+            //记录下来
+            SharedPreferences.Editor editor = spf.edit();
+            editor.putBoolean("has_shown_exam", true);
+            editor.apply();
+
             handler();
             Intent intent = getIntent();
             sid = intent.getStringExtra("sid");
@@ -551,7 +590,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
         paramsMap.put("sid", sid);
         paramsMap.put("uid", uid);
         paramsMap.put("tid", tid);
-
+        Log.i("190308", "sid:" + sid + ",uid:" + uid + ",tid:" + tid);
         RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpDetail", handleNetwork, paramsMap);
     }
 
@@ -568,10 +607,10 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
         activity_exam_detail_imageview1 = findViewById(R.id.activity_exam_detail_imageview1);
         activity_exam_detail_imageview2 = findViewById(R.id.activity_exam_detail_imageview2);
         //保存不提交
-        TextView activity_exam_detail_textview2 = findViewById(R.id.activity_exam_detail_textview2);
+        activity_exam_detail_textview2 = findViewById(R.id.activity_exam_detail_textview2);
         activity_exam_detail_textview2.setOnClickListener(this);
         //提交
-        TextView activity_exam_detail_textview3 = findViewById(R.id.activity_exam_detail_textview3);
+        activity_exam_detail_textview3 = findViewById(R.id.activity_exam_detail_textview3);
         activity_exam_detail_textview3.setOnClickListener(this);
         activity_exam_detail_viewpager1 = findViewById(R.id.activity_exam_detail_viewpager1);
         //左箭头的布局
@@ -610,10 +649,10 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.activity_exam_detail_textview2://保存不提交
                 if (haveData) {//如果购买了试卷，才能提交，否则只提示
                     //构建答案JSON
-                    Set<String> answerKeySet = answerMap.keySet();
+                    Set<Integer> answerKeySet = answerMap.keySet();
                     JSONArray answer = new JSONArray();
                     for (Object anAnswerKeySet : answerKeySet) {
-                        String key = (String) anAnswerKeySet;
+                        int key = (int) anAnswerKeySet;
                         String val = answerMap.get(key).toLowerCase();
                         String answerString = "{\"key\":\"" + key + "\",\"val\":\"" + val + "\"}";
                         try {
@@ -636,6 +675,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
 
                     paramsMap.put("times", result + "");
                     paramsMap.put("answers", answer.toString());
+                    Util.d("052801", "times:" + result);
                     RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest1, paramsMap);//保存不提交
                 } else {
                     Toast.makeText(this, "您未购买该试卷所在的课程或题库~", Toast.LENGTH_SHORT).show();
@@ -652,15 +692,14 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.activity_exam_detail_imageview3://答题卡
                 mList.clear();
                 for (int i = 0; i < listsList.size(); i++) {
-                    String no_id = listsList.get(i).get("no_id");
+                    int no_id = Integer.parseInt(listsList.get(i).get("no_id"));
                     if (answerMap.get(no_id) == null) {
                         mList.add(false);
                     } else {
                         mList.add(true);
                     }
                 }
-
-                View view = LayoutInflater.from(this).inflate(R.layout.answer_card, null);
+                View view = LayoutInflater.from(this).inflate(R.layout.answer_card, root, false);
                 RecyclerView answercard_recyclerview = view.findViewById(R.id.answercard_recyclerview);
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 5, LinearLayoutManager.VERTICAL, false);
                 GridItemDecoration divider = new GridItemDecoration.Builder(this)
@@ -705,7 +744,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
         if (haveData) {//如果购买了试卷，才能提交，否则只提示
             if (isConnected) {
                 //构建提交Dialog
-                View v = LayoutInflater.from(this).inflate(R.layout.dialog_call, null);//复用call布局
+                View v = LayoutInflater.from(this).inflate(R.layout.dialog_call, root, false);//复用call布局
                 TextView dialog_call_textview1 = v.findViewById(R.id.dialog_call_textview1);
                 TextView dialog_call_textview2 = v.findViewById(R.id.dialog_call_textview2);
 
@@ -737,10 +776,10 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                                         break;
                                     case R.id.dialog_call_confirm://确定提交
                                         //构建答案JSON
-                                        Set<String> answerKeySet1 = answerMap.keySet();
+                                        Set<Integer> answerKeySet1 = answerMap.keySet();
                                         JSONArray answer1 = new JSONArray();
                                         for (Object anAnswerKeySet : answerKeySet1) {
-                                            String key = (String) anAnswerKeySet;
+                                            int key = (int) anAnswerKeySet;
                                             String val = answerMap.get(key).toLowerCase();
                                             String answerString = "{\"key\":\"" + key + "\",\"val\":\"" + val + "\"}";
                                             try {
@@ -813,7 +852,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    public Map<String, String> getAnswerMap() {
+    public Map<Integer, String> getAnswerMap() {
         return answerMap;
     }
 

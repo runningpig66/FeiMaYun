@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -28,7 +29,7 @@ public class BaseActivity extends AppCompatActivity implements NetStateChangeObs
             finish();
         } else {
             //知晓当前页面属于哪个活动
-//            Log.d("BaseActivity", getClass().getSimpleName());
+            Log.d("BaseActivity", getClass().getSimpleName());
 
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 

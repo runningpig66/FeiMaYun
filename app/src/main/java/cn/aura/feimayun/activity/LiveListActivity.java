@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -80,6 +81,7 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
                         dataMap.put("data_id", dataObject.getString("data_id"));
                         dataMap.put("liveStatus", dataObject.getString("liveStatus"));
                         dataMap.put("stat", dataObject.getString("stat"));
+                        dataMap.put("tea_name", dataObject.getString("tea_name"));
                         dataList.add(dataMap);
                     }
                 }
@@ -97,9 +99,11 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
                         activity_livelist_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                int headerViewsCount = activity_livelist_listview.getHeaderViewsCount();
+                                int newPosition = position - headerViewsCount;
                                 Intent intent = new Intent(LiveListActivity.this, WatchActivity.class);
-                                intent.putExtra("data_id", dataList.get(position).get("id"));
-                                intent.putExtra("data_teach_type", dataList.get(position).get("teach_type"));
+                                intent.putExtra("data_id", dataList.get(newPosition).get("id"));
+                                intent.putExtra("data_teach_type", dataList.get(newPosition).get("teach_type"));
                                 startActivity(intent);
                             }
                         });
@@ -157,7 +161,7 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
             headtitle_textview.setText("直播列表");
 
             activity_livelist_listview = findViewById(R.id.activity_livelist_listview);
-
+            activity_livelist_listview.addHeaderView(new FrameLayout(this));
             Map<String, String> paramsMap = new HashMap<>();
             paramsMap.put("series_1", series_1);
             paramsMap.put("teach_type", "1");

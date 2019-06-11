@@ -2,6 +2,7 @@ package cn.aura.feimayun.util;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -81,12 +82,16 @@ public class Util {
 
     //密码验证
     public static boolean isPassword(String pwd) {
-        if (pwd.matches(REGEX_PASSWORD)) {
-
-        } else {
-            Toast.makeText(MyApplication.context, "密码长度为6-16位不能包含特殊字符", Toast.LENGTH_SHORT).show();
+        if (pwd.length() < 6 || pwd.length() > 16) {
+            Toast.makeText(MyApplication.context, "密码长度为6-16位", Toast.LENGTH_SHORT).show();
             return false;
         }
+//        if (pwd.matches(REGEX_PASSWORD)) {
+//
+//        } else {
+//            Toast.makeText(MyApplication.context, "密码长度为6-16位不能包含特殊字符", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
         return true;
     }
 
@@ -97,6 +102,10 @@ public class Util {
             element.attr("width", "100%").attr("height", "auto");
         }
         return doc.toString();
+    }
+
+    public static boolean isOnMainThread() {
+        return Looper.myLooper() == Looper.getMainLooper();
     }
 
 }

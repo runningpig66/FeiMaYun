@@ -50,6 +50,7 @@ import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.ExamListActivity;
 import cn.aura.feimayun.activity.LiveListActivity;
 import cn.aura.feimayun.activity.MainActivity;
+import cn.aura.feimayun.activity.QuestionListActivity;
 import cn.aura.feimayun.adapter.Fragment_home_page_viewpager2_Adapter;
 import cn.aura.feimayun.adapter.P4_ListView_Adapter;
 import cn.aura.feimayun.bean.List_Bean;
@@ -70,7 +71,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     //判断下载是否成功
     public boolean isRequestSuccess = false;
     private SmartRefreshLayout homepage_refreshLayout;
-    private List<String> dataName;//存放一级name
+    private List<String> dataName = new ArrayList<>();//存放一级name
     private ProgressDialog progressDialog;
     private MainActivity mainActivity;
     //存放后台解析后的data标签的JSON数据
@@ -91,6 +92,8 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     //存放圆点图片
     private ImageView[] pointImageviews;
     private Banner banner;
+    private ListView p_4_listView;
+    private View staticview1, staticview2, staticview3;
 
     @SuppressLint("HandlerLeak")
     public void handler() {
@@ -102,6 +105,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(mainActivity, "请检查网络连接_Error41", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                     homepage_refreshLayout.finishRefresh(false);
                     isRequestSuccess = false;
@@ -159,10 +163,14 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     //初始化布局和handler
     public void initView() {
         banner = view.findViewById(R.id.banner);
+        p_4_listView = view.findViewById(R.id.p_4_listView);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) banner.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = (int) (ScreenUtils.getWidth(mainActivity) * 0.5);
         banner.setLayoutParams(params);
+
+        fragment_home_page_viewpager2 = view.findViewById(R.id.fragment_home_page_viewpager2);
+        fragment_home_page_layout1 = view.findViewById(R.id.fragment_home_page_layout1);
 
         LinearLayout live = view.findViewById(R.id.live);
         live.setOnClickListener(this);
@@ -172,9 +180,9 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
         answer.setOnClickListener(this);
         LinearLayout more = view.findViewById(R.id.more);
         more.setOnClickListener(this);
-
-        fragment_home_page_viewpager2 = view.findViewById(R.id.fragment_home_page_viewpager2);
-        fragment_home_page_layout1 = view.findViewById(R.id.fragment_home_page_layout1);
+        staticview1 = view.findViewById(R.id.staticview1);
+        staticview2 = view.findViewById(R.id.staticview2);
+        staticview3 = view.findViewById(R.id.staticview3);
 
         if (isFirstIn) {
             progressDialog = new ProgressDialog(mainActivity);
@@ -238,48 +246,47 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 startActivity(intentExamListActivity);
                 break;
             case R.id.answer://答疑中心
-                Toast.makeText(mainActivity, "敬请期待", Toast.LENGTH_SHORT).show();
-
-//                new TListDialog.Builder(mainActivity.getSupportFragmentManager())
-//                        .setScreenWidthAspect(mainActivity, 0.8f)
-//                        .setScreenHeightAspect(mainActivity, 0.6f)
-//                        .setListLayoutRes(R.layout.dialog_live, LinearLayoutManager.VERTICAL)
-//                        .setGravity(Gravity.CENTER)
-//                        .setCancelOutside(true)
-//                        .setAdapter(new TBaseAdapter<String>(R.layout.dialog_live_textviewitem, dataName) {
-//                            @Override
-//                            protected void onBind(BindViewHolder holder, int position, String s) {
-//                                holder.setText(R.id.tv, s);
-//                            }
-//                        })
-//                        .setOnAdapterItemClickListener(new TBaseAdapter.OnAdapterItemClickListener<String>() {
-//                            @Override
-//                            public void onItemClick(BindViewHolder holder, int position, String item, TDialog tDialog) {
-//                                Intent intent = new Intent(mainActivity, QuestionListActivity.class);
-//                                List_Bean list_beanId = new List_Bean();
-//                                list_beanId.setListString(lmListId);
-//                                List_Bean list_beanName = new List_Bean();
-//                                list_beanName.setListString(lmListName);
-//                                intent.putExtra("list_beanId", list_beanId);
-//                                intent.putExtra("list_beanName", list_beanName);
-//                                intent.putExtra("position", position);
-//                                startActivity(intent);
-//                                tDialog.dismiss();
-//                            }
-//                        })
-//                        .addOnClickListener(R.id.dialog_live_imageview1)
-//                        .setOnViewClickListener(new OnViewClickListener() {
-//                            @Override
-//                            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-//                                switch (view.getId()) {
-//                                    case R.id.dialog_live_imageview1:
-//                                        tDialog.dismiss();
-//                                        break;
-//                                }
-//                            }
-//                        })
-//                        .create()
-//                        .show();
+//                Toast.makeText(mainActivity, "敬请期待", Toast.LENGTH_SHORT).show();
+                new TListDialog.Builder(mainActivity.getSupportFragmentManager())
+                        .setScreenWidthAspect(mainActivity, 0.8f)
+                        .setScreenHeightAspect(mainActivity, 0.6f)
+                        .setListLayoutRes(R.layout.dialog_live, LinearLayoutManager.VERTICAL)
+                        .setGravity(Gravity.CENTER)
+                        .setCancelOutside(true)
+                        .setAdapter(new TBaseAdapter<String>(R.layout.dialog_live_textviewitem, dataName) {
+                            @Override
+                            protected void onBind(BindViewHolder holder, int position, String s) {
+                                holder.setText(R.id.tv, s);
+                            }
+                        })
+                        .setOnAdapterItemClickListener(new TBaseAdapter.OnAdapterItemClickListener<String>() {
+                            @Override
+                            public void onItemClick(BindViewHolder holder, int position, String item, TDialog tDialog) {
+                                Intent intent = new Intent(mainActivity, QuestionListActivity.class);
+                                List_Bean list_beanId = new List_Bean();
+                                list_beanId.setListString(lmListId);
+                                List_Bean list_beanName = new List_Bean();
+                                list_beanName.setListString(lmListName);
+                                intent.putExtra("list_beanId", list_beanId);
+                                intent.putExtra("list_beanName", list_beanName);
+                                intent.putExtra("position", position);
+                                startActivity(intent);
+                                tDialog.dismiss();
+                            }
+                        })
+                        .addOnClickListener(R.id.dialog_live_imageview1)
+                        .setOnViewClickListener(new OnViewClickListener() {
+                            @Override
+                            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                                switch (view.getId()) {
+                                    case R.id.dialog_live_imageview1:
+                                        tDialog.dismiss();
+                                        break;
+                                }
+                            }
+                        })
+                        .create()
+                        .show();
                 break;
             case R.id.more://敬请期待
                 Toast.makeText(mainActivity, "敬请期待", Toast.LENGTH_SHORT).show();
@@ -290,7 +297,6 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     //初始化底部ListView
     private void initListView() {
         //底部ListView的相关变量
-        ListView p_4_listView = view.findViewById(R.id.p_4_listView);
         P4_ListView_Adapter adapter = new P4_ListView_Adapter(mainActivity, data_mapList);
         p_4_listView.setAdapter(adapter);
         //固定ListView的高度和数量
@@ -409,6 +415,13 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
             pointImageviews[i] = imageView;
             fragment_home_page_layout1.addView(point_panel);
         }
+
+        staticview1.setVisibility(View.VISIBLE);
+        staticview2.setVisibility(View.VISIBLE);
+        staticview3.setVisibility(View.VISIBLE);
+
+        //初始化ListView
+        initListView();
     }
 
     //解析后台返回的JSON数据,同时调用本碎片中各个页面加载方法，传入页面所需的数据
@@ -434,7 +447,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 data_mapList = new ArrayList<>();
                 lmListId = new ArrayList<>();
                 lmListName = new ArrayList<>();
-                dataName = new ArrayList<>();
+                dataName.clear();
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject item = data.getJSONObject(i);
                     Map<String, String> map = new HashMap<>();
@@ -490,19 +503,18 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 initViewPager();
                 //初始化GridView
                 initViewPager2();
-                //初始化ListView
-                initListView();
                 homepage_refreshLayout.finishRefresh(true);
+            }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
             }
         } catch (JSONException e) {
             e.printStackTrace();
             homepage_refreshLayout.finishRefresh(false);
             if (progressDialog != null) {
                 progressDialog.dismiss();
-            }
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
+                progressDialog = null;
             }
         }
     }

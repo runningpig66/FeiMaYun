@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--我的学习item-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -46,21 +47,29 @@
                 android:textSize="18sp" />
         </RelativeLayout>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/activity_information_imageView2"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+        <com.gcssloop.widget.RCRelativeLayout
+            android:id="@+id/rcLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/activity_information_view2"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/data_head"
-            app:civ_border_color="#ffffff"
-            app:civ_border_width="1dp" />
+            app:round_corner="35dp"
+            app:stroke_color="#ffffff"
+            app:stroke_width="1dp">
+
+            <ImageView
+                android:id="@+id/activity_information_imageView2"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/data_head" />
+        </com.gcssloop.widget.RCRelativeLayout>
 
         <TextView
             android:id="@+id/activity_information_textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/activity_information_imageView2"
+            android:layout_below="@id/rcLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="用户名"

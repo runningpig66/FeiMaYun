@@ -57,19 +57,23 @@
                 </LinearLayout>
                 <!--灰色的分割粗线-->
                 <View
+                    android:id="@+id/staticview1"
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#f0f0f0" />
+                    android:background="#f0f0f0"
+                    android:visibility="gone" />
                 <!--固定布局 P3页面-->
                 <LinearLayout
+                    android:id="@+id/staticview2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:orientation="horizontal"
                     android:paddingTop="15dp"
-                    android:paddingBottom="15dp">
+                    android:paddingBottom="15dp"
+                    android:visibility="gone">
                     <!--直播中心-->
                     <LinearLayout
                         android:id="@+id/live"
@@ -184,16 +188,19 @@
                 </LinearLayout>
                 <!--灰色的分割粗线-->
                 <View
+                    android:id="@+id/staticview3"
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:layout_marginTop="5dp"
-                    android:background="#f0f0f0" />
+                    android:background="#f0f0f0"
+                    android:visibility="gone" />
                 <!--P4页：下方的ListView，它的子项包含GridView-->
                 <ListView
                     android:id="@+id/p_4_listView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@null" />
+                    android:divider="@null"
+                    android:listSelector="@android:color/transparent" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

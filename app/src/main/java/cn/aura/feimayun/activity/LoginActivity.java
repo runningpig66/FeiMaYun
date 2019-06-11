@@ -19,10 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vhall.business.VhallSDK;
-import com.vhall.business.data.UserInfo;
-import com.vhall.business.data.source.UserInfoDataSource;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -105,7 +101,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             countDownTimer = new CountDownTimer(mCount * 1000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    activity_login_textview3.setText("请稍后(" + millisUntilFinished / 1000 + "秒)");
+                    activity_login_textview3.setText("请稍候(" + millisUntilFinished / 1000 + "秒)");
                 }
 
                 @Override
@@ -230,24 +226,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 editor.putString("apud", apud);
                 editor.putString("aptk", aptk);
                 editor.apply();
-
+                //由于用户、流量2种vhall_account的类型只能在play和detail中获取到，这里只能取消登录vhall
 //                //登录聊天账号
-                String uid = Util.getUid();
-                //登录微吼账号，用于聊天
-                String username = "wxh" + uid;
-                String userpass = "1q2w3e4r5t6y7u8i9o";
-
-                VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
-                    @Override
-                    public void onSuccess(UserInfo userInfo) {
-//                        Toast.makeText(MyApplication.context, "登录聊天服务器成功login", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(int errorCode, String reason) {
-//                        Toast.makeText(MyApplication.context, "登录聊天服务器失败login", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                String uid = Util.getUid();
+//                //登录微吼账号，用于聊天
+//                String username = "wxh" + uid;
+//                String userpass = "1q2w3e4r5t6y7u8i9o";
+//
+//                VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
+//                    @Override
+//                    public void onSuccess(UserInfo userInfo) {
+////                        Toast.makeText(MyApplication.context, "登录聊天服务器成功login", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onError(int errorCode, String reason) {
+////                        Toast.makeText(MyApplication.context, "登录聊天服务器失败login", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
                 //向消息中心发送登录成功的信息，刷新消息界面
                 MessageCenterFragment.handleLogin.obtainMessage().sendToTarget();

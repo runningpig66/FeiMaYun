@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +34,10 @@ import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.AnalysisActivity;
 import cn.aura.feimayun.activity.PhotoViewActivity;
 import cn.aura.feimayun.adapter.AnalysisActivity_ViewPager1_Fragment_ListView1_Adapter;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.util.ScreenUtils;
+import cn.aura.feimayun.util.Util;
 import cn.jzvd.Jzvd;
 import cn.jzvd.JzvdStd;
 
@@ -90,13 +93,10 @@ public class AnalysisActivity_ViewPager1_Fragment extends Fragment {
                 }
             }
         }
-
     }
 
     private void initView(View view) {
-
         videoLayout = view.findViewById(R.id.videoLayout);
-
 
         if (listsMap.get("video") == null || listsMap.get("video").equals("")) {
             videoLayout.setVisibility(View.GONE);
@@ -133,8 +133,18 @@ public class AnalysisActivity_ViewPager1_Fragment extends Fragment {
         params.height = getListviewHeight(fragment_analysisactivity_viewpager1_listview1);
         fragment_analysisactivity_viewpager1_listview1.setLayoutParams(params);
         fragment_analysisactivity_viewpager1_textview1.setText("正确答案:" + listsMap.get("right"));
-        fragment_analysisactivity_viewpager1_textview2.setText("您的答案:" + listsMap.get("my_ans"));
-        fragment_analysisactivity_viewpager1_textview3.setText(listsMap.get("analysis"));
+        String my_ans = listsMap.get("my_ans");
+        if (TextUtils.isEmpty(my_ans)) {
+            my_ans = "您未作答";
+            fragment_analysisactivity_viewpager1_textview2.setText(my_ans);
+        } else {
+            fragment_analysisactivity_viewpager1_textview2.setText("您的答案:" + my_ans);
+        }
+        if (TextUtils.isEmpty(listsMap.get("analysis"))) {
+            fragment_analysisactivity_viewpager1_textview3.setText("暂无解析");
+        } else {
+            fragment_analysisactivity_viewpager1_textview3.setText(listsMap.get("analysis"));
+        }
 
         //初始化解析图片listview2
         if (ana_imgList == null) {
@@ -145,7 +155,9 @@ public class AnalysisActivity_ViewPager1_Fragment extends Fragment {
             LayoutInflater inflater = LayoutInflater.from(activity);
             for (int i = 0; i < ana_imgList.size(); i++) {
                 ImageView listview_imageview_item_imageview1 = (ImageView) inflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                Glide.with(activity).load(ana_imgList.get(i)).into(listview_imageview_item_imageview1);
+                if (Util.isOnMainThread()) {
+                    Glide.with(MyApplication.context).load(ana_imgList.get(i)).into(listview_imageview_item_imageview1);
+                }
                 LinearLayout linearLayout = new LinearLayout(activity);
                 LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemHeight);
                 linearLayout.addView(listview_imageview_item_imageview1, params2);

@@ -26,7 +26,7 @@ public class Watch_ViewPager_Adapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return fragments.size();
+        return fragments == null ? 0 : fragments.size();
     }
 
     @Nullable

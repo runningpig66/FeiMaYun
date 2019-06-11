@@ -1,13 +1,11 @@
 package cn.aura.feimayun.vhall.watch;
 
 import android.app.Activity;
-import android.widget.SeekBar;
 
 import com.vhall.business.MessageServer;
-import com.vhall.business.data.Survey;
+import com.vhall.business.WatchPlayback;
 import com.vhall.business.widget.ContainerLayout;
 
-import java.util.HashMap;
 import java.util.List;
 
 import cn.aura.feimayun.vhall.BasePresenter;
@@ -28,44 +26,44 @@ public class WatchContract {
         void showChatView(boolean emoji, InputUser user, int limit);
 
         //显示公告
-        void showNotice(String content);
+//        void showNotice(String content);
 
         //隐藏公告
-        void dismissNotice();
+//        void dismissNotice();
 
         //显示签到框
-        void showSignIn(String signId, int startTime);
+//        void showSignIn(String signId, int startTime);
 
         //隐藏签到框
-        void dismissSignIn();
+//        void dismissSignIn();
 
         //显示问卷
-        void showSurvey(Survey survey);
+//        void showSurvey(Survey survey);
 
         //隐藏问卷
-        void dismissSurvey();
+//        void dismissSurvey();
 
         //横竖屏切换
         int changeOrientation();
 
         //显示toast
-        void showToast(String toast);
+//        void showToast(String toast);
 
-        void showToast(int toast);
+//        void showToast(int toast);
 
         //获取当前activity实例
         Activity getActivity();
 
         //显示抽奖
-        void showLottery(final MessageServer.MsgInfo messageInfo);
+//        void showLottery(final MessageServer.MsgInfo messageInfo);
 
-        void enterInteractive(); // 进入互动
+//        void enterInteractive(); // 进入互动
         // 投屏使用
         // void showDevices();
         // 投屏使用
         // void dismissDevices();
 
-        void refreshHand(int second);
+//        void refreshHand(int second);
 
     }
 
@@ -80,35 +78,30 @@ public class WatchContract {
         void paintPPT(String key, List<MessageServer.MsgInfo> msgInfos);
     }
 
-    interface DetailView extends BaseView<BasePresenter> {
-    }
-
     interface LiveView extends BaseView<LivePresenter> {
+
+        WatchLiveFragment getLiveFragment();
 
         ContainerLayout getWatchLayout();
 
-        void setPlayPicture(boolean state);
+//        void setPlayPicture(boolean state);
 
-        void setDownSpeed(String text);
+//        void setDownSpeed(String text);
 
         void showLoading(boolean isShow);
 
-        void showRadioButton(HashMap map);
+//        void showRadioButton(HashMap map);
 
-        void setScaleButtonText(int type);
+//        void setScaleButtonText(int type);
 
-        void addDanmu(String danmu);
+//        void addDanmu(String danmu);
 
-        void reFreshView();
+//        void reFreshView();
 
     }
 
 
     interface PlaybackView extends BaseView<PlaybackPresenter> {
-
-        void setPlayIcon(boolean isStop);
-
-        void setProgressLabel(String currentTime, String max);
 
         void setSeekbarMax(int max);
 
@@ -118,15 +111,11 @@ public class WatchContract {
 
         ContainerLayout getContainer();
 
-        void setScaleTypeText(int type);
-
-        void setQuality(List<String> qualities);
-
-        void setQualityChecked(String dpi);
-
     }
 
     interface PlaybackPresenter extends WatchPresenter {
+        WatchPlayback getWatchPlayback();
+
         void onFragmentDestory();
 
         void onPlayClick();
@@ -137,9 +126,9 @@ public class WatchContract {
 
         //void stopPlay();
 
-        void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser);
+//        void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser);
 
-        void onStopTrackingTouch(SeekBar seekBar);
+        void onStopTrackingTouch(int position);
 
         int changeScaleType();
 
@@ -180,18 +169,18 @@ public class WatchContract {
 
         int getScaleType();
 
-        void setHeadTracker(); // 设置陀螺仪
+//        void setHeadTracker(); // 设置陀螺仪
 
-        boolean isHeadTracker();  // 当前的陀螺仪
+//        boolean isHeadTracker();  // 当前的陀螺仪
     }
 
     interface WatchPresenter extends BasePresenter {
 
-        void signIn(String signId);
+//        void signIn(String signId);
 
-        void submitSurvey(Survey survey, String result);
+//        void submitSurvey(Survey survey, String result);
 
-        void onRaiseHand(); // 举手
+//        void onRaiseHand(); // 举手
 
         // void dlnaPost(DeviceDisplay deviceDisplay, AndroidUpnpService service);
 

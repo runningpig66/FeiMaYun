@@ -16,15 +16,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.PhotoViewActivity;
 import cn.aura.feimayun.activity.QuestionReplyActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.bean.QuestionDetailBean;
 import cn.aura.feimayun.util.ScreenUtils;
+import cn.aura.feimayun.util.Util;
 
 public class QuestionDetailRvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_ONE = 1;
@@ -121,7 +124,11 @@ public class QuestionDetailRvAdapter extends RecyclerView.Adapter<RecyclerView.V
                 rvitem0ji_textview2.setVisibility(View.VISIBLE);
                 rvitem0ji_textview2.setText(dataBean.getContent_font());
             }
-            Glide.with(mContext).load(dataBean.getAvater()).into(rvitem0ji_imageview1);
+            if (Util.isOnMainThread()) {
+                RequestOptions options = new RequestOptions().fitCenter();
+                Glide.with(MyApplication.context).load(dataBean.getAvater()).apply(options).into(rvitem0ji_imageview1);
+            }
+
             rvitem0ji_textview3.setText(dataBean.getNick_name());
             rvitem0ji_textview4.setText(dataBean.getCreate_time());
             rvitem0ji_textview5.setText("回复");
@@ -142,7 +149,7 @@ public class QuestionDetailRvAdapter extends RecyclerView.Adapter<RecyclerView.V
                     rvitem0ji_layout1.removeAllViews();
                     for (int i = 0; i < content_img.size(); i++) {
                         ImageView imageView = (ImageView) mInflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                        Glide.with(mContext).load(content_img.get(i)).into(imageView);
+                        Glide.with(MyApplication.context).load(content_img.get(i)).into(imageView);
                         LinearLayout linearLayout = new LinearLayout(mContext);
                         int itemWidth = (mScreenWidth - ScreenUtils.dp2px(mContext, 84)) / 4;
                         linearLayout.addView(imageView, itemWidth, itemWidth);
@@ -228,7 +235,7 @@ public class QuestionDetailRvAdapter extends RecyclerView.Adapter<RecyclerView.V
                     rvitem1ji_layout1.removeAllViews();
                     for (int i = 0; i < content_img.size(); i++) {
                         ImageView imageView = (ImageView) mInflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                        Glide.with(mContext).load(content_img.get(i)).into(imageView);
+                        Glide.with(MyApplication.context).load(content_img.get(i)).into(imageView);
                         LinearLayout linearLayout = new LinearLayout(mContext);
                         int itemWidth = (mScreenWidth - ScreenUtils.dp2px(mContext, 65)) / 4;
                         linearLayout.addView(imageView, itemWidth, itemWidth);
@@ -313,7 +320,7 @@ public class QuestionDetailRvAdapter extends RecyclerView.Adapter<RecyclerView.V
                             rvitem2ji_layout1.removeAllViews();
                             for (int j = 0; j < content_img.size(); j++) {
                                 ImageView imageView = (ImageView) mInflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                                Glide.with(mContext).load(content_img.get(j)).into(imageView);
+                                Glide.with(MyApplication.context).load(content_img.get(j)).into(imageView);
                                 LinearLayout linearLayout = new LinearLayout(mContext);
                                 int itemWidth = (mScreenWidth - ScreenUtils.dp2px(mContext, 100)) / 4;
                                 linearLayout.addView(imageView, itemWidth, itemWidth);
@@ -407,7 +414,7 @@ public class QuestionDetailRvAdapter extends RecyclerView.Adapter<RecyclerView.V
                                     rvitem3ji_layout1.removeAllViews();
                                     for (int k = 0; k < content_img.size(); k++) {
                                         ImageView imageView = (ImageView) mInflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                                        Glide.with(mContext).load(content_img.get(k)).into(imageView);
+                                        Glide.with(MyApplication.context).load(content_img.get(k)).into(imageView);
                                         LinearLayout linearLayout = new LinearLayout(mContext);
                                         int itemWidth = (mScreenWidth - ScreenUtils.dp2px(mContext, 125)) / 4;
                                         linearLayout.addView(imageView, itemWidth, itemWidth);

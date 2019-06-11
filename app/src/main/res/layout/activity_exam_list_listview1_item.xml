@@ -27,18 +27,19 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/activity_exam_list_listview1_item_imageview1"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="#eee"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/activity_exam_list_listview1_item_textview2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:textSize="14sp" />
 
     <View

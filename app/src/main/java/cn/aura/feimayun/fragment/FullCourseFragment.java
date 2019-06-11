@@ -1,6 +1,7 @@
 package cn.aura.feimayun.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,8 +39,10 @@ import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.CourseListActivity;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.adapter.FullCourse_ListView_Adapter;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.StaticUtil;
+import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.view.FlowLayout;
 
 
@@ -65,6 +68,8 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
     private LinearLayout data_panel;
     //右上方的banner图片
     private ImageView banner_img;
+    private LayoutInflater inflater;
+    private int data_position = -1;
 
     @SuppressLint("HandlerLeak")
     public void handler() {
@@ -92,15 +97,19 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
                 switch (msg.what) {
                     case StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE:
                         Bundle bundle = (Bundle) msg.obj;
-                        int data_position = Integer.parseInt(bundle.getString("data_position"));
-
-                        //根据id的不同，设置不同的按钮背景和对应的页面
-                        adapter.setPosition(data_position);
-                        adapter.notifyDataSetChanged();
-                        //listView滚动到对应项
-                        full_course_list.setSelection(data_position);
-                        //设置对应item的右侧视图
-                        setRightData(data_mapList, data_position);
+                        data_position = Integer.parseInt(bundle.getString("data_position"));
+                        //从其他页面跳转过来，要判断本页面是否网络加载成功
+                        if (isRequestSuccess) {
+                            //根据id的不同，设置不同的按钮背景和对应的页面
+                            adapter.setPosition(data_position);
+                            adapter.notifyDataSetChanged();
+                            //listView定位到对应项
+                            full_course_list.setSelection(data_position);
+                            //设置对应item的右侧视图
+                            setRightData(data_mapList, data_position);
+                        } else {
+                            initData();
+                        }
                         break;
                 }
             }
@@ -118,7 +127,15 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_full_course, container, false);
         initView();
+        initData();
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) context;
+        inflater = LayoutInflater.from(mainActivity);
     }
 
     public void initView() {
@@ -127,11 +144,11 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 initData();
+                data_position = 0;
                 mainActivity.getRequestSuccess();
             }
         });
 
-        mainActivity = (MainActivity) getActivity();
         full_course_list = view.findViewById(R.id.full_course_list);
         data_panel = view.findViewById(R.id.data_panel);
         banner_img = view.findViewById(R.id.banner_img);
@@ -141,8 +158,6 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
         //标题
         TextView headtitle_textview = view.findViewById(R.id.headtitle_textview);
         headtitle_textview.setText("全部分类");
-
-        initData();
     }
 
     public void initData() {
@@ -192,25 +207,41 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
     private void initListView(final List<Map<String, String>> data_mapList) {
         //得到后台的数据以后，初始化ListView
         adapter = new FullCourse_ListView_Adapter(mainActivity, data_mapList, R.layout.fullcourse_listview_item);
-        full_course_list.setAdapter(adapter);
-        full_course_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        full_course_list.post(new Runnable() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                adapter.setPosition(position);
-                adapter.notifyDataSetChanged();
-                //设置对应item的右侧视图
-                setRightData(data_mapList, position);
+            public void run() {
+                full_course_list.setAdapter(adapter);
+                full_course_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        adapter.setPosition(position);
+                        adapter.notifyDataSetChanged();
+                        //设置对应item的右侧视图
+                        setRightData(data_mapList, position);
+                    }
+                });
+                if (data_position != -1) {
+                    //根据id的不同，设置不同的按钮背景和对应的页面
+                    adapter.setPosition(data_position);
+                    adapter.notifyDataSetChanged();
+                    //listView定位到对应项（以防止列表条目数量过多时）
+                    full_course_list.setSelection(data_position);
+                    //设置对应item的右侧视图
+                    setRightData(data_mapList, data_position);
+                } else {
+                    //初始化没有点击设置item0
+                    setRightData(data_mapList, 0);
+                }
             }
         });
-        //初始化没有点击设置item0
-        setRightData(data_mapList, 0);
     }
 
     private void setRightData(List<Map<String, String>> data_mapList, int position) {
         data_panel.removeAllViews();
-        Glide.with(mainActivity).load(data_mapList.get(position).get("bg_img")).into(banner_img);
+        if (Util.isOnMainThread()) {
+            Glide.with(MyApplication.context).load(data_mapList.get(position).get("bg_img")).into(banner_img);
+        }
         String childrenJSON = data_mapList.get(position).get("children");
-        LayoutInflater inflater = LayoutInflater.from(mainActivity);
 
         if (!childrenJSON.equals("")) {
             try {
@@ -222,9 +253,9 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
                     View view_s = inflater.inflate(R.layout.fullcourse_rightdown_item, null);
                     TextView textView_s = view_s.findViewById(R.id.s_title);
                     textView_s.setText(jsonObject_s.getString("name"));
-                    textView_s.setTag(jsonObject_s.getString("id"));
+                    view_s.setTag(jsonObject_s.getString("id"));
                     //TODO 添加二级标题的点击事件
-                    textView_s.setOnClickListener(new View.OnClickListener() {
+                    view_s.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String id = v.getTag().toString();

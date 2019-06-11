@@ -63,6 +63,7 @@ public class GestureView extends View implements ViewAction {
 
             @Override
             public void onLeftVerticalDistance(float downY, float nowY) {
+
                 //其他手势如果锁住了就不回调了。
                 if (mIsOnlySingleTapEnable) {
                     return;
@@ -147,7 +148,6 @@ public class GestureView extends View implements ViewAction {
             VcPlayerLog.d(TAG, "show END");
         } else {
             VcPlayerLog.d(TAG, "show ");
-
             mIsOnlySingleTapEnable = false;
             setVisibility(VISIBLE);
         }
@@ -157,7 +157,6 @@ public class GestureView extends View implements ViewAction {
     public void hide(HideType hideType) {
         if (mHideType != HideType.End) {
             mHideType = hideType;
-
             mIsOnlySingleTapEnable = true;
             setVisibility(VISIBLE);
         } else {

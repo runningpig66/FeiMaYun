@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <!--<ProgressBar-->
-    <!--android:id="@+id/pb"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:visibility="invisible" />-->
 
     <com.vhall.business.widget.PPTView
         android:id="@+id/iv_doc"
@@ -22,103 +16,5 @@
         android:layout_height="match_parent"
         android:background="@drawable/guanghuanguoji_auto"
         android:visibility="gone" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:id="@+id/doc_image_action_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="5dp"
-            android:src="@drawable/icon_round_back" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
-
-        <LinearLayout
-            android:id="@+id/playback_layout1"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/doc_click_rtmp_watch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:src="@drawable/vhall_icon_live_play"
-                android:visibility="invisible" />
-
-            <RelativeLayout
-                android:id="@+id/document_layout1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1.0"
-                android:visibility="invisible">
-
-                <SeekBar
-                    android:id="@+id/seekbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="true"
-                    android:indeterminate="false"
-                    android:maxHeight="1dp"
-                    android:minHeight="1dp"
-                    android:progressDrawable="@drawable/po_seekbar"
-                    android:thumb="@drawable/icon_seek_thumb"
-                    android:thumbOffset="0dip" />
-
-                <TextView
-                    android:id="@+id/tv_current_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/seekbar"
-                    android:layout_alignParentLeft="true"
-                    android:text="00:00:00"
-                    android:textColor="@android:color/white"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/tv_end_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/seekbar"
-                    android:layout_alignParentRight="true"
-                    android:text="00:00:00"
-                    android:textColor="@android:color/white"
-                    android:textSize="10sp" />
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/doc_click_ppt_live"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/live_ppt" />
-
-            <ImageView
-                android:id="@+id/doc_click_rtmp_orientation"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/icon_round_fullscreen" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
 
 </RelativeLayout>

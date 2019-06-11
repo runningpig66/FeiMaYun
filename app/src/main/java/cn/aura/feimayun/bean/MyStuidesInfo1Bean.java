@@ -106,6 +106,34 @@ public class MyStuidesInfo1Bean {
             private int learned;
             private String rate;
             private String typer;
+            //面授加的字段
+            private String address;
+            private int teach_type;
+            private String lesson_time;
+
+            public String getAddress() {
+                return address;
+            }
+
+            public void setAddress(String address) {
+                this.address = address;
+            }
+
+            public int getTeach_type() {
+                return teach_type;
+            }
+
+            public void setTeach_type(int teach_type) {
+                this.teach_type = teach_type;
+            }
+
+            public String getLesson_time() {
+                return lesson_time;
+            }
+
+            public void setLesson_time(String lesson_time) {
+                this.lesson_time = lesson_time;
+            }
 
             public String getName() {
                 return name;

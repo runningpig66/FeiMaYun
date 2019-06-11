@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#ffffff"
@@ -56,16 +57,22 @@
         android:layout_height="1px"
         android:background="#d1d1d1" />
 
-    <ImageView
-        android:id="@+id/top_img"
+    <com.gcssloop.widget.RCRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/sy_pic_lit_banner" />
+        app:round_corner="5dp">
+
+        <ImageView
+            android:id="@+id/top_img"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/sy_pic_lit_banner" />
+    </com.gcssloop.widget.RCRelativeLayout>
 
     <GridView
         android:id="@+id/p_4_item_gridview"
@@ -73,6 +80,7 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:horizontalSpacing="10dp"
+        android:listSelector="@android:color/transparent"
         android:numColumns="2" />
 
     <!--粗线-->

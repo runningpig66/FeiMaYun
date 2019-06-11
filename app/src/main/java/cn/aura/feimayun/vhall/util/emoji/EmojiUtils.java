@@ -1,16 +1,3 @@
-/**
- * Copyright (C) 2013-2014 EaseMob Technologies. All rights reserved.
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package cn.aura.feimayun.vhall.util.emoji;
 
 import android.content.Context;
@@ -129,116 +116,112 @@ public class EmojiUtils {
     private static final String filePath = "cn.aura.feimayun.vhall.util.emoji.EmojiUtils";
     private static final String delete_name = "delete_expression";
     private static final Factory spannableFactory = Factory.getInstance();
-    private static final Map<Pattern, Integer> emoticons = new HashMap<Pattern, Integer>();
+    private static final Map<Pattern, Integer> emoticons = new HashMap<>();
 
     static {
-        addPattern(emoticons, f000, R.mipmap.f000);
-        addPattern(emoticons, f001, R.mipmap.f001);
-        addPattern(emoticons, f002, R.mipmap.f002);
-        addPattern(emoticons, f003, R.mipmap.f003);
-        addPattern(emoticons, f004, R.mipmap.f004);
-        addPattern(emoticons, f005, R.mipmap.f005);
-        addPattern(emoticons, f006, R.mipmap.f006);
-        addPattern(emoticons, f007, R.mipmap.f007);
-        addPattern(emoticons, f008, R.mipmap.f008);
-        addPattern(emoticons, f009, R.mipmap.f009);
-        addPattern(emoticons, f010, R.mipmap.f010);
-        addPattern(emoticons, f011, R.mipmap.f011);
-        addPattern(emoticons, f012, R.mipmap.f012);
-        addPattern(emoticons, f013, R.mipmap.f013);
-        addPattern(emoticons, f014, R.mipmap.f014);
-        addPattern(emoticons, f015, R.mipmap.f015);
-        addPattern(emoticons, f016, R.mipmap.f016);
-        addPattern(emoticons, f017, R.mipmap.f017);
-        addPattern(emoticons, f018, R.mipmap.f018);
-        addPattern(emoticons, f019, R.mipmap.f019);
+        addPattern(f000, R.mipmap.f000);
+        addPattern(f001, R.mipmap.f001);
+        addPattern(f002, R.mipmap.f002);
+        addPattern(f003, R.mipmap.f003);
+        addPattern(f004, R.mipmap.f004);
+        addPattern(f005, R.mipmap.f005);
+        addPattern(f006, R.mipmap.f006);
+        addPattern(f007, R.mipmap.f007);
+        addPattern(f008, R.mipmap.f008);
+        addPattern(f009, R.mipmap.f009);
+        addPattern(f010, R.mipmap.f010);
+        addPattern(f011, R.mipmap.f011);
+        addPattern(f012, R.mipmap.f012);
+        addPattern(f013, R.mipmap.f013);
+        addPattern(f014, R.mipmap.f014);
+        addPattern(f015, R.mipmap.f015);
+        addPattern(f016, R.mipmap.f016);
+        addPattern(f017, R.mipmap.f017);
+        addPattern(f018, R.mipmap.f018);
+        addPattern(f019, R.mipmap.f019);
 
-        addPattern(emoticons, f020, R.mipmap.f020);
-        addPattern(emoticons, f021, R.mipmap.f021);
-        addPattern(emoticons, f022, R.mipmap.f022);
-        addPattern(emoticons, f023, R.mipmap.f023);
-        addPattern(emoticons, f024, R.mipmap.f024);
-        addPattern(emoticons, f025, R.mipmap.f025);
-        addPattern(emoticons, f026, R.mipmap.f026);
-        addPattern(emoticons, f027, R.mipmap.f027);
-        addPattern(emoticons, f028, R.mipmap.f028);
-        addPattern(emoticons, f029, R.mipmap.f029);
+        addPattern(f020, R.mipmap.f020);
+        addPattern(f021, R.mipmap.f021);
+        addPattern(f022, R.mipmap.f022);
+        addPattern(f023, R.mipmap.f023);
+        addPattern(f024, R.mipmap.f024);
+        addPattern(f025, R.mipmap.f025);
+        addPattern(f026, R.mipmap.f026);
+        addPattern(f027, R.mipmap.f027);
+        addPattern(f028, R.mipmap.f028);
+        addPattern(f029, R.mipmap.f029);
 
-        addPattern(emoticons, f030, R.mipmap.f030);
-        addPattern(emoticons, f031, R.mipmap.f031);
-        addPattern(emoticons, f032, R.mipmap.f032);
-        addPattern(emoticons, f033, R.mipmap.f033);
-        addPattern(emoticons, f034, R.mipmap.f034);
-        addPattern(emoticons, f035, R.mipmap.f035);
-        addPattern(emoticons, f036, R.mipmap.f036);
-        addPattern(emoticons, f037, R.mipmap.f037);
-        addPattern(emoticons, f038, R.mipmap.f038);
-        addPattern(emoticons, f039, R.mipmap.f039);
+        addPattern(f030, R.mipmap.f030);
+        addPattern(f031, R.mipmap.f031);
+        addPattern(f032, R.mipmap.f032);
+        addPattern(f033, R.mipmap.f033);
+        addPattern(f034, R.mipmap.f034);
+        addPattern(f035, R.mipmap.f035);
+        addPattern(f036, R.mipmap.f036);
+        addPattern(f037, R.mipmap.f037);
+        addPattern(f038, R.mipmap.f038);
+        addPattern(f039, R.mipmap.f039);
 
-        addPattern(emoticons, f040, R.mipmap.f040);
-        addPattern(emoticons, f041, R.mipmap.f041);
-        addPattern(emoticons, f042, R.mipmap.f042);
-        addPattern(emoticons, f043, R.mipmap.f043);
-        addPattern(emoticons, f044, R.mipmap.f044);
-        addPattern(emoticons, f045, R.mipmap.f045);
-        addPattern(emoticons, f046, R.mipmap.f046);
-        addPattern(emoticons, f047, R.mipmap.f047);
-        addPattern(emoticons, f048, R.mipmap.f048);
-        addPattern(emoticons, f049, R.mipmap.f049);
-        addPattern(emoticons, f050, R.mipmap.f050);
-        addPattern(emoticons, f051, R.mipmap.f051);
-        addPattern(emoticons, f052, R.mipmap.f052);
-        addPattern(emoticons, f053, R.mipmap.f053);
-        addPattern(emoticons, f054, R.mipmap.f054);
-        addPattern(emoticons, f055, R.mipmap.f055);
-        addPattern(emoticons, f056, R.mipmap.f056);
-        addPattern(emoticons, f057, R.mipmap.f057);
-        addPattern(emoticons, f058, R.mipmap.f058);
-        addPattern(emoticons, f059, R.mipmap.f059);
-        addPattern(emoticons, f060, R.mipmap.f060);
-        addPattern(emoticons, f061, R.mipmap.f061);
-        addPattern(emoticons, f062, R.mipmap.f062);
-        addPattern(emoticons, f063, R.mipmap.f063);
-        addPattern(emoticons, f064, R.mipmap.f064);
-        addPattern(emoticons, f065, R.mipmap.f065);
-        addPattern(emoticons, f066, R.mipmap.f066);
-        addPattern(emoticons, f067, R.mipmap.f067);
-        addPattern(emoticons, f068, R.mipmap.f068);
-        addPattern(emoticons, f069, R.mipmap.f069);
-        addPattern(emoticons, f070, R.mipmap.f070);
-        addPattern(emoticons, f071, R.mipmap.f071);
-        addPattern(emoticons, f072, R.mipmap.f072);
-        addPattern(emoticons, f073, R.mipmap.f073);
-        addPattern(emoticons, f074, R.mipmap.f074);
-        addPattern(emoticons, f078, R.mipmap.f075);
-        addPattern(emoticons, f075, R.mipmap.f076);
-        addPattern(emoticons, f076, R.mipmap.f077);
-        addPattern(emoticons, f077, R.mipmap.f078);
-        addPattern(emoticons, f079, R.mipmap.f079);
-        addPattern(emoticons, f080, R.mipmap.f080);
-        addPattern(emoticons, f081, R.mipmap.f081);
-        addPattern(emoticons, f082, R.mipmap.f082);
-        addPattern(emoticons, f083, R.mipmap.f083);
-        addPattern(emoticons, f084, R.mipmap.f084);
-        addPattern(emoticons, f085, R.mipmap.f085);
-        addPattern(emoticons, f086, R.mipmap.f086);
-        addPattern(emoticons, f087, R.mipmap.f087);
-        addPattern(emoticons, f088, R.mipmap.f088);
-        addPattern(emoticons, f089, R.mipmap.f089);
+        addPattern(f040, R.mipmap.f040);
+        addPattern(f041, R.mipmap.f041);
+        addPattern(f042, R.mipmap.f042);
+        addPattern(f043, R.mipmap.f043);
+        addPattern(f044, R.mipmap.f044);
+        addPattern(f045, R.mipmap.f045);
+        addPattern(f046, R.mipmap.f046);
+        addPattern(f047, R.mipmap.f047);
+        addPattern(f048, R.mipmap.f048);
+        addPattern(f049, R.mipmap.f049);
+        addPattern(f050, R.mipmap.f050);
+        addPattern(f051, R.mipmap.f051);
+        addPattern(f052, R.mipmap.f052);
+        addPattern(f053, R.mipmap.f053);
+        addPattern(f054, R.mipmap.f054);
+        addPattern(f055, R.mipmap.f055);
+        addPattern(f056, R.mipmap.f056);
+        addPattern(f057, R.mipmap.f057);
+        addPattern(f058, R.mipmap.f058);
+        addPattern(f059, R.mipmap.f059);
+        addPattern(f060, R.mipmap.f060);
+        addPattern(f061, R.mipmap.f061);
+        addPattern(f062, R.mipmap.f062);
+        addPattern(f063, R.mipmap.f063);
+        addPattern(f064, R.mipmap.f064);
+        addPattern(f065, R.mipmap.f065);
+        addPattern(f066, R.mipmap.f066);
+        addPattern(f067, R.mipmap.f067);
+        addPattern(f068, R.mipmap.f068);
+        addPattern(f069, R.mipmap.f069);
+        addPattern(f070, R.mipmap.f070);
+        addPattern(f071, R.mipmap.f071);
+        addPattern(f072, R.mipmap.f072);
+        addPattern(f073, R.mipmap.f073);
+        addPattern(f074, R.mipmap.f074);
+        addPattern(f078, R.mipmap.f075);
+        addPattern(f075, R.mipmap.f076);
+        addPattern(f076, R.mipmap.f077);
+        addPattern(f077, R.mipmap.f078);
+        addPattern(f079, R.mipmap.f079);
+        addPattern(f080, R.mipmap.f080);
+        addPattern(f081, R.mipmap.f081);
+        addPattern(f082, R.mipmap.f082);
+        addPattern(f083, R.mipmap.f083);
+        addPattern(f084, R.mipmap.f084);
+        addPattern(f085, R.mipmap.f085);
+        addPattern(f086, R.mipmap.f086);
+        addPattern(f087, R.mipmap.f087);
+        addPattern(f088, R.mipmap.f088);
+        addPattern(f089, R.mipmap.f089);
     }
 
-    private static void addPattern(Map<Pattern, Integer> map, String smile, int resource) {
-        map.put(Pattern.compile(Pattern.quote(smile)), resource);
+    private static void addPattern(String smile, int resource) {
+        EmojiUtils.emoticons.put(Pattern.compile(Pattern.quote(smile)), resource);
     }
 
     /**
      * replace existing spannable with smiles
-     *
-     * @param context
-     * @param spannable
-     * @return
      */
-    public static boolean addEmoji(Context context, Spannable spannable) {
+    private static boolean addEmoji(Context context, Spannable spannable) {
         boolean hasChanges = false;
         for (Map.Entry<Pattern, Integer> entry : emoticons.entrySet()) {
             Matcher matcher = entry.getKey().matcher(spannable);
@@ -267,7 +250,7 @@ public class EmojiUtils {
         return spannable;
     }
 
-    public static boolean containsKey(String key) {
+    private static boolean containsKey(String key) {
         boolean b = false;
         for (Map.Entry<Pattern, Integer> entry : emoticons.entrySet()) {
             Matcher matcher = entry.getKey().matcher(key);
@@ -280,7 +263,7 @@ public class EmojiUtils {
         return b;
     }
 
-    public static List<String> getExpressionRes(int getSum) {
+    static List<String> getExpressionRes(int getSum) {
         List<String> reslist = new ArrayList<String>();
         for (int x = 0; x < getSum; x++) {
             String filename = String.format("f%03d", x);
@@ -289,7 +272,7 @@ public class EmojiUtils {
         return reslist;
     }
 
-    public static View getGridChildView(final Context context, int i, List<String> reslist, final EditText et_chat) {
+    static View getGridChildView(final Context context, int i, List<String> reslist, final EditText et_chat) {
         View view = View.inflate(context, R.layout.vhall_emoji_grid, null);
 
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

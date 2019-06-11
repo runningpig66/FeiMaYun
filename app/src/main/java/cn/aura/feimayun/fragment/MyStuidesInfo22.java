@@ -53,17 +53,16 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
     private Handler handleNetwork2;
     private Handler handleNetwork3;//按钮中多请求一次下个页面，判断能否进去
     private Context context;
-    private String lid;
+    private String lid = "";
     private String uid;
-    private String lesson_type;
     private String leimu_1;
-    private String leimu_2;
+    private String leimu_2 = "";
     private int clickPosition;
 
     private SmartRefreshLayout info2_refreshLayout;
     private int p = 1;//需要传的页号
 
-    private List<Map<String, String>> dataList;
+    private List<Map<String, String>> dataList = new ArrayList<>();
     private RecyclerView fragment_mystudiesinfo2_recyclerview;
     private MyStudiesInfo2_RecyclerView_Adapter adapter;
     private View view;
@@ -133,6 +132,55 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
                 if (isFirstIn) {
                     dataList = new ArrayList<>();
                 }
+//                JSONObject dataObject = jsonObject.getJSONObject("data");
+//                if (dataObject.has("myqa") && !(dataObject.get("myqa").equals(JSONObject.NULL))) {
+//                    JSONArray myqaArray = dataObject.getJSONArray("myqa");
+//                    for (int i = 0; i < myqaArray.length(); i++) {
+//                        Map<String, String> myqaMap = new HashMap<>();
+//                        JSONObject myqaObject = myqaArray.getJSONObject(i);
+//                        myqaMap.put("id", myqaObject.getString("id"));
+//                        myqaMap.put("uid", myqaObject.getString("uid"));
+//                        myqaMap.put("title", myqaObject.getString("title"));
+//                        if (myqaObject.has("solve")) {
+//                            myqaMap.put("solve", myqaObject.getString("solve"));
+//                        }
+//                        myqaMap.put("create_time", myqaObject.getString("create_time"));
+//                        myqaMap.put("smaller", myqaObject.getString("smaller"));
+//                        myqaMap.put("name", myqaObject.getString("name"));
+//                        if (!myqaObject.isNull("content_img")) {
+//                            myqaMap.put("content_img", myqaObject.getString("content_img"));
+//                        }
+//                        if (!myqaObject.isNull("content_font")) {
+//                            myqaMap.put("content_font", myqaObject.getString("content_font"));
+//                        }
+//                        dataList.add(myqaMap);
+//                    }
+//                }
+//
+//                if (dataObject.has("qa") && !(dataObject.get("qa").equals(JSONObject.NULL))) {
+//                    JSONArray qaArray = dataObject.getJSONArray("qa");
+//                    for (int i = 0; i < qaArray.length(); i++) {
+//                        Map<String, String> qaMap = new HashMap<>();
+//                        JSONObject qaObject = qaArray.getJSONObject(i);
+//                        qaMap.put("id", qaObject.getString("id"));
+//                        qaMap.put("uid", qaObject.getString("uid"));
+//                        qaMap.put("title", qaObject.getString("title"));
+//                        if (qaObject.has("solve")) {
+//                            qaMap.put("solve", qaObject.getString("solve"));
+//                        }
+//                        qaMap.put("create_time", qaObject.getString("create_time"));
+//                        qaMap.put("smaller", qaObject.getString("smaller"));
+//                        qaMap.put("name", qaObject.getString("name"));
+//                        if (!qaObject.isNull("content_img")) {
+//                            qaMap.put("content_img", qaObject.getString("content_img"));
+//                        }
+//                        if (!qaObject.isNull("content_font")) {
+//                            qaMap.put("content_font", qaObject.getString("content_font"));
+//                        }
+//                        dataList.add(qaMap);
+//                    }
+//                }
+
                 JSONArray dataArray = jsonObject.getJSONArray("data");
                 for (int i = 0; i < dataArray.length(); i++) {
                     Map<String, String> map = new HashMap<>();
@@ -163,7 +211,6 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
 
                 info2_refreshLayout.finishRefresh(true);
                 info2_refreshLayout.finishLoadMore(0, true, false);
-                initRecyclerView();
             } else {
                 //出现status == 0有两种原因
                 //一是在第一次“进入页面”时，题库中没有试卷
@@ -173,9 +220,8 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
                     //如果在第一次加载的时候没有试卷，隐藏并显示相应的布局
                     activity_paper_list_layout2.setVisibility(View.VISIBLE);
                     fragment_mystudiesinfo2_recyclerview.setVisibility(View.GONE);
-                    isFirstIn = false;
                 }
-                //                        //第二次加载失败的情况也是分两种
+                //第二次加载失败的情况也是分两种
 //                        if (listList.isEmpty()) {//说明在第一次加载的时候没有试卷
 //
 //                        } else {//说明在第一次加载的时候有试卷，上拉加载后无更多试卷的情况
@@ -185,12 +231,14 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
                 info2_refreshLayout.finishRefresh(true);
                 info2_refreshLayout.finishLoadMore(0, true, true);
             }
+            initRecyclerView();
 //            }
         } catch (JSONException e) {
             info2_refreshLayout.finishRefresh(false);
             info2_refreshLayout.finishLoadMore(false);
             e.printStackTrace();
         }
+
     }
 
     private void initRecyclerView() {
@@ -230,17 +278,12 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            lid = getArguments().getString("lid", "");
-            if (lid.equals("")) {
-                leimu_1 = bundle.getString("leimu_1", "");
-                leimu_2 = bundle.getString("leimu_2", "");
-            } else {
-                lesson_type = bundle.getString("lesson_type");
-            }
+            lid = bundle.getString("lid", "");
+            leimu_1 = bundle.getString("leimu_1", "");
+            leimu_2 = bundle.getString("leimu_2", "");
         }
         handle();
         p = 1;
-        initData();
     }
 
     @Nullable
@@ -256,20 +299,24 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
         }
         view = inflater.inflate(R.layout.fragment_mystudiesinfo2, container, false);
         fragment_mystudiesinfo2_recyclerview = view.findViewById(R.id.fragment_mystudiesinfo2_recyclerview);
+        TextView fragment_mystudiesinfo2_textview1 = view.findViewById(R.id.fragment_mystudiesinfo2_textview1);
+        activity_paper_list_layout2 = view.findViewById(R.id.activity_paper_list_layout2);
+        info2_refreshLayout = view.findViewById(R.id.info2_refreshLayout);
+
+        initData();
+
         //添加recyclerview的分割线，在这里添加可以保证只添加一次，不能在initData中添加，否则下拉刷新会不停的添加分割线
         DividerItemDecoration divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.recyclerview_decoration)));
         fragment_mystudiesinfo2_recyclerview.addItemDecoration(divider);
 
-        TextView fragment_mystudiesinfo2_textview1 = view.findViewById(R.id.fragment_mystudiesinfo2_textview1);
         if (leimu_2.equals("")) {
             fragment_mystudiesinfo2_textview1.setVisibility(View.GONE);
         } else {
             fragment_mystudiesinfo2_textview1.setVisibility(View.VISIBLE);
             fragment_mystudiesinfo2_textview1.setOnClickListener(this);
         }
-        activity_paper_list_layout2 = view.findViewById(R.id.activity_paper_list_layout2);
-        info2_refreshLayout = view.findViewById(R.id.info2_refreshLayout);
+
         info2_refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -291,17 +338,17 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
     private void initData() {
         if (lid.equals("")) {
             Map<String, String> map = new HashMap<>();
+            map.put("uid", uid);
             map.put("leimu_1", leimu_1);
             map.put("leimu_2", leimu_2);
             map.put("p", String.valueOf(p));
             RequestURL.sendPOST("https://app.feimayun.com/Qa/index", handleNetwork2, map);
-        } else {//有lid走的是个人中心我的问答打开的
+        } else {//有lid走的是 课程包里的问答
             Map<String, String> map = new HashMap<>();
             map.put("uid", uid);
             map.put("lid", lid);
             map.put("p", String.valueOf(p));
-            map.put("lesson_type", lesson_type);
-            RequestURL.sendPOST("https://app.feimayun.com/User/myQuest", handleNetwork1, map);
+            RequestURL.sendPOST("https://app.feimayun.com/Qa/courseQa", handleNetwork1, map);
         }
     }
 
@@ -321,7 +368,10 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
         switch (requestCode) {
             case 8765:
                 if (resultCode == RESULT_OK) {
-                    initData();
+//                    dataList.clear();
+//                    p = 1;
+//                    initData();
+                    info2_refreshLayout.autoRefresh();
                 }
                 break;
         }

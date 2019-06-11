@@ -24,9 +24,11 @@ import java.util.Map;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.MainActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.util.SetHeightUtil;
 import cn.aura.feimayun.util.StaticUtil;
+import cn.aura.feimayun.util.Util;
 
 /**
  * 描述：6个方格布局页面的ViewPager的碎片页
@@ -37,7 +39,6 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
     private int max_page;
     private List<Map<String, String>> data_mapList;
     private View view;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -174,7 +175,9 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
             }
-            Glide.with(activity).load(mapItem.get("icon_img")).into(viewHolder.fragment_homepage_viewpager2_gridview_item_imageview);
+            if (Util.isOnMainThread()) {
+                Glide.with(MyApplication.context).load(mapItem.get("icon_img")).into(viewHolder.fragment_homepage_viewpager2_gridview_item_imageview);
+            }
             viewHolder.fragment_homepage_viewpager2_gridview_item_textview.setText(mapItem.get("name"));
             return view;
         }

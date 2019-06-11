@@ -28,6 +28,7 @@ import java.util.Map;
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.ExamDetailActivity;
 import cn.aura.feimayun.activity.PhotoViewActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.util.ScreenUtils;
 
@@ -178,7 +179,7 @@ public class ExamDetailActivity_ViewPager1_Fragment_ListView1_Adapter extends Ba
                 LayoutInflater inflater = LayoutInflater.from(activity);
                 for (int i = 0; i < sub_imgList.size(); i++) {
                     @SuppressLint("InflateParams") ImageView listview_imageview_item_imageview1 = (ImageView) inflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                    Glide.with(activity).load(sub_imgList.get(i)).into(listview_imageview_item_imageview1);
+                    Glide.with(MyApplication.context).load(sub_imgList.get(i)).into(listview_imageview_item_imageview1);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemHeight);
                     linearLayout.addView(listview_imageview_item_imageview1, params);
@@ -215,7 +216,7 @@ public class ExamDetailActivity_ViewPager1_Fragment_ListView1_Adapter extends Ba
                 LayoutInflater inflater = LayoutInflater.from(activity);
                 for (int i = 0; i < imgList.size(); i++) {
                     @SuppressLint("InflateParams") ImageView listview_imageview_item_imageview1 = (ImageView) inflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                    Glide.with(activity).load(imgList.get(i)).into(listview_imageview_item_imageview1);
+                    Glide.with(MyApplication.context).load(imgList.get(i)).into(listview_imageview_item_imageview1);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemHeight);
                     linearLayout.addView(listview_imageview_item_imageview1, params);
@@ -244,14 +245,14 @@ public class ExamDetailActivity_ViewPager1_Fragment_ListView1_Adapter extends Ba
                 public void onClick(View v) {
                     String key = listsMap.get("no_id");
                     String val = getOption_listList().get(position - 1).get("key");
-                    activity.getAnswerMap().put(key, val);//保存答案
+                    activity.getAnswerMap().put(Integer.parseInt(key), val);//保存答案
 
                     //同时保存到本地文件中
                     SharedPreferences.Editor editor = activity.getSharedPreferences(activity.fileName, MODE_PRIVATE).edit();
                     editor.putString(key, val.toUpperCase());
                     editor.putInt("write", activity.getAnswerMap().size());
                     editor.putString("time", String.valueOf(activity.countDownMillis / 1000));
-                    editor.commit();
+                    editor.apply();
 
                     selected = position;//这里设置selected是为了在notify的时候，改变年背景色
                     mOnItemClickListener.onTextViewClick(v, position);

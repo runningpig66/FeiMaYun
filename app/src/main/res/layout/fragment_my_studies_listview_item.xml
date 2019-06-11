@@ -1,79 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <!--标题栏-->
-    <LinearLayout
+    android:layout_height="wrap_content">
+
+    <com.gcssloop.widget.RCRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        app:round_corner="5dp"
+        app:stroke_color="#eeeeee"
+        app:stroke_width="1dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="22dp"
-            android:src="@drawable/icon_t" />
+        <cn.aura.feimayun.view.CornerLabelView
+            android:id="@+id/cornerView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:bg_color="#ffffff"
+            app:position="left_top"
+            app:side_length="40dp"
+            app:text_size="12sp" />
 
-        <TextView
-            android:id="@+id/fragment_my_studies_listview_item_textView1"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="16sp"
-            tools:text="测试标题" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text="查看详情"
-            android:textColor="#555555"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="6dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/icon_sy_arrow" />
-    </LinearLayout>
-    <!--细分割线-->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#d1d1d1" />
+                <TextView
+                    android:id="@+id/mystudies_textview1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    tools:text="职业教育事业群" />
 
-    <ImageView
-        android:id="@+id/fragment_my_studies_listview_item_imageview3"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:layout_margin="12dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/sy_pic_lit_banner" />
+                <TextView
+                    android:id="@+id/mystudies_textview2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="12sp"
+                    tools:text="学习进度：50%" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="共88课时"
-        android:textColor="#555555"
-        android:textSize="14sp"
-        android:visibility="gone" />
+                <TextView
+                    android:id="@+id/mystudies_textview3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="12sp"
+                    tools:text="学习有效期：2018-12-01至2099-01-01" />
+            </LinearLayout>
 
-    <!--粗线-->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#f1f1f1" />
-</LinearLayout>
+            <TextView
+                android:id="@+id/mystudies_textview4"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/button_orange_border"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="立即学习"
+                android:textColor="#ee7708"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </com.gcssloop.widget.RCRelativeLayout>
+</FrameLayout>

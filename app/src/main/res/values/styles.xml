@@ -17,7 +17,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--在Android 4.4之前的版本上运行，直接跟随系统主题-->
+        e <!--在Android 4.4之前的版本上运行，直接跟随系统主题-->
     </style>
 
     <style name="progress_dialog" parent="@android:style/Theme.Dialog">

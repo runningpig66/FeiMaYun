@@ -1,5 +1,6 @@
 package cn.aura.feimayun.vhall.util.emoji;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -28,25 +30,23 @@ import cn.aura.feimayun.R;
  * Created by huanan on 2016/3/14.
  */
 public class InputView {
-
-    private static final String TAG = "InputView";
-    Context context;
-    Activity activity;
-    SendMsgClickListener onSendClickListener;
-    KeyboardHeightListener onHeightReceivedListener;
+    private Context context;
+    private Activity activity;
+    private SendMsgClickListener onSendClickListener;
+    private KeyboardHeightListener onHeightReceivedListener;
     private boolean showEmoji = false;
     private View contentView;
     private ImageView iv_emoji;
     private EditText et_content;
     private TextView tv_send;
     private ViewPager vp_emoji;
-    private boolean hasVirtual = false; // 是否有虚拟按键
+    private boolean hasVirtual; // 是否有虚拟按键
     private int virtualHeight = 0;  // 虚拟按键的高度
     private int keyboardHeight = 0;
     private int limitNo = 280;
     private ClickCallback mCallback;
-    private int keyboardHeight_portrait = 0;
-    private int keyboardHeight_landspace = 0;
+    private int keyboardHeight_portrait;
+    private int keyboardHeight_landspace;
     private InputUser user = null;
 
     public InputView(Context context, int protraitHeight, int landspaceHeight) {
@@ -97,29 +97,14 @@ public class InputView {
     public void initView() {
         contentView = View.inflate(context, R.layout.vhall_emoji_inputview_layout, null);
         iv_emoji = contentView.findViewById(R.id.iv_emoji);
-        et_content = (EditText) contentView.findViewById(R.id.et_content);
-        tv_send = (TextView) contentView.findViewById(R.id.tv_send);
-        vp_emoji = (ViewPager) contentView.findViewById(R.id.vp_emoji);
-        contentView.setVisibility(View.GONE);
-        iv_emoji.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEmoji = !showEmoji;
-                show(showEmoji, null);
-
-            }
-        });
-        et_content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEmoji = false;
-                show(showEmoji, null);
-            }
-        });
+        et_content = contentView.findViewById(R.id.et_content);
+        tv_send = contentView.findViewById(R.id.tv_send);
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("061006", "onClick()");
                 if (onSendClickListener != null) {
+                    Log.i("061006", "onSendClickListener != null");
                     String msg = et_content.getText().toString();
                     if (msg.contains("@") && msg.contains(":")) {
                         msg = msg.substring(msg.indexOf(":") + 1);
@@ -132,6 +117,22 @@ public class InputView {
                     et_content.setText("");
                     dismiss();
                 }
+            }
+        });
+        vp_emoji = contentView.findViewById(R.id.vp_emoji);
+        contentView.setVisibility(View.GONE);
+        iv_emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEmoji = !showEmoji;
+                show(showEmoji, null);
+            }
+        });
+        et_content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEmoji = false;
+                show(showEmoji, null);
             }
         });
         et_content.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -148,9 +149,9 @@ public class InputView {
         et_content.setHint("我来说两句");
     }
 
-    public void initEmoji() {
+    private void initEmoji() {
         List emoji = EmojiUtils.getExpressionRes(90);
-        List<View> views = new ArrayList<View>();
+        List<View> views = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {// 20*5
             View view = EmojiUtils.getGridChildView(context, i, emoji, et_content);
             views.add(view);
@@ -160,7 +161,7 @@ public class InputView {
 
     public void add2Window(Activity activity) {
         this.activity = activity;
-        FrameLayout layout = (FrameLayout) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        FrameLayout layout = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.BOTTOM;
         layout.addView(contentView, params);
@@ -183,6 +184,7 @@ public class InputView {
         }
     }
 
+    @SuppressLint("HandlerLeak")
     private void showEmoji() {
         if (null != mCallback) {
             mCallback.onEmojiClick();
@@ -206,6 +208,7 @@ public class InputView {
     }
 
     private void showKeyboard() {
+        KeyBoardManager.openKeyboard(et_content, activity);
         final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) contentView.getLayoutParams();
         if (activity.getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             if (keyboardHeight_portrait == 0) {
@@ -225,13 +228,12 @@ public class InputView {
                 }, 300);
                 return;
             }
-            params.setMargins(0, 0, 0, keyboardHeight_portrait);
+            params.setMargins(0, 0, 0, 0);
         } else {
             if (keyboardHeight_landspace == 0) {
                 keyboardHeight_landspace = 840;
             }
             params.setMargins(0, 0, 0, keyboardHeight_landspace);
-
         }
         if (contentView.getVisibility() == View.VISIBLE) {
             contentView.setLayoutParams(params);
@@ -256,6 +258,7 @@ public class InputView {
 
     }
 
+    @SuppressLint("HandlerLeak")
     public void dismiss() {
         if (contentView.getVisibility() == View.GONE)
             return;
@@ -277,7 +280,7 @@ public class InputView {
 
     }
 
-    public void observeSoftKeyboard(final Activity activity) {
+    private void observeSoftKeyboard(final Activity activity) {
         final View decorView = activity.getWindow().getDecorView();
         decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             int previousKeyboardHeight = -1;
@@ -288,7 +291,7 @@ public class InputView {
                 decorView.getWindowVisibleDisplayFrame(rect);
                 int displayHeight = rect.bottom - rect.top;
                 int height = decorView.getHeight();
-                /** 是否存在虚拟键盘*/
+                /*是否存在虚拟键盘*/
                 if (hasVirtual && virtualHeight > 0) {
                     keyboardHeight = height - displayHeight - rect.top - virtualHeight;
                 } else {

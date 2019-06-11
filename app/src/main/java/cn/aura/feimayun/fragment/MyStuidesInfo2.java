@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -36,6 +37,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.activity.MyStudiesItemActivity;
+import cn.aura.feimayun.activity.QuestionAddActivity;
 import cn.aura.feimayun.activity.QuestionDetailActivity;
 import cn.aura.feimayun.adapter.MyStudiesInfo2_RecyclerView_Adapter;
 import cn.aura.feimayun.util.RequestURL;
@@ -46,9 +49,8 @@ import cn.aura.feimayun.util.Util;
  */
 public class MyStuidesInfo2 extends Fragment {
     private Handler handleNetwork1;
-    private Handler handleNetwork2;
     private Handler handleNetwork3;//按钮中多请求一次下个页面，判断能否进去
-    private Context context;
+    private MyStudiesItemActivity context;
     private String lid;
     private String uid;
     private String lesson_type;
@@ -61,7 +63,7 @@ public class MyStuidesInfo2 extends Fragment {
     private SmartRefreshLayout info2_refreshLayout;
     private int p = 1;//需要传的页号
 
-    private List<Map<String, String>> dataList;
+    private List<Map<String, String>> dataList = new ArrayList<>();
     private RecyclerView fragment_mystudiesinfo2_recyclerview;
     private MyStudiesInfo2_RecyclerView_Adapter adapter;
     private View view;
@@ -74,18 +76,6 @@ public class MyStuidesInfo2 extends Fragment {
             public void handleMessage(Message msg) {
                 if (msg.obj.toString().equals("网络异常")) {
                     Toast.makeText(context, "请检查网络连接_Error36", Toast.LENGTH_LONG).show();
-                    info2_refreshLayout.finishRefresh(false);
-                    info2_refreshLayout.finishLoadMore(false);
-                } else {
-                    parseJson2(msg.obj.toString());
-                }
-            }
-        };
-        handleNetwork2 = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.obj.toString().equals("网络异常")) {
-                    Toast.makeText(context, "请检查网络连接_Error37", Toast.LENGTH_LONG).show();
                     info2_refreshLayout.finishRefresh(false);
                     info2_refreshLayout.finishLoadMore(false);
                 } else {
@@ -159,7 +149,6 @@ public class MyStuidesInfo2 extends Fragment {
 
                 info2_refreshLayout.finishRefresh(true);
                 info2_refreshLayout.finishLoadMore(0, true, false);
-                initRecyclerView();
             } else {
                 //出现status == 0有两种原因
                 //一是在第一次“进入页面”时，题库中没有试卷
@@ -169,7 +158,6 @@ public class MyStuidesInfo2 extends Fragment {
                     //如果在第一次加载的时候没有试卷，隐藏并显示相应的布局
                     activity_paper_list_layout2.setVisibility(View.VISIBLE);
                     fragment_mystudiesinfo2_recyclerview.setVisibility(View.GONE);
-                    isFirstIn = false;
                 }
                 //第二次加载失败的情况也是分两种
 //                        if (listList.isEmpty()) {//说明在第一次加载的时候没有试卷
@@ -181,6 +169,7 @@ public class MyStuidesInfo2 extends Fragment {
                 info2_refreshLayout.finishRefresh(true);
                 info2_refreshLayout.finishLoadMore(0, true, true);
             }
+            initRecyclerView();
 //            }
         } catch (JSONException e) {
             info2_refreshLayout.finishRefresh(false);
@@ -217,7 +206,7 @@ public class MyStuidesInfo2 extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
+        this.context = (MyStudiesItemActivity) context;
         uid = Util.getUid();
     }
 
@@ -227,16 +216,12 @@ public class MyStuidesInfo2 extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             lid = getArguments().getString("lid", "");
-            if (lid.equals("")) {
-                leimu_1 = bundle.getString("leimu_1", "");
-                leimu_2 = bundle.getString("leimu_2", "");
-            } else {
-                lesson_type = bundle.getString("lesson_type");
-            }
+            lesson_type = bundle.getString("lesson_type");
+            leimu_1 = bundle.getString("series_1");
+            leimu_2 = bundle.getString("series_2");
         }
         handle();
         p = 1;
-        initData();
     }
 
     @Nullable
@@ -258,6 +243,19 @@ public class MyStuidesInfo2 extends Fragment {
         fragment_mystudiesinfo2_recyclerview.addItemDecoration(divider);
         activity_paper_list_layout2 = view.findViewById(R.id.activity_paper_list_layout2);
         info2_refreshLayout = view.findViewById(R.id.info2_refreshLayout);
+        TextView fragment_mystudiesinfo2_textview1 = view.findViewById(R.id.fragment_mystudiesinfo2_textview1);
+        fragment_mystudiesinfo2_textview1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, QuestionAddActivity.class);
+                intent.putExtra("leimu_1", leimu_1);
+                intent.putExtra("leimu_2", leimu_2);
+                context.startActivityForResult(intent, 0x8765);
+            }
+        });
+
+        initData();
+
         info2_refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -277,20 +275,23 @@ public class MyStuidesInfo2 extends Fragment {
     }
 
     private void initData() {
-        if (lid.equals("")) {
-            Map<String, String> map = new HashMap<>();
-            map.put("leimu_1", leimu_1);
-            map.put("leimu_2", leimu_2);
-            map.put("p", String.valueOf(p));
-            RequestURL.sendPOST("https://app.feimayun.com/Qa/index", handleNetwork2, map);
-        } else {//有lid走的是个人中心我的问答打开的
-            Map<String, String> map = new HashMap<>();
-            map.put("uid", uid);
-            map.put("lid", lid);
-            map.put("p", String.valueOf(p));
-            map.put("lesson_type", lesson_type);
-            RequestURL.sendPOST("https://app.feimayun.com/User/myQuest", handleNetwork1, map);
-        }
+        //有lid走的是个人中心我的问答打开的
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", uid);
+        map.put("lid", lid);
+        map.put("p", String.valueOf(p));
+        map.put("lesson_type", lesson_type);
+        map.put("series_2", leimu_2);
+        RequestURL.sendPOST("https://app.feimayun.com/User/myQuest", handleNetwork1, map);
+    }
+
+    public void requestNetwork2() {
+//        if (dataList != null) {
+//            dataList.clear();
+//        }
+//        p = 1;
+//        initData();
+        info2_refreshLayout.autoRefresh();
     }
 
 }

@@ -2,8 +2,6 @@ package cn.aura.feimayun.vhall.chat;
 
 import com.vhall.business.ChatServer;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import cn.aura.feimayun.vhall.BasePresenter;
@@ -33,15 +31,15 @@ public class ChatContract {
 
         void sendChat(String text);
 
-        void sendCustom(JSONObject text);
+//        void sendCustom(JSONObject text);
 
-        void sendQuestion(String content);
+//        void sendQuestion(String content);
 
         void onLoginReturn();
 
-        void onFreshData();
+//        void onFreshData();
 
-        void showSurvey(String surveyid);
+//        void showSurvey(String surveyid);
 
     }
 

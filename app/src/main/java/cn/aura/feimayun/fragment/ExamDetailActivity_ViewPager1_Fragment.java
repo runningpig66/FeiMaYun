@@ -30,7 +30,7 @@ public class ExamDetailActivity_ViewPager1_Fragment extends Fragment {
         adapter = new ExamDetailActivity_ViewPager1_Fragment_ListView1_Adapter(activity, listsMap);
         fragment_examdetailactivity_viewpager1_listview1.setAdapter(adapter);
         fragment_examdetailactivity_viewpager1_listview1.addFooterView(new FrameLayout(activity));
-        fragment_examdetailactivity_viewpager1_listview1.addHeaderView(new FrameLayout(activity));
+//        fragment_examdetailactivity_viewpager1_listview1.addHeaderView(view);
         adapter.setOnItemClickListener(new ExamDetailActivity_ViewPager1_Fragment_ListView1_Adapter.OnItemClickListener() {
             @Override
             public void onTextViewClick(View view, int position) {

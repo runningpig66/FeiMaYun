@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.application.MyApplication;
 
 public class LiveListActivityListViewAdapter extends BaseAdapter {
 
@@ -32,8 +33,7 @@ public class LiveListActivityListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return dataList.size();
-
+        return dataList == null ? 0 : dataList.size();
     }
 
     @Override
@@ -65,32 +65,43 @@ public class LiveListActivityListViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         viewHolder.livelist_listview_textview1.setText(dataMap.get("start_ts"));
-        Glide.with(context).load(dataMap.get("bg_url")).into(viewHolder.livelist_listview_imageview2);
+        Glide.with(MyApplication.context).load(dataMap.get("bg_url")).into(viewHolder.livelist_listview_imageview2);
         viewHolder.livelist_listview_textview2.setText(dataMap.get("name"));
-        viewHolder.livelist_listview_textview3.setText("观看人数：" + dataMap.get("browse"));
+//        viewHolder.livelist_listview_textview3.setText("观看人数：" + dataMap.get("browse"));
+        viewHolder.livelist_listview_textview3.setText(dataMap.get("tea_name"));
 
         String liveStatus = dataMap.get("liveStatus");
         if (liveStatus.equals("1")) {//正在直播红色
-            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#f25051"));
+            viewHolder.livelist_listview_textview4.setBackgroundColor(Color.parseColor("#f25051"));
+//            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#f25051"));
         } else if (liveStatus.equals("2")) {//即将开始绿色，课程预约中
-            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#00a63b"));
-        } else if (liveStatus.equals("3")) {//直播已结束
-            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#999999"));
-        } else if (liveStatus.equals("5")) {//正在回放黑色
-            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#000000"));
-        } else {//其他状态灰色，包括：回放过期、点播
-            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#999999"));
+            viewHolder.livelist_listview_textview4.setBackgroundColor(Color.parseColor("#00a63b"));
+//            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#00a63b"));
+        } else {
+            viewHolder.livelist_listview_textview4.setBackgroundColor(Color.parseColor("#999999"));
         }
+
+//        else if (liveStatus.equals("3")) {//直播已结束
+//            viewHolder.livelist_listview_textview4.setBackgroundColor(Color.parseColor("#999999"));
+////            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#999999"));
+//        } else if (liveStatus.equals("5")) {//正在回放黑色
+//            viewHolder.livelist_listview_textview4.setBackgroundColor(Color.parseColor("#999999"));
+////            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#000000"));
+//        } else {//其他状态灰色，包括：回放过期、点播
+//            viewHolder.livelist_listview_textview4.setBackgroundColor(Color.parseColor("#999999"));
+////            viewHolder.livelist_listview_textview4.setTextColor(Color.parseColor("#999999"));
+//        }
+
         viewHolder.livelist_listview_textview4.setText(dataMap.get("stat"));
         return view;
     }
 
     class ViewHolder {
-        TextView livelist_listview_textview1;//start_ts
-        ImageView livelist_listview_imageview2;//bg_url
-        TextView livelist_listview_textview2;//name
-        TextView livelist_listview_textview3;//browse
-        TextView livelist_listview_textview4;//stat
+        TextView livelist_listview_textview1;// start_ts
+        ImageView livelist_listview_imageview2;// bg_url
+        TextView livelist_listview_textview2;// name
+        TextView livelist_listview_textview3;// browse
+        TextView livelist_listview_textview4;// stat
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.timmy.tdialog.TDialog;
 import com.timmy.tdialog.base.BindViewHolder;
@@ -73,32 +74,54 @@ public class PaperListActivity_ListView_Adapter extends BaseAdapter implements V
         activity_paper_list_listview1_item_textview1.setText(listList.get(position).get("name"));
         activity_paper_list_listview1_item_textview3.setTag(position);
         activity_paper_list_listview1_item_textview4.setTag(position);
-        activity_paper_list_listview1_item_textview3.setOnClickListener(this);
-        activity_paper_list_listview1_item_textview4.setOnClickListener(this);
 
         //显示试卷列表时，对每一个试卷都要判断一下本地是否有存储记录的文件，如果有，说明该试卷上次答题时是非正常退出的
         //如果有本地文件，那么就改为继续答题的状态
         //如果没有本地文件，走服务器的字段进行显示
 
-        String uid = Util.getUid();
-        String fileName = "paper" + sid + listList.get(position).get("id") + uid;//由题库id+试卷id共同构建的唯一文件名
-        File file = new File("/data/data/" + activity.getPackageName() + "/shared_prefs", fileName + ".xml");
+        String tp_type = listList.get(position).get("tp_type");
+        if (tp_type.equals("1")) {
+            activity_paper_list_listview1_item_textview3.setOnClickListener(this);
+            activity_paper_list_listview1_item_textview4.setOnClickListener(this);
+            String uid = Util.getUid();
+            String fileName = "paper" + sid + listList.get(position).get("id") + uid;//由题库id+试卷id共同构建的唯一文件名
+            File file = new File("/data/data/" + activity.getPackageName() + "/shared_prefs", fileName + ".xml");
 
-        boolean fileExists = file.exists();
+            boolean fileExists = file.exists();
 
-        if (fileExists) {//如果文件存在，用本地的记录继续答题，再次之前需要判断下文件是否完整fileOk
-            SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, MODE_PRIVATE);
-            int write = sharedPreferences.getInt("write", 0);//默认为0，说明用户清空了这张表中的内容，这时应该走服务器端的字段
-            //文件完整性检查，后期可以更加完善
-            boolean fileOk = write > 0;
-            if (fileOk) {
-                activity_paper_list_listview1_item_textview2.setText("总题数:" + listList.get(position).get("total") + "  已做题数:" + write);
-                activity_paper_list_listview1_item_textview3.setText("继续答题");
-                activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);//隐藏解析
-            } else {//虽然文件存在，但文件内容被修改破坏，走服务器端的字段
+            if (fileExists) {//如果文件存在，用本地的记录继续答题，再次之前需要判断下文件是否完整fileOk
+                SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, MODE_PRIVATE);
+                int write = sharedPreferences.getInt("write", 0);//默认为0，说明用户清空了这张表中的内容，这时应该走服务器端的字段
+                //文件完整性检查，后期可以更加完善
+                boolean fileOk = write > 0;
+                if (fileOk) {
+                    activity_paper_list_listview1_item_textview2.setText("总题数:" + listList.get(position).get("total") + "  已做题数:" + write);
+                    activity_paper_list_listview1_item_textview3.setText("继续答题");
+                    activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);//隐藏解析
+                } else {//虽然文件存在，但文件内容被修改破坏，走服务器端的字段
+                    activity_paper_list_listview1_item_textview2.setText("总题数:" + listList.get(position).get("total") + "  已做题数:" + listList.get(position).get("write"));
+                    activity_paper_list_listview1_item_textview3.setText(listList.get(position).get("type_name"));
+
+                    String type = listList.get(position).get("type");
+                    if (type != null) {
+                        switch (type) {
+                            case "0"://继续答题
+                                activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);//隐藏解析
+                                break;
+                            case "1"://开始答题
+                                activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);
+                                break;
+                            case "2"://再次挑战
+                                activity_paper_list_listview1_item_textview4.setVisibility(View.VISIBLE);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            } else {//文件不存在，走服务器的状态
                 activity_paper_list_listview1_item_textview2.setText("总题数:" + listList.get(position).get("total") + "  已做题数:" + listList.get(position).get("write"));
                 activity_paper_list_listview1_item_textview3.setText(listList.get(position).get("type_name"));
-
                 String type = listList.get(position).get("type");
                 if (type != null) {
                     switch (type) {
@@ -116,27 +139,17 @@ public class PaperListActivity_ListView_Adapter extends BaseAdapter implements V
                     }
                 }
             }
-        } else {//文件不存在，走服务器的状态
-
-            activity_paper_list_listview1_item_textview2.setText("总题数:" + listList.get(position).get("total") + "  已做题数:" + listList.get(position).get("write"));
+        } else {
+            activity_paper_list_listview1_item_textview2.setText("共1题");
+            activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);
             activity_paper_list_listview1_item_textview3.setText(listList.get(position).get("type_name"));
-
-            String type = listList.get(position).get("type");
-            if (type != null) {
-                switch (type) {
-                    case "0"://继续答题
-                        activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);//隐藏解析
-                        break;
-                    case "1"://开始答题
-                        activity_paper_list_listview1_item_textview4.setVisibility(View.GONE);
-                        break;
-                    case "2"://再次挑战
-                        activity_paper_list_listview1_item_textview4.setVisibility(View.VISIBLE);
-                        break;
-                    default:
-                        break;
+            activity_paper_list_listview1_item_textview3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(activity, "请到PC端答题~", Toast.LENGTH_SHORT).show();
                 }
-            }
+            });
+
         }
         return convertView;
     }

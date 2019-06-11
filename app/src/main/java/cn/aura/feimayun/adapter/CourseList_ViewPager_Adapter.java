@@ -18,6 +18,11 @@ public class CourseList_ViewPager_Adapter extends FragmentPagerAdapter {
         this.lmList_List = lmList_List;
     }
 
+    public void setData(List<Fragment> fragments, List<Map<String, String>> lmList_List) {
+        this.fragments = fragments;
+        this.lmList_List = lmList_List;
+    }
+
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);
@@ -25,7 +30,7 @@ public class CourseList_ViewPager_Adapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return fragments.size();
+        return fragments == null ? 0 : fragments.size();
     }
 
     @Nullable

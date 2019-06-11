@@ -29,6 +29,7 @@ import cn.aura.feimayun.activity.CourseListActivity;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.util.SetHeightUtil;
+import cn.aura.feimayun.util.Util;
 
 /**
  * 描述：首页P4页ListView适配器，下方有一个内部类是ListView子项GridView的适配器
@@ -69,7 +70,9 @@ public class P4_ListView_Adapter extends BaseAdapter {
 
         RequestOptions options = new RequestOptions()
                 .fitCenter();
-        Glide.with(activity).load(data.get(position).get("bg_img")).apply(options).into(top_img);
+        if (Util.isOnMainThread()) {
+            Glide.with(MyApplication.context).load(data.get(position).get("bg_img")).apply(options).into(top_img);
+        }
 
         GridView gridView = convertView.findViewById(R.id.p_4_item_gridview);
         //记录解析的各1级children信息
@@ -176,7 +179,10 @@ public class P4_ListView_Adapter extends BaseAdapter {
             gridview1_textview.setText(data.get(position).get("name"));
 
             RequestOptions options = new RequestOptions().fitCenter();
-            Glide.with(MyApplication.context).load(data.get(position).get("bg_img")).apply(options).into(gridview1_imageview);
+            if (Util.isOnMainThread()) {
+                Glide.with(MyApplication.context).load(data.get(position).get("bg_img")).apply(options).into(gridview1_imageview);
+            }
+
             return convertView;
         }
     }

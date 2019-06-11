@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical">
 
-    <include layout="@layout/headtitle_layout" />
+    <include
+        android:id="@+id/analysis_layout1"
+        layout="@layout/headtitle_layout" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/activity_analysis_viewpager1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/analysis_layout3"
+        android:layout_below="@id/analysis_layout1" />
 
     <View
+        android:id="@+id/analysis_layout3"
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_above="@id/analysis_layout2"
         android:background="#d1d1d1" />
 
     <!--底部按钮-->
     <RelativeLayout
+        android:id="@+id/analysis_layout2"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
@@ -55,4 +62,5 @@
                 android:src="@drawable/activity_exam_detail_right_orange" />
         </RelativeLayout>
     </RelativeLayout>
-</LinearLayout>
+
+</RelativeLayout>

@@ -252,7 +252,6 @@ public class MessageCenterFragment extends Fragment {
                 mainActivity.getRequestSuccess();
             }
         });
-
         fragment_message_center_listView = view.findViewById(R.id.fragment_message_center_listView);
         fragment_message_center_layout1 = view.findViewById(R.id.fragment_message_center_layout1);
     }

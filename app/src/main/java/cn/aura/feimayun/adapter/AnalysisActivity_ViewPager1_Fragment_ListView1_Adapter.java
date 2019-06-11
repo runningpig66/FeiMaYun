@@ -27,6 +27,7 @@ import java.util.Map;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.PhotoViewActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.util.ScreenUtils;
 
@@ -113,12 +114,11 @@ public class AnalysisActivity_ViewPager1_Fragment_ListView1_Adapter extends Base
         String rightString = listsMap.get("right");
         char[] rightChar = new char[0];
         if (rightString != null) {
+            rightString = rightString.toUpperCase();
             rightChar = rightString.toCharArray();
         }
-        if (!rightChar.equals("")) {
-            //将A B C D等选项转换为对应的position
-            right = (rightChar[0] + 1) % 65;
-        }
+        //将A B C D等选项转换为对应的position
+        right = (rightChar[0] + 1) % 65;
     }
 
     @Override
@@ -172,7 +172,7 @@ public class AnalysisActivity_ViewPager1_Fragment_ListView1_Adapter extends Base
                 LayoutInflater inflater = LayoutInflater.from(activity);
                 for (int i = 0; i < sub_imgList.size(); i++) {
                     @SuppressLint("InflateParams") ImageView listview_imageview_item_imageview1 = (ImageView) inflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                    Glide.with(activity).load(sub_imgList.get(i)).into(listview_imageview_item_imageview1);
+                    Glide.with(MyApplication.context).load(sub_imgList.get(i)).into(listview_imageview_item_imageview1);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemHeight);
                     linearLayout.addView(listview_imageview_item_imageview1, params);
@@ -209,7 +209,7 @@ public class AnalysisActivity_ViewPager1_Fragment_ListView1_Adapter extends Base
                 LayoutInflater inflater = LayoutInflater.from(activity);
                 for (int i = 0; i < imgList.size(); i++) {
                     @SuppressLint("InflateParams") ImageView listview_imageview_item_imageview1 = (ImageView) inflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                    Glide.with(activity).load(imgList.get(i)).into(listview_imageview_item_imageview1);
+                    Glide.with(MyApplication.context).load(imgList.get(i)).into(listview_imageview_item_imageview1);
                     LinearLayout linearLayout = new LinearLayout(activity);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemHeight);
                     linearLayout.addView(listview_imageview_item_imageview1, params);

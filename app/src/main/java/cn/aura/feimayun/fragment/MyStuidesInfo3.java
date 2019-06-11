@@ -119,8 +119,6 @@ public class MyStuidesInfo3 extends Fragment {
 //    }
 
     private void initRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        fragment_mystudiesinfo3_recyclerview.setLayoutManager(layoutManager);
         MyStudiesInfo3_RecyclerView_Adapter adapter = new MyStudiesInfo3_RecyclerView_Adapter(context, dataBeanList);
         fragment_mystudiesinfo3_recyclerview.setAdapter(adapter);
         DividerItemDecoration divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
@@ -138,22 +136,26 @@ public class MyStuidesInfo3 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         handle();
-
-        String lid = getArguments().getString("lid");
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", uid);
-        map.put("lid", lid);
-        RequestURL.sendPOST("https://app.feimayun.com/User/myClass", handleNetwork, map);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        String lid = "";
+        if (getArguments() != null) {
+            lid = getArguments().getString("lid");
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", uid);
+        map.put("lid", lid);
+        RequestURL.sendPOST("https://app.feimayun.com/User/myClass", handleNetwork, map);
+
         View view = inflater.inflate(R.layout.fragment_mystudiesinfo3, container, false);
         mystudiesinfo3_layout1 = view.findViewById(R.id.mystudiesinfo3_layout1);
         fragment_mystudiesinfo3_recyclerview = view.findViewById(R.id.fragment_mystudiesinfo3_recyclerview);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        fragment_mystudiesinfo3_recyclerview.setLayoutManager(layoutManager);
         return view;
     }
 

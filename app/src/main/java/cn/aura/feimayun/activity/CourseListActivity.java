@@ -36,16 +36,15 @@ import cn.aura.feimayun.view.ProgressDialog;
  * 课程列表页面
  */
 public class CourseListActivity extends BaseActivity {
-
     //接收后台数据的handler
     private static Handler handleNetWork;
+    TabLayout courselist_tabLayout;
+    CourseListViewPager courselist_viewpager;
     private ProgressDialog progressDialog;
     private TextView headtitle_textview;//标题
     //记录全部课程页面传来的信息，用于页面跳转
     private String series;
     private String id;
-    private TabLayout courselist_tabLayout;
-    private CourseListViewPager courselist_viewpager;
     private List<Fragment> fragmentList;
     //lmList_List
     private List<Map<String, String>> lmList_List;
@@ -58,23 +57,16 @@ public class CourseListActivity extends BaseActivity {
         setContentView(R.layout.activity_course_list);
 
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+            Intent intent = getIntent();
+            series = intent.getStringExtra("series");
+            id = intent.getStringExtra("id");
+
             //初始化hander
             hander();
-
-            initView();
             initData();
+            initView();
         }
 
-    }
-
-    private void initData() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.show();
-
-        Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put(series, id);
-
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetWork, paramsMap);
     }
 
     private void initView() {
@@ -90,10 +82,16 @@ public class CourseListActivity extends BaseActivity {
                 finish();
             }
         });
+    }
 
-        Intent intent = getIntent();
-        series = intent.getStringExtra("series");
-        id = intent.getStringExtra("id");
+    private void initData() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.show();
+
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put(series, id);
+
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetWork, paramsMap);
     }
 
     @SuppressLint("HandlerLeak")
@@ -105,6 +103,7 @@ public class CourseListActivity extends BaseActivity {
                     Toast.makeText(CourseListActivity.this, "请检查网络连接_Error10", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                 } else {
                     parseJSON(msg.obj.toString());
@@ -151,14 +150,15 @@ public class CourseListActivity extends BaseActivity {
                 }
             }
             initViewPager();
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
-            }
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
+                progressDialog = null;
             }
         }
     }
@@ -179,6 +179,7 @@ public class CourseListActivity extends BaseActivity {
             CourseListFragment fragment = CourseListFragment.newInstance(bundle);
             fragmentList.add(fragment);
         }
+
         CourseList_ViewPager_Adapter adapter = new CourseList_ViewPager_Adapter(getSupportFragmentManager(), fragmentList, lmList_List);
         courselist_viewpager.setAdapter(adapter);
         courselist_viewpager.setOffscreenPageLimit(2);
@@ -198,6 +199,7 @@ public class CourseListActivity extends BaseActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
             }
+
         });
     }
 }

@@ -1,23 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "cn.aura.feimayun"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 4
-        versionName "feimayun181213"
+        versionCode 12
+        versionName "1.6"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a', "mips"
         }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
     }
 //    lintOptions {
@@ -46,10 +51,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    //引入design库支持TabLayout
     implementation 'com.android.support:design:27.1.1'
-    //导入CircleImageView
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
     //glide4.8
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
@@ -60,9 +62,6 @@ dependencies {
     api("io.socket:socket.io-client:${SOCKET_IO_VERSION}") {
         exclude group: 'org.json', module: 'json'
     }
-    implementation 'com.github.ctiao:ndkbitmap-armv7a:0.6.4'
-    implementation 'com.github.ctiao:ndkbitmap-armv5:0.6.4'
-    implementation 'com.github.ctiao:ndkbitmap-x86:0.6.4'
     //下拉刷新
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
     implementation 'pub.devrel:easypermissions:2.0.0'
@@ -85,10 +84,12 @@ dependencies {
     implementation 'com.tencent.bugly:nativecrashreport:3.3.1'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation project(path: ':AVMP_SkinLibrary')
+    implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1310_43612_sharewithdownload_withoutGame_obfs_20180706_163319.jar')
+    implementation project(':RCLayout')
 }
 
 configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    resolutionStrategy.eachDependency { details ->
         def requested = details.requested
         if (requested.group == 'com.android.support') {
             if (!requested.name.startsWith("multidex")) {

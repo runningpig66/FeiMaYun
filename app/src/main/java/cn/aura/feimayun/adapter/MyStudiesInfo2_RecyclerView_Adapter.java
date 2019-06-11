@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,8 +27,10 @@ import java.util.Map;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.PhotoViewActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.util.ScreenUtils;
+import cn.aura.feimayun.util.Util;
 
 public class MyStudiesInfo2_RecyclerView_Adapter extends RecyclerView.Adapter<MyStudiesInfo2_RecyclerView_Adapter.ViewHolder> {
     private Context context;
@@ -84,7 +87,11 @@ public class MyStudiesInfo2_RecyclerView_Adapter extends RecyclerView.Adapter<My
             holder.info2_item_textview2.setVisibility(View.VISIBLE);
             holder.info2_item_textview2.setText(map.get("content_font"));
         }
-        Glide.with(context).load(map.get("smaller")).into(holder.info2_item_imageview1);
+        if (Util.isOnMainThread()) {
+            RequestOptions options = new RequestOptions().fitCenter();
+            Glide.with(MyApplication.context).load(map.get("smaller")).apply(options).into(holder.info2_item_imageview1);
+        }
+
         holder.info2_item_textview3.setText(map.get("name"));
         holder.info2_item_textview4.setText(map.get("create_time"));
         holder.info2_item_layout1.removeAllViews();
@@ -104,7 +111,10 @@ public class MyStudiesInfo2_RecyclerView_Adapter extends RecyclerView.Adapter<My
                         String imgUrl = jsonArray.getString(i);
                         stringList.add(imgUrl);
                         ImageView info2_imageview = (ImageView) inflater.inflate(R.layout.info2_recyclerview_imageview, null);
-                        Glide.with(context).load(imgUrl).into(info2_imageview);
+                        if (Util.isOnMainThread()) {
+                            Glide.with(MyApplication.context).load(imgUrl).into(info2_imageview);
+                        }
+
                         LinearLayout linearLayout = new LinearLayout(context);
                         linearLayout.addView(info2_imageview, itemWidth, itemWidth);
                         final int finalI = i;

@@ -73,6 +73,7 @@ public class ExamResultActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(ExamResultActivity.this, "请检查网络连接_Error24", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
 //                    activity_paper_list_refreshLayout.finishRefresh(false);
 //                    activity_paper_list_refreshLayout.finishLoadMore(false);
@@ -243,14 +244,15 @@ public class ExamResultActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             if (progressDialog != null) {
                 progressDialog.dismiss();
-            }
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
+                progressDialog = null;
             }
         }
     }

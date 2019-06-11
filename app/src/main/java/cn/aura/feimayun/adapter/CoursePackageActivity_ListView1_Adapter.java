@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,8 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.activity.CourseQuestion;
 import cn.aura.feimayun.activity.PaperListActivity;
 import cn.aura.feimayun.activity.PlayDetailActivity;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.util.SetHeightUtil;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.watch.WatchActivity;
@@ -37,16 +38,23 @@ public class CoursePackageActivity_ListView1_Adapter extends BaseAdapter {
     Activity activity;
     private List<Map<String, String>> catalogueList;
     private String dataId;
+    private String series_1;
+    private String series_2;
 
-    public CoursePackageActivity_ListView1_Adapter(Activity activity, List<Map<String, String>> catalogueList, String dataId) {
+    public CoursePackageActivity_ListView1_Adapter(Activity activity) {
         this.activity = activity;
+    }
+
+    public void setData(List<Map<String, String>> catalogueList, String dataId, String series_1, String series_2) {
         this.catalogueList = catalogueList;
         this.dataId = dataId;
+        this.series_1 = series_1;
+        this.series_2 = series_2;
     }
 
     @Override
     public int getCount() {
-        return catalogueList.size();
+        return catalogueList == null ? 0 : catalogueList.size();
     }
 
     @Override
@@ -177,7 +185,7 @@ public class CoursePackageActivity_ListView1_Adapter extends BaseAdapter {
                             childrenMap.put("lm2List", childrenObject.getString("lm2List"));
                             childrenList.add(childrenMap);
                             break;
-                        case "4"://TODO 答疑
+                        case "4"://答疑
                             childrenMap.put("qaTotal", childrenObject.getString("qaTotal"));
                             childrenMap.put("lmtotal", childrenObject.getString("lmtotal"));
                             childrenMap.put("pkid", childrenObject.getString("pkid"));
@@ -191,13 +199,6 @@ public class CoursePackageActivity_ListView1_Adapter extends BaseAdapter {
                 InnerAdapter adapter = new InnerAdapter(childrenList);
                 viewHolder.activity_course_package_listview1_item_listview1.setAdapter(adapter);
                 SetHeightUtil.setListViewHeightBasedOnChildren(viewHolder.activity_course_package_listview1_item_listview1);
-                viewHolder.activity_course_package_listview1_item_listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    }
-                });
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -219,7 +220,7 @@ public class CoursePackageActivity_ListView1_Adapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return childrenList.size();
+            return childrenList == null ? 0 : childrenList.size();
         }
 
         @Override
@@ -289,7 +290,12 @@ public class CoursePackageActivity_ListView1_Adapter extends BaseAdapter {
                                         }
                                         break;
                                     case "4":
-                                        Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
+                                        Intent intent3 = new Intent(activity, CourseQuestion.class);
+                                        intent3.putExtra("lid", id);
+                                        intent3.putExtra("series_1", series_1);
+                                        intent3.putExtra("series_2", series_2);
+                                        activity.startActivity(intent3);
+//                                        Toast.makeText(activity, "敬请期待", Toast.LENGTH_SHORT).show();
                                         break;
                                 }
                             }
@@ -303,16 +309,16 @@ public class CoursePackageActivity_ListView1_Adapter extends BaseAdapter {
             if (type != null) {
                 switch (type) {
                     case "1":
-                        Glide.with(activity).load(R.drawable.course_package_i1).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
+                        Glide.with(MyApplication.context).load(R.drawable.course_package_i1).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
                         break;
                     case "2":
-                        Glide.with(activity).load(R.drawable.course_package_i2).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
+                        Glide.with(MyApplication.context).load(R.drawable.course_package_i2).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
                         break;
                     case "3":
-                        Glide.with(activity).load(R.drawable.course_package_i3).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
+                        Glide.with(MyApplication.context).load(R.drawable.course_package_i3).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
                         break;
                     case "4":
-                        Glide.with(activity).load(R.drawable.course_package_i4).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
+                        Glide.with(MyApplication.context).load(R.drawable.course_package_i4).into(viewHolder2.activity_course_package_listview1_item_listview1_item_imageview1);
                         break;
                 }
             }

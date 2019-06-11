@@ -11,8 +11,7 @@
         android:id="@+id/activityLivelist_refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srlEnableLoadMore="false"
-        app:srlEnableOverScrollDrag="true">
+        app:srlEnableLoadMore="false">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,8 +21,8 @@
                 android:id="@+id/activity_livelist_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@null"
-                android:dividerHeight="0dp"
+                android:divider="#eeeeee"
+                android:dividerHeight="10dp"
                 android:scrollbars="none" />
 
             <!--没有试卷的界面-->

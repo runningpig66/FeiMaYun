@@ -13,8 +13,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.bean.List_Bean;
 import cn.aura.feimayun.fragment.MyStudiesFragment;
 import cn.aura.feimayun.util.RequestURL;
@@ -50,6 +49,7 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
     private View view;
     private Handler handleBuyLessons;
     private WatchActivity activity;
+    private com.tencent.smtt.sdk.WebView watch_left_webview;
 
     @SuppressLint("HandlerLeak")
     private void handle() {
@@ -141,15 +141,17 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
         //讲师简介
         TextView watch_left_textview5 = view.findViewById(R.id.watch_left_textview5);
         //课程详情
-        WebView watch_left_webview = view.findViewById(R.id.watch_left_webview);
+        watch_left_webview = view.findViewById(R.id.watch_left_webview);
         //立即学习
         TextView watch_left_textview7 = view.findViewById(R.id.watch_left_textview7);
         watch_left_textview7.setOnClickListener(this);
         //教师头像
         ImageView watch_left_imageview2 = view.findViewById(R.id.watch_left_imageview2);
 
-        RequestOptions options = new RequestOptions().fitCenter();
-        Glide.with(activity).load(detailTeacherMap.get("biger")).apply(options).into(watch_left_imageview2);
+        if (Util.isOnMainThread()) {
+            RequestOptions options = new RequestOptions().fitCenter();
+            Glide.with(MyApplication.context).load(detailTeacherMap.get("biger")).apply(options).into(watch_left_imageview2);
+        }
         watch_left_textview1.setText(detailDataMap.get("name"));
         watch_left_textview2.setText("直播开始:" + detailDataMap.get("start_ts"));
         watch_left_textview3.setText(detailDataMap.get("browse"));
@@ -158,8 +160,6 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
 
         String aboutString = detailDataMap.get("about");
         String des2 = Util.getNewContent(aboutString);
-        WebSettings webSettings = watch_left_webview.getSettings();
-        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         watch_left_webview.loadData(des2, "text/html; charset=UTF-8", null);
 
         String uid = Util.getUid();
@@ -168,20 +168,23 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
             watch_left_textview7.setText("立即咨询");
         } else {//登录以后，再判断是否免费
             if (detailDataMap.get("isBuy").equals("0")) {//如果是没有购买
-                Double rprice = Double.parseDouble(detailDataMap.get("rprice"));
-                if (rprice == 0) {//如果是免费课程，隐藏立即咨询按钮，直接购买并开始播放
-                    watch_left_textview7.setVisibility(View.GONE);
-                    String ids = detailDataMap.get("id");
-                    String order_price = detailDataMap.get("price");
-                    String pay_price = detailDataMap.get("rprice");
+                String errno = activity.getErrno();
+                if (!errno.equals("E2001")) {//排除没有权限观看直播
+                    Double rprice = Double.parseDouble(detailDataMap.get("rprice"));
+                    if (rprice == 0) {//如果是免费课程，隐藏立即咨询按钮，直接购买并开始播放
+                        watch_left_textview7.setVisibility(View.GONE);
+                        String ids = detailDataMap.get("id");
+                        String order_price = detailDataMap.get("price");
+                        String pay_price = detailDataMap.get("rprice");
 
-                    //免费的直接购买
-                    Map<String, String> paramsMap = new HashMap<>();
-                    paramsMap.put("uid", uid);
-                    paramsMap.put("ids", ids);
-                    paramsMap.put("order_price", order_price);
-                    paramsMap.put("pay_price", pay_price);
-                    RequestURL.sendPOST("https://app.feimayun.com/Lesson/buyLessons", handleBuyLessons, paramsMap);
+                        //免费的直接购买
+                        Map<String, String> paramsMap = new HashMap<>();
+                        paramsMap.put("uid", uid);
+                        paramsMap.put("ids", ids);
+                        paramsMap.put("order_price", order_price);
+                        paramsMap.put("pay_price", pay_price);
+                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/buyLessons", handleBuyLessons, paramsMap);
+                    }
                 } else {//收费课程显示立即咨询
                     watch_left_textview7.setVisibility(View.VISIBLE);
                     watch_left_textview7.setText("立即咨询");
@@ -239,5 +242,13 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (WatchActivity) context;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (watch_left_webview != null) {
+            watch_left_webview.destroy();
+        }
     }
 }

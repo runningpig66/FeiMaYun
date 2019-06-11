@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.application.MyApplication;
+import cn.aura.feimayun.util.Util;
 
 public class QuestionReplyRvAdapter extends RecyclerView.Adapter<QuestionReplyRvAdapter.ImageViewHolder> {
     private Context mContext;
@@ -43,7 +45,10 @@ public class QuestionReplyRvAdapter extends RecyclerView.Adapter<QuestionReplyRv
             //代表+号之前的需要正常显示图片
             holder.adbutton.setVisibility(View.VISIBLE);
             String picUrl = mList.get(position);//图片路径
-            Glide.with(mContext).load(picUrl).into(holder.mIvImage);
+            if (Util.isOnMainThread()) {
+                Glide.with(MyApplication.context).load(picUrl).into(holder.mIvImage);
+            }
+
         } else {
             holder.adbutton.setVisibility(View.INVISIBLE);
             holder.mIvImage.setImageResource(R.drawable.item_add_border);

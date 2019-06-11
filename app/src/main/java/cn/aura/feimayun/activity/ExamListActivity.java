@@ -48,6 +48,7 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
     private ListView activity_exam_list_listview1;
     private Handler handlerTiku;
     private boolean isFirstIn = true;
+    private List<Map<String, String>> dataList;
 
     @SuppressLint("HandlerLeak")
     private void handle() {
@@ -58,9 +59,8 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
                     Toast.makeText(ExamListActivity.this, "请检查网络连接_Error23", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
-//                    activity_paper_list_refreshLayout.finishRefresh(false);
-//                    activity_paper_list_refreshLayout.finishLoadMore(false);
                     activityExamList_refreshLayout.finishRefresh(false);
                     activityExamList_refreshLayout.finishLoadMore(false);
                 } else {
@@ -77,9 +77,10 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
             int status = jsonObject.getInt("status");
             if (status == 1) {//解析成功
-
+                if (isFirstIn) {
+                    dataList = new ArrayList<>();
+                }
                 //解析data
-                List<Map<String, String>> dataList = new ArrayList<>();
                 //刷新默认只显示第一页数据
                 JSONArray dataArray = jsonObject.getJSONArray("data");
                 for (int i = 0; i < dataArray.length(); i++) {
@@ -88,7 +89,7 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
                     map.put("id", dataObject.getString("id"));
                     map.put("name", dataObject.getString("name"));
                     map.put("about", dataObject.getString("about"));
-                    map.put("bg_img", dataObject.getString("bg_img"));
+//                    map.put("bg_img", dataObject.getString("bg_img"));
                     map.put("is_sell", dataObject.getString("is_sell"));
                     map.put("tp_total", dataObject.getString("tp_total"));
                     map.put("test_total", dataObject.getString("test_total"));
@@ -120,14 +121,14 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
                     activityExamList_refreshLayout.finishLoadMore(0, true, true);
                 }
             }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             activityExamList_refreshLayout.finishRefresh(false);
             activityExamList_refreshLayout.finishLoadMore(false);
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
         }
     }
 
@@ -156,9 +157,9 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
         activityExamList_refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                p = 1;
+                isFirstIn = true;
                 currentPosition = 0;
-
+                p = 1;
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("p", String.valueOf(p));
                 RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap);
@@ -169,21 +170,17 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 currentPosition = activity_exam_list_listview1.getFirstVisiblePosition();//下拉刷新前记住当前最后一个item的位置
                 p++;
-
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("p", String.valueOf(p));
                 RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap);
             }
         });
-
-
         //返回按钮布局
         RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);
         headtitle_layout.setOnClickListener(this);
         //标题
         TextView headtitle_textview = findViewById(R.id.headtitle_textview);
         headtitle_textview.setText("考试中心");
-
         activity_exam_list_listview1 = findViewById(R.id.activity_exam_list_listview1);
         //添加头和尾的分割线，这里不设置会不显示
         activity_exam_list_listview1.addFooterView(new FrameLayout(this));

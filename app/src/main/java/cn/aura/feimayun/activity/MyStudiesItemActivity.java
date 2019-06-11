@@ -27,6 +27,7 @@ import cn.aura.feimayun.util.ScreenUtils;
 
 public class MyStudiesItemActivity extends BaseActivity implements View.OnClickListener {
     public MyStuidesInfo4 myStuidesInfo4;
+    public MyStuidesInfo2 myStuidesInfo2;
     private LinearLayout mystudies_item_layout1;//tab标签布局
     private ViewPager mystudies_item_viewpager;
     private String[] top_str = new String[]{"我的视频", "我的问答", "我的班级", "我的考试"};
@@ -36,9 +37,7 @@ public class MyStudiesItemActivity extends BaseActivity implements View.OnClickL
     private ImageView[] top_imageviews = new ImageView[4];
     private LinearLayout[] top_linearLayout = new LinearLayout[4];
     private int item_width;
-    private String lid;
-    private String lesson_type;
-    private String name;
+    private String lid, lesson_type, name, series_1, series_2;
     private boolean isFirstIn = true;//控制viewpager第一次进入的标签显示
 
     @Override
@@ -51,7 +50,8 @@ public class MyStudiesItemActivity extends BaseActivity implements View.OnClickL
             lid = intent.getStringExtra("lid");
             lesson_type = intent.getStringExtra("lesson_type");
             name = intent.getStringExtra("name");
-
+            series_1 = intent.getStringExtra("series_1");
+            series_2 = intent.getStringExtra("series_2");
             initView();
         }
 
@@ -86,10 +86,12 @@ public class MyStudiesItemActivity extends BaseActivity implements View.OnClickL
         myStuidesInfo1.setArguments(bundle1);
         fragments.add(myStuidesInfo1);
 
-        MyStuidesInfo2 myStuidesInfo2 = new MyStuidesInfo2();
+        myStuidesInfo2 = new MyStuidesInfo2();
         Bundle bundle2 = new Bundle();
         bundle2.putString("lid", lid);
         bundle2.putString("lesson_type", lesson_type);
+        bundle2.putString("series_1", series_1);
+        bundle2.putString("series_2", series_2);
         myStuidesInfo2.setArguments(bundle2);
         fragments.add(myStuidesInfo2);
 
@@ -193,10 +195,15 @@ public class MyStudiesItemActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case 0x8765:
+                if (resultCode == RESULT_OK) {
+                    myStuidesInfo2.requestNetwork2();
+                }
+                break;
             case 0X1231:
-//                MyStuidesInfo4 myStuidesInfo4 = (MyStuidesInfo4) adapter.getItem(3);
                 myStuidesInfo4.requestNetwork2();
                 break;
+
         }
 
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -66,17 +67,25 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/info2_item_imageview1"
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent" />
+                <com.gcssloop.widget.RCRelativeLayout
+                    android:id="@+id/rcLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:round_corner="10dp">
+
+                    <ImageView
+                        android:id="@+id/info2_item_imageview1"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY" />
+                </com.gcssloop.widget.RCRelativeLayout>
 
                 <TextView
                     android:id="@+id/info2_item_textview3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/info2_item_imageview1"
+                    android:layout_toRightOf="@id/rcLayout"
                     android:gravity="center_vertical"
                     android:textSize="12sp"
                     tools:text="明月学员" />

@@ -1,40 +1,43 @@
 package cn.aura.feimayun.adapter;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 import java.util.Map;
 
 import cn.aura.feimayun.R;
+import cn.aura.feimayun.view.CornerLabelView;
 
 /**
  * 描述：我的学习页面下方的ListView的适配器
  */
 public class MyStudiesFragment_ListView_Adapter extends BaseAdapter {
-    private Activity activity;
+    private LayoutInflater inflater;
     private List<Map<String, String>> userList;
+    private OnButtonClickListener mOnButtonClickListener;
 
     public MyStudiesFragment_ListView_Adapter(Activity activity, List<Map<String, String>> userList) {
-        this.activity = activity;
         this.userList = userList;
+        inflater = LayoutInflater.from(activity);
+    }
+
+    public void setData(List<Map<String, String>> userList) {
+        this.userList = userList;
+    }
+
+    public void setmOnButtonClickListener(OnButtonClickListener listener) {
+        mOnButtonClickListener = listener;
     }
 
     @Override
     public int getCount() {
-        if (userList == null) {
-            return 0;
-        } else {
-            return userList.size();
-        }
+        return userList == null ? 0 : userList.size();
     }
 
     @Override
@@ -52,43 +55,68 @@ public class MyStudiesFragment_ListView_Adapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Map<String, String> map = getItem(position);
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        Map<String, String> userListItem = getItem(position);
         View view;
         ViewHolder viewHolder;
         if (convertView == null) {
-            view = LayoutInflater.from(activity).inflate(R.layout.fragment_my_studies_listview_item, parent, false);
+            view = inflater.inflate(R.layout.fragment_my_studies_listview_item, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.fragment_my_studies_listview_item_textView1 =
-                    view.findViewById(R.id.fragment_my_studies_listview_item_textView1);
-            viewHolder.fragment_my_studies_listview_item_imageview3 =
-                    view.findViewById(R.id.fragment_my_studies_listview_item_imageview3);
+            viewHolder.cornerView = view.findViewById(R.id.cornerView);
+            viewHolder.mystudies_textview1 = view.findViewById(R.id.mystudies_textview1);
+            viewHolder.mystudies_textview2 = view.findViewById(R.id.mystudies_textview2);
+            viewHolder.mystudies_textview3 = view.findViewById(R.id.mystudies_textview3);
+            viewHolder.mystudies_textview4 = view.findViewById(R.id.mystudies_textview4);
             view.setTag(viewHolder);
         } else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-
-        //TODO 临时改动
-        if ((map.get("name") == null)) {
-            viewHolder.fragment_my_studies_listview_item_textView1.setText("");
+        String teach_type = userListItem.get("teach_type");
+        if (teach_type != null) {
+            if (teach_type.equals("1")) {//直播
+                viewHolder.cornerView.setText("直播");
+                viewHolder.cornerView.setBgColor(Color.RED);
+            } else {
+                viewHolder.cornerView.setText("课程");
+                viewHolder.cornerView.setBgColor(Color.parseColor("#00a63b"));
+            }
         } else {
-            viewHolder.fragment_my_studies_listview_item_textView1.setText(map.get("name"));
+            viewHolder.cornerView.setText("课程");
+            viewHolder.cornerView.setBgColor(Color.parseColor("#00a63b"));
         }
 
-        RequestOptions options = new RequestOptions()
-                .centerCrop();
-//                .placeholder(R.drawable.live_userimg);
-        if ((map.get("bg_url") == null)) {
-            Glide.with(activity).load(R.drawable.guanghuanguoji_auto).apply(options).into(viewHolder.fragment_my_studies_listview_item_imageview3);
-        } else {
-            Glide.with(activity).load(map.get("bg_url")).apply(options).into(viewHolder.fragment_my_studies_listview_item_imageview3);
-        }
+//        else if (teach_type.equals("2")) {//录播
+//            viewHolder.cornerView.setText("录播");
+//            viewHolder.cornerView.setBgColor(Color.parseColor("#ee7708"));
+//        } else if (teach_type.equals("3")) {//混合
+//            viewHolder.cornerView.setText("混合");
+//            viewHolder.cornerView.setBgColor(Color.parseColor("#00a63b"));
+//        }
+
+        viewHolder.mystudies_textview1.setText(userListItem.get("name"));
+        viewHolder.mystudies_textview2.setText("学习进度：" + userListItem.get("stat"));
+        viewHolder.mystudies_textview3.setText("学习有效期：" + userListItem.get("expire"));
+        viewHolder.mystudies_textview4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnButtonClickListener != null) {
+                    mOnButtonClickListener.onItemClick(v, position);
+                }
+            }
+        });
         return view;
     }
 
+    public interface OnButtonClickListener {
+        void onItemClick(View view, int position);
+    }
+
     class ViewHolder {
-        TextView fragment_my_studies_listview_item_textView1;
-        ImageView fragment_my_studies_listview_item_imageview3;
+        CornerLabelView cornerView;
+        TextView mystudies_textview1;
+        TextView mystudies_textview2;
+        TextView mystudies_textview3;
+        TextView mystudies_textview4;
     }
 }

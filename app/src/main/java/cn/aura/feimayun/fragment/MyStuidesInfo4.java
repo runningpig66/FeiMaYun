@@ -106,6 +106,7 @@ public class MyStuidesInfo4 extends Fragment {
     }
 
     private void parseJson(String s) {
+//        Util.d("021101", s);
         Gson gson = new Gson();
         MyStuidesInfo4Bean myStuidesInfo4Bean = gson.fromJson(s, MyStuidesInfo4Bean.class);
 //        if (isFirstIn) {
@@ -223,8 +224,9 @@ public class MyStuidesInfo4 extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handle();
-        lid = getArguments().getString("lid");
-        requestNetwork();
+        if (getArguments() != null) {
+            lid = getArguments().getString("lid");
+        }
     }
 
     public void requestNetwork() {
@@ -249,6 +251,7 @@ public class MyStuidesInfo4 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        requestNetwork();
         View view = inflater.inflate(R.layout.fragment_mystudiesinfo4, container, false);
         mystudiesinfo4_recyclerView = view.findViewById(R.id.mystudiesinfo4_recyclerView);
         mystudiesinfo4_layout1 = view.findViewById(R.id.mystudiesinfo4_layout1);
@@ -270,4 +273,5 @@ public class MyStuidesInfo4 extends Fragment {
         });
         return view;
     }
+
 }

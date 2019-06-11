@@ -19,6 +19,10 @@ public class PlayDetail_ViewPager_Adapter extends FragmentPagerAdapter {
         this.fragments = fragments;
     }
 
+    public void setData(List<Fragment> fragments) {
+        this.fragments = fragments;
+    }
+
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);
@@ -26,7 +30,7 @@ public class PlayDetail_ViewPager_Adapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return fragments.size();
+        return fragments == null ? 0 : fragments.size();
     }
 
     @Nullable

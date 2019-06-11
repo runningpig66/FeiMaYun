@@ -16,6 +16,8 @@ public class SelfDialog extends Dialog {
     private TextView no;//取消按钮
     private TextView titleTv;//消息标题文本
     private TextView messageTv;//消息提示文本
+    private Boolean cancelable = false;
+    private Boolean canceledOnTouchOutside = false;
 
     private onNoOnclickListener noOnclickListener;//取消按钮被点击了的监听器
     private onYesOnclickListener yesOnclickListener;//确定按钮被点击了的监听器
@@ -24,12 +26,20 @@ public class SelfDialog extends Dialog {
         super(context, R.style.MyDialog);
         setContentView(R.layout.dialog_call);
         //按空白处不能取消动画
-        setCanceledOnTouchOutside(false);
-        setCancelable(false);
+        setCanceledOnTouchOutside(canceledOnTouchOutside);
+        setCancelable(cancelable);
         //初始化界面控件
         initView();
         //初始化界面控件的事件
         initEvent();
+    }
+
+    public void setMyCancelable(boolean cancelable) {
+        this.cancelable = cancelable;
+    }
+
+    public void setMyCanceledOnTouchOutside(boolean b) {
+        this.canceledOnTouchOutside = b;
     }
 
     /**

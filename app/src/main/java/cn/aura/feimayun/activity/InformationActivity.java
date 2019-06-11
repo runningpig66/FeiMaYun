@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,7 +59,6 @@ import cn.aura.feimayun.fragment.MessageCenterFragment;
 import cn.aura.feimayun.fragment.MyStudiesFragment;
 import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.Util;
-import de.hdodenhof.circleimageview.CircleImageView;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -71,7 +72,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
     private static Handler handleEditPhone;//修改手机号
     String phone;//记录需要修改的手机号，当手机号修改成功后，取这个新号码刷新一下界面
     private Uri imageUri;
-    private CircleImageView activity_information_imageView2;
+    private ImageView activity_information_imageView2;
     private ArrayList<String> mList = new ArrayList<>();//存储选择照片的路径
     private boolean requestSuccessful = false;
     private boolean isUploadNow = false;
@@ -82,6 +83,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
     private EditText activity_information_editText2;//展示手机号
     private CountDownTimer countDownTimer;
     private TDialog tDialog1;//修改密码
+    private LinearLayout root;//root
 
     {
         //获取验证码按钮计数60秒
@@ -91,7 +93,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             public void onTick(long millisUntilFinished) {
                 activity_register_textView1.setClickable(false);
                 activity_register_textView1.setBackgroundResource(R.drawable.button_gray);
-                activity_register_textView1.setText("请稍后\n(" + millisUntilFinished / 1000 + "秒)");
+                activity_register_textView1.setText("请稍候\n(" + millisUntilFinished / 1000 + "秒)");
             }
 
             @Override
@@ -169,7 +171,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             String msg = jsonObject.getString("msg");
             if (status == 1) {
                 tDialog1.dismiss();
-                View view = inflater.inflate(R.layout.setpwd_success, null);
+                View view = inflater.inflate(R.layout.setpwd_success, root, false);
                 TextView t_1 = view.findViewById(R.id.t_1);
                 t_1.setText(msg);
                 new TDialog.Builder(getSupportFragmentManager())
@@ -192,6 +194,9 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                         .create()
                         .show();
                 activity_information_editText2.setText(phone);
+                SharedPreferences.Editor editor = getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                editor.putString("phone", phone);
+                editor.apply();
             } else {
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
             }
@@ -208,7 +213,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             String msg = jsonObject.getString("msg");
             if (status == 1) {
                 tDialog1.dismiss();
-                View view = inflater.inflate(R.layout.setpwd_success, null);
+                View view = inflater.inflate(R.layout.setpwd_success, root, false);
                 TextView t_1 = view.findViewById(R.id.t_1);
                 t_1.setText(msg);
                 new TDialog.Builder(getSupportFragmentManager())
@@ -270,7 +275,9 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                 MyStudiesFragment.handleLogin.obtainMessage().sendToTarget();
 
                 Bitmap bitmap = BitmapFactory.decodeFile(mList.get(0));
-                Glide.with(this).load(bitmap).into(activity_information_imageView2);
+                if (Util.isOnMainThread()) {
+                    Glide.with(MyApplication.context).load(bitmap).into(activity_information_imageView2);
+                }
             } else {
                 String msg = jsonObject.getString("msg");
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -340,6 +347,8 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
 
             inflater = LayoutInflater.from(this);
 
+            root = findViewById(R.id.root);
+
             //左上角的返回按钮的布局
             RelativeLayout activity_information_layout2 = findViewById(R.id.activity_information_layout2);
             //圆形头像
@@ -374,7 +383,9 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             activity_information_textView3.setText(real_name);
             activity_information_editText1.setText(real_name);
             activity_information_editText2.setText(phone);
-            Glide.with(this).load(avater).into(activity_information_imageView2);
+            if (Util.isOnMainThread()) {
+                Glide.with(MyApplication.context).load(avater).into(activity_information_imageView2);
+            }
             activity_information_editText1.setFocusable(false);
             activity_information_editText1.setFocusableInTouchMode(false);
             activity_information_editText2.setFocusable(false);
@@ -438,24 +449,28 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                         .create()
                         .show();
             }
-        } else if (vId == R.id.activity_information_textView3) {//用户名
-
-        } else if (vId == R.id.activity_information_editText1) {//昵称
-
-        } else if (vId == R.id.activity_information_editText2) {//手机号
-
-        } else if (vId == R.id.activity_information_editText3) {//密码
-
-        } else if (vId == R.id.activity_information_layout4) {//退出按钮的布局
+        }
+//        else if (vId == R.id.activity_information_textView3) {//用户名
+//
+//        } else if (vId == R.id.activity_information_editText1) {//昵称
+//
+//        } else if (vId == R.id.activity_information_editText2) {//手机号
+//
+//        } else if (vId == R.id.activity_information_editText3) {//密码
+//
+//        }
+        else if (vId == R.id.activity_information_layout4) {//退出按钮的布局
             //给我的学习返回退出登录的信息
             MyStudiesFragment.handleLogout.obtainMessage().sendToTarget();
             //给消息中心返回退出登录的信息
             MessageCenterFragment.handleLogout.obtainMessage().sendToTarget();
             finish();
-        } else if (vId == R.id.activity_information_imageView3) {//显示昵称
-
-        } else if (vId == R.id.activity_information_imageView4) {//修改手机号
-            View view = inflater.inflate(R.layout.modify_phone, null);
+        }
+//        else if (vId == R.id.activity_information_imageView3) {//显示昵称
+//
+//        }
+        else if (vId == R.id.activity_information_imageView4) {//修改手机号
+            View view = inflater.inflate(R.layout.modify_phone, root, false);
             final EditText e_0 = view.findViewById(R.id.e_0);
             final EditText e_1 = view.findViewById(R.id.e_1);
             final EditText e_2 = view.findViewById(R.id.e_2);
@@ -533,7 +548,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                     .create()
                     .show();
         } else if (vId == R.id.activity_information_imageView5) {//修改密码
-            View view = inflater.inflate(R.layout.modify_pwd, null);
+            View view = inflater.inflate(R.layout.modify_pwd, root, false);
             final EditText e_0 = view.findViewById(R.id.e_0);//input phone number
             final EditText e_1 = view.findViewById(R.id.e_1);//authority code
             final EditText e_2 = view.findViewById(R.id.e_2);//new password

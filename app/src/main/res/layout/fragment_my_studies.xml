@@ -1,135 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?><!--我的学习item-->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mystudies_refreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    app:srlEnableOverScrollDrag="true">
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/mystudies_refreshLayout"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srlEnableLoadMore="false">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <android.support.v4.widget.NestedScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:scrollbars="none">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
+                android:id="@+id/fragment_my_studies_level1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="175dp"
+                android:background="@drawable/data_bg">
 
-                <RelativeLayout
-                    android:id="@+id/fragment_my_studies_level1"
+                <!--顶部的状态栏预留-->
+                <View
+                    android:id="@+id/view"
                     android:layout_width="match_parent"
-                    android:layout_height="175dp"
-                    android:background="@drawable/data_bg">
+                    android:layout_height="25dp" />
 
-                    <!--顶部的状态栏预留-->
-                    <View
-                        android:id="@+id/view"
-                        android:layout_width="match_parent"
-                        android:layout_height="25dp" />
+                <ImageView
+                    android:id="@+id/fragment_my_studies_imageView0"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_below="@id/view"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:src="@drawable/icon_toolbar"
+                    android:visibility="gone" />
+
+                <com.gcssloop.widget.RCRelativeLayout
+                    android:id="@+id/rcLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    app:round_corner="35dp"
+                    app:stroke_color="#ffffff"
+                    app:stroke_width="1dp">
 
                     <ImageView
-                        android:id="@+id/fragment_my_studies_imageView0"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_below="@id/view"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginRight="15dp"
-                        android:src="@drawable/icon_toolbar"
-                        android:visibility="gone" />
-
-                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/fragment_my_studies_imageView1"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/data_head"
-                        app:civ_border_color="#ffffff"
-                        app:civ_border_width="1dp" />
+                        android:scaleType="fitXY"
+                        android:src="@drawable/data_head" />
+                </com.gcssloop.widget.RCRelativeLayout>
 
-                    <TextView
-                        android:id="@+id/fragment_my_studies_textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/fragment_my_studies_imageView1"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:text="立即登录"
-                        android:textColor="#ffffff"
-                        android:textSize="16sp" />
-                </RelativeLayout>
-
-                <!--未登录展示的界面-->
-                <RelativeLayout
-                    android:id="@+id/fragment_my_studies_level2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/fragment_my_studies_level1"
-                    android:background="#ffffff"
-                    android:visibility="visible">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:background="#ffffff"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="125dp"
-                            android:layout_height="125dp"
-                            android:src="@drawable/pic" />
-
-                        <TextView
-                            android:layout_width="250dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:gravity="center"
-                            android:text="您当前还没有购买任何课程哦，海量课程总有适合您的一门，赶紧开启发现之旅吧~"
-                            android:textColor="#999999"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/fragment_my_studies_textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
-                            android:background="@drawable/button_orange"
-                            android:paddingLeft="20dp"
-                            android:paddingTop="10dp"
-                            android:paddingRight="20dp"
-                            android:paddingBottom="10dp"
-                            android:text="去发现感兴趣的内容"
-                            android:textColor="#ffffff"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-                </RelativeLayout>
-
-                <!--登陆后有课程的展示的界面-->
-                <RelativeLayout
-                    android:id="@+id/fragment_my_studies_level3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/fragment_my_studies_level1"
-                    android:background="#ffffff"
-                    android:visibility="gone">
-
-                    <ListView
-                        android:id="@+id/fragment_my_studies_listView1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:divider="@null"
-                        android:dividerHeight="0dp"
-                        android:scrollbars="none" />
-                </RelativeLayout>
+                <TextView
+                    android:id="@+id/fragment_my_studies_textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rcLayout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="立即登录"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
             </RelativeLayout>
-        </android.support.v4.widget.NestedScrollView>
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-</RelativeLayout>
+            <!--未登录展示的界面-->
+            <LinearLayout
+                android:id="@+id/fragment_my_studies_level2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@id/fragment_my_studies_level1"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:src="@drawable/pic" />
+
+                <TextView
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="您当前还没有购买任何课程哦，海量课程总有适合您的一门，赶紧开启发现之旅吧~"
+                    android:textColor="#999999"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/fragment_my_studies_textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/button_orange"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="10dp"
+                    android:text="去发现感兴趣的内容"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
+            </LinearLayout>
+            <!--登陆后有课程的展示的界面-->
+            <ListView
+                android:id="@+id/fragment_my_studies_listView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_my_studies_level1"
+                android:divider="@null"
+                android:dividerHeight="12dp"
+                android:listSelector="@android:color/transparent"
+                android:scrollbars="none"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

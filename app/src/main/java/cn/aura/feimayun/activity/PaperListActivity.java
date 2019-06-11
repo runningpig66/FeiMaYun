@@ -83,6 +83,7 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                     Toast.makeText(PaperListActivity.this, "请检查网络连接_Error06", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                     activity_paper_list_refreshLayout.finishRefresh(false);
                     activity_paper_list_refreshLayout.finishLoadMore(false);
@@ -98,6 +99,7 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                     Toast.makeText(PaperListActivity.this, "请检查网络连接_Error07", Toast.LENGTH_LONG).show();
                     if (progressDialog != null) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                     }
                     activity_paper_list_refreshLayout.finishRefresh(false);
                     activity_paper_list_refreshLayout.finishLoadMore(false);
@@ -109,13 +111,13 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void parseJSON(String s) {
+//        Util.d("021102", s);
         try {
             JSONTokener jsonTokener = new JSONTokener(s);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
             int status = jsonObject.getInt("status");
             if (status == 1) {//解析成功
                 JSONObject dataObject = jsonObject.getJSONObject("data");
-
                 JSONObject storeObject = dataObject.getJSONObject("store");
                 String name = storeObject.getString("name");
                 String about = storeObject.getString("about");
@@ -129,16 +131,30 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                 for (int i = 0; i < listArray.length(); i++) {
                     JSONObject listObject = listArray.getJSONObject(i);
                     Map<String, String> listMap = new HashMap<>();
-                    listMap.put("id", listObject.getString("id"));
-                    listMap.put("name", listObject.getString("name"));
-                    listMap.put("total", listObject.getString("total"));
-                    listMap.put("type", listObject.getString("type"));
-                    listMap.put("type_name", listObject.getString("type_name"));
-                    listMap.put("write", listObject.getString("write"));
-
-                    int type = listObject.getInt("type");
-                    if (type == 2) {
-                        listMap.put("last_id", listObject.getString("last_id"));
+                    if (listObject.has("id")) {
+                        listMap.put("id", listObject.getString("id"));
+                    }
+                    if (listObject.has("name")) {
+                        listMap.put("name", listObject.getString("name"));
+                    }
+                    if (listObject.has("total")) {
+                        listMap.put("total", listObject.getString("total"));
+                    }
+                    if (listObject.has("type")) {
+                        listMap.put("type", listObject.getString("type"));
+                        int type = listObject.getInt("type");
+                        if (type == 2) {
+                            listMap.put("last_id", listObject.getString("last_id"));
+                        }
+                    }
+                    if (listObject.has("type_name")) {
+                        listMap.put("type_name", listObject.getString("type_name"));
+                    }
+                    if (listObject.has("write")) {
+                        listMap.put("write", listObject.getString("write"));
+                    }
+                    if (listObject.has("tp_type")) {
+                        listMap.put("tp_type", listObject.getString("tp_type"));
                     }
                     listList.add(listMap);
                 }
@@ -189,14 +205,14 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                     activity_paper_list_refreshLayout.finishLoadMore(0, true, true);
                 }
             }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         } catch (JSONException e) {
             activity_paper_list_refreshLayout.finishRefresh(false);
             activity_paper_list_refreshLayout.finishLoadMore(false);
             e.printStackTrace();
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
         }
     }
 
@@ -212,16 +228,30 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                 for (int i = 0; i < listArray.length(); i++) {
                     JSONObject listObject = listArray.getJSONObject(i);
                     Map<String, String> listMap = new HashMap<>();
-                    listMap.put("id", listObject.getString("id"));
-                    listMap.put("name", listObject.getString("name"));
-                    listMap.put("total", listObject.getString("total"));
-                    listMap.put("type", listObject.getString("type"));
-                    listMap.put("type_name", listObject.getString("type_name"));
-                    listMap.put("write", listObject.getString("write"));
-
-                    int type = listObject.getInt("type");
-                    if (type == 2) {
-                        listMap.put("last_id", listObject.getString("last_id"));
+                    if (listObject.has("id")) {
+                        listMap.put("id", listObject.getString("id"));
+                    }
+                    if (listObject.has("name")) {
+                        listMap.put("name", listObject.getString("name"));
+                    }
+                    if (listObject.has("total")) {
+                        listMap.put("total", listObject.getString("total"));
+                    }
+                    if (listObject.has("type")) {
+                        listMap.put("type", listObject.getString("type"));
+                        int type = listObject.getInt("type");
+                        if (type == 2) {
+                            listMap.put("last_id", listObject.getString("last_id"));
+                        }
+                    }
+                    if (listObject.has("type_name")) {
+                        listMap.put("type_name", listObject.getString("type_name"));
+                    }
+                    if (listObject.has("write")) {
+                        listMap.put("write", listObject.getString("write"));
+                    }
+                    if (listObject.has("tp_type")) {
+                        listMap.put("tp_type", listObject.getString("tp_type"));
                     }
                     listList2.add(listMap);
                 }
@@ -239,15 +269,14 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                 adapter.notifyDataSetChanged();
                 clickPosition = -1;
             }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         } catch (JSONException e) {
             activity_paper_list_refreshLayout.finishRefresh(false);
             activity_paper_list_refreshLayout.finishLoadMore(false);
             e.printStackTrace();
-        } finally {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
-
         }
     }
 
@@ -272,7 +301,6 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
 
     private void initData() {
         String uid = Util.getUid();
-
         //请求试卷课表
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("sid", sid);

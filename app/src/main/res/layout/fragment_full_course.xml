@@ -46,15 +46,21 @@
                     android:layout_weight="7.5"
                     android:orientation="vertical">
                     <!--上方的图片-->
-                    <ImageView
-                        android:id="@+id/banner_img"
+                    <com.gcssloop.widget.RCRelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="10dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/list_classify" />
+                        app:round_corner="5dp">
+
+                        <ImageView
+                            android:id="@+id/banner_img"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/list_classify" />
+                    </com.gcssloop.widget.RCRelativeLayout>
 
                     <ScrollView
                         android:layout_width="match_parent"

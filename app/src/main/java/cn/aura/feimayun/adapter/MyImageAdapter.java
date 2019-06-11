@@ -11,6 +11,9 @@ import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
 
+import cn.aura.feimayun.application.MyApplication;
+import cn.aura.feimayun.util.Util;
+
 public class MyImageAdapter extends PagerAdapter {
     public static final String TAG = MyImageAdapter.class.getSimpleName();
     private List<String> imageUrls;
@@ -26,7 +29,10 @@ public class MyImageAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         String url = imageUrls.get(position);
         PhotoView photoView = new PhotoView(activity);
-        Glide.with(activity).load(url).into(photoView);
+        if (Util.isOnMainThread()) {
+            Glide.with(MyApplication.context).load(url).into(photoView);
+        }
+
         container.addView(photoView);
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override

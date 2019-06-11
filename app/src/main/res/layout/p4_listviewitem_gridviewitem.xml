@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--首页P4页ListView子项GridView的item布局-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <!--这里需要包一层布局，测量高度-->
@@ -8,12 +9,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/gridview1_imageview"
+        <com.gcssloop.widget.RCRelativeLayout
+            android:id="@+id/rcLayout"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/sy_pic_lit_banner" />
+            android:layout_height="wrap_content"
+            app:round_corner="5dp">
+
+            <ImageView
+                android:id="@+id/gridview1_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/sy_pic_lit_banner" />
+        </com.gcssloop.widget.RCRelativeLayout>
 
         <TextView
             android:id="@+id/gridview1_textview"
