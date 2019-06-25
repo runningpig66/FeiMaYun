@@ -10,7 +10,7 @@
         android:layout_height="25dp"
         android:background="#20000000" />
 
-    <cn.aura.app.view.PhotoViewPager
+    <cn.aura.feimayun.view.PhotoViewPager
         android:id="@+id/view_pager_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

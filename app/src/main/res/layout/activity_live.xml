@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <!--播放器窗口-->
-    <cn.aura.app.view.MoveFrameLayout
+    <cn.aura.feimayun.view.MoveFrameLayout
         android:id="@+id/contentVideo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/activity_live_line" />
 
-    <cn.aura.app.view.MoveFrameLayout
+    <cn.aura.feimayun.view.MoveFrameLayout
         android:id="@+id/moveMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

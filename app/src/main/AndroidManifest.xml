@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="cn.aura.app">
+    package="cn.aura.feimayun">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
-        android:name="cn.aura.app.application.MyApplication"
+        android:name="cn.aura.feimayun.application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,21 +25,21 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity
-            android:name="cn.aura.app.activity.MainActivity"
+            android:name="cn.aura.feimayun.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.CourseListActivity"
+            android:name="cn.aura.feimayun.activity.CourseListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.PlayDetailActivity"
+            android:name="cn.aura.feimayun.activity.PlayDetailActivity"
             android:configChanges="orientation|keyboard|locale|screenSize|layoutDirection"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.FlashActivity"
+            android:name="cn.aura.feimayun.activity.FlashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -51,104 +51,104 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.aura.app.activity.LoginActivity"
+            android:name="cn.aura.feimayun.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateVisible" />
         <activity
-            android:name="cn.aura.app.activity.RegisterActivity"
+            android:name="cn.aura.feimayun.activity.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.InformationActivity"
+            android:name="cn.aura.feimayun.activity.InformationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.vhall.watch.WatchActivity"
+            android:name="cn.aura.feimayun.vhall.watch.WatchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="cn.aura.app.activity.FaceToFaceActivity"
+            android:name="cn.aura.feimayun.activity.FaceToFaceActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.ExamDetailActivity"
+            android:name="cn.aura.feimayun.activity.ExamDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.ExamListActivity"
+            android:name="cn.aura.feimayun.activity.ExamListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.CoursePackageActivity"
+            android:name="cn.aura.feimayun.activity.CoursePackageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.PaperListActivity"
+            android:name="cn.aura.feimayun.activity.PaperListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.ExamResultActivity"
+            android:name="cn.aura.feimayun.activity.ExamResultActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.AnalysisActivity"
+            android:name="cn.aura.feimayun.activity.AnalysisActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.LiveListActivity"
+            android:name="cn.aura.feimayun.activity.LiveListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.MyStudiesItemActivity"
+            android:name="cn.aura.feimayun.activity.MyStudiesItemActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.QuestionListActivity"
+            android:name="cn.aura.feimayun.activity.QuestionListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.QuestionDetailActivity"
+            android:name="cn.aura.feimayun.activity.QuestionDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.QuestionReplyActivity"
+            android:name="cn.aura.feimayun.activity.QuestionReplyActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.aura.app.activity.QuestionAddActivity"
+            android:name="cn.aura.feimayun.activity.QuestionAddActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity android:name="cn.aura.app.activity.PhotoViewActivity" />
+        <activity android:name="cn.aura.feimayun.activity.PhotoViewActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="cn.aura.app.fileprovider"
+            android:authorities="cn.aura.feimayun.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name="cn.aura.app.activity.CourseQuestion" />
+        <activity android:name="cn.aura.feimayun.activity.CourseQuestion" />
     </application>
 
 </manifest>

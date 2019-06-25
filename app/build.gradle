@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "cn.aura.app"
+        applicationId "cn.aura.feimayun"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 13

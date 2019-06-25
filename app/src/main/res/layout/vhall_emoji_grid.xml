@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <cn.aura.app.vhall.util.emoji.EmojiGridView
+    <cn.aura.feimayun.vhall.util.emoji.EmojiGridView
         android:id="@+id/gv_emoji"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
