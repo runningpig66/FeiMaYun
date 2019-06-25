@@ -41,7 +41,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <cn.aura.feimayun.view.HomePageFragment_ViewPage2
+                    <cn.aura.app.view.HomePageFragment_ViewPage2
                         android:id="@+id/fragment_home_page_viewpager2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

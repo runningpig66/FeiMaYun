@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:tabMode="scrollable" />
 
-    <cn.aura.feimayun.view.CourseListViewPager
+    <cn.aura.app.view.CourseListViewPager
         android:id="@+id/courselist_viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"

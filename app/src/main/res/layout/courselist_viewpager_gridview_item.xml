@@ -7,7 +7,7 @@
     android:background="@drawable/bg_rounded_white"
     android:orientation="vertical">
 
-    <cn.aura.feimayun.view.HalfRoundImageView
+    <cn.aura.app.view.HalfRoundImageView
         android:id="@+id/courselist_viewpager_gridview_bg_url"
         android:layout_width="match_parent"
         android:layout_height="120dp"

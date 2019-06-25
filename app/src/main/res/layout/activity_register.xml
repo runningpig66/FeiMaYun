@@ -133,12 +133,14 @@
             android:paddingBottom="20dp"
             android:textColor="#666666"
             android:textColorHint="#bbbbbb"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#d1d4db" />
+            android:background="#d1d4db"
+            android:visibility="gone" />
     </LinearLayout>
 
     <RelativeLayout
@@ -151,7 +153,6 @@
             android:id="@+id/activity_register_layout2"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:layout_below="@id/activity_login_layout2"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:background="@drawable/loginbutton_orange"

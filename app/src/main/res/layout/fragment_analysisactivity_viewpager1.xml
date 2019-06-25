@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <cn.aura.feimayun.view.JzvdStdAutoCompleteAfterFullscreen
+                    <cn.aura.app.view.JzvdStdAutoCompleteAfterFullscreen
                         android:id="@+id/jz_video"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

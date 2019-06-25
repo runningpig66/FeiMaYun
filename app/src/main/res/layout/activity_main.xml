@@ -31,28 +31,28 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <cn.aura.feimayun.view.MyRadioButton
+            <cn.aura.app.view.MyRadioButton
                 android:id="@+id/selector1_rb"
                 style="@style/bottom_radio"
                 android:text="首页"
                 app:drawableTop="@drawable/icon_nav_selector1"
                 app:myDrawableSize="30dp" />
 
-            <cn.aura.feimayun.view.MyRadioButton
+            <cn.aura.app.view.MyRadioButton
                 android:id="@+id/selector2_rb"
                 style="@style/bottom_radio"
                 android:text="全部课程"
                 app:drawableTop="@drawable/icon_nav_selector2"
                 app:myDrawableSize="30dp" />
 
-            <cn.aura.feimayun.view.MyRadioButton
+            <cn.aura.app.view.MyRadioButton
                 android:id="@+id/selector3_rb"
                 style="@style/bottom_radio"
                 android:text="我的学习"
                 app:drawableTop="@drawable/icon_nav_selector3"
                 app:myDrawableSize="30dp" />
 
-            <cn.aura.feimayun.view.MyRadioButton
+            <cn.aura.app.view.MyRadioButton
                 android:id="@+id/selector4_rb"
                 style="@style/bottom_radio"
                 android:text="消息中心"

@@ -14,7 +14,7 @@
         app:stroke_color="#eeeeee"
         app:stroke_width="1dp">
 
-        <cn.aura.feimayun.view.CornerLabelView
+        <cn.aura.app.view.CornerLabelView
             android:id="@+id/cornerView"
             android:layout_width="40dp"
             android:layout_height="40dp"

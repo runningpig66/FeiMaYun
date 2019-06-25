@@ -4,15 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--顶部的状态栏预留-->
-    <!--<View-->
-        <!--android:id="@+id/activity_live_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:background="#000000" />-->
-
     <!--播放器窗口-->
-    <cn.aura.feimayun.view.MoveFrameLayout
+    <cn.aura.app.view.MoveFrameLayout
         android:id="@+id/contentVideo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +42,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/activity_live_line" />
 
-    <cn.aura.feimayun.view.MoveFrameLayout
+    <cn.aura.app.view.MoveFrameLayout
         android:id="@+id/moveMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

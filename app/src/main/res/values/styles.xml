@@ -13,11 +13,21 @@
         <item name="android:drawablePadding">0dp</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/BaseAppTheme" />
+
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#F44336</item>
+    </style>
+
     <style name="ImageTranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        e <!--在Android 4.4之前的版本上运行，直接跟随系统主题-->
+         <!--在Android 4.4之前的版本上运行，直接跟随系统主题-->
     </style>
 
     <style name="progress_dialog" parent="@android:style/Theme.Dialog">
