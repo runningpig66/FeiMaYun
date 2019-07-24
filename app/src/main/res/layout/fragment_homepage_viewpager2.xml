@@ -10,7 +10,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:listSelector="@android:color/transparent"
-        android:numColumns="3"
+        android:numColumns="5"
         android:scrollbars="none"
         android:verticalSpacing="10dp" />
 

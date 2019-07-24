@@ -45,7 +45,6 @@ import cn.aura.feimayun.util.StaticUtil;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.view.FlowLayout;
 
-
 /**
  * 描述：全部课程 碎片页
  */

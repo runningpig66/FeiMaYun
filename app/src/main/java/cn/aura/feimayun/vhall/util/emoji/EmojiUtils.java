@@ -113,7 +113,7 @@ public class EmojiUtils {
     public static final String f087 = "[爱你]";
     public static final String f088 = "[NO]";
     public static final String f089 = "[OK]";
-    private static final String filePath = "cn.aura.app.vhall.util.emoji.EmojiUtils";
+    private static final String filePath = "cn.aura.feimayun.vhall.util.emoji.EmojiUtils";
     private static final String delete_name = "delete_expression";
     private static final Factory spannableFactory = Factory.getInstance();
     private static final Map<Pattern, Integer> emoticons = new HashMap<>();

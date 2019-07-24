@@ -22,10 +22,10 @@ import java.util.UUID;
  */
 
 public class RequestURL {
-    public static final String version = "13";
+    public static final String version = "14";
     private static final String osName = "Android";
-    private static final String verName = "1.7";
-    private static boolean isTest = true;//测试  ？
+    private static final String verName = "1.8";
+    private static boolean isTest = false;//测试  ？
     private static String apidString = isTest ? "school.feimayun.com" : "yun.aura.cn";
 
     //在子线程中访问网络，GET访问
@@ -49,7 +49,6 @@ public class RequestURL {
                     connection = (HttpURLConnection) url.openConnection();
                     //接收模式
                     connection.setRequestMethod("GET");
-
                     connection.setRequestProperty("apud", apud);
                     connection.setRequestProperty("aptk", aptk);
                     connection.setRequestProperty("osName", osName);
@@ -60,7 +59,6 @@ public class RequestURL {
                     connection.setConnectTimeout(4000);
                     //读取超时，单位毫秒
                     connection.setReadTimeout(4000);
-
                     //开始连接
                     connection.connect();
                     //判断请求是否成功

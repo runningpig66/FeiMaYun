@@ -409,7 +409,9 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
         super.onStart();
         isVisible = true;
         if (requestTheAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            mPresenter.startPlay();
+            if (mPresenter != null) {
+                mPresenter.startPlay();
+            }
         } else {
             Toast.makeText(mContext, "请关闭其他音频再开始播放", Toast.LENGTH_SHORT).show();
         }

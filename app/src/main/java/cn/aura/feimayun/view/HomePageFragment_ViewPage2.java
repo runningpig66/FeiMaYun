@@ -28,9 +28,7 @@ public class HomePageFragment_ViewPage2 extends ViewPager {
             if (h > height)
                 height = h;
         }
-
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

@@ -47,8 +47,8 @@ import cn.aura.feimayun.vhall.watch.WatchActivity;
 public class MyStudiesFragment2 extends Fragment {
     //判断下载是否成功
     public static boolean isRequestSuccess = false;
-    public static Handler handleMyLessons;
-    public static Handler handleRefresh;
+    public Handler handleMyLessons;
+    public Handler handleRefresh;
     private MainActivity mainActivity;
     private int p = 1;//需要传的页号
     private boolean isFirstIn = true;

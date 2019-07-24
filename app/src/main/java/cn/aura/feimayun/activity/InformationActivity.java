@@ -473,7 +473,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             View view = inflater.inflate(R.layout.modify_phone, root, false);
             final EditText e_0 = view.findViewById(R.id.e_0);
             final EditText e_1 = view.findViewById(R.id.e_1);
-            final EditText e_2 = view.findViewById(R.id.e_2);
+//            final EditText e_2 = view.findViewById(R.id.e_2);
             if (activity_register_textView1 != null) {
                 activity_register_textView1 = null;
             }
@@ -525,20 +525,20 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                                 case R.id.submit:
                                     phone = e_0.getText().toString();
                                     String code = e_1.getText().toString();
-                                    String passwd = e_2.getText().toString();
-                                    if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(passwd)) {
+//                                    String passwd = e_2.getText().toString();
+                                    if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {// || TextUtils.isEmpty(passwd)
                                         Toast.makeText(InformationActivity.this, "请完成输入修改信息", Toast.LENGTH_SHORT).show();
                                     } else {
                                         if (Util.isMobile(phone)) {
-                                            if (Util.isPassword(passwd)) {
-                                                HashMap<String, String> paramsMap = new HashMap<>();
-                                                paramsMap.put("uid", Util.getUid());
-                                                paramsMap.put("phone", phone);
-                                                paramsMap.put("code", code);
-                                                paramsMap.put("passwd", passwd);
-                                                //申请修改手机号
-                                                RequestURL.sendPOST("https://app.feimayun.com/User/editPhone", handleEditPhone, paramsMap);
-                                            }
+//                                            if (Util.isPassword(passwd)) {
+                                            HashMap<String, String> paramsMap = new HashMap<>();
+                                            paramsMap.put("uid", Util.getUid());
+                                            paramsMap.put("phone", phone);
+                                            paramsMap.put("code", code);
+//                                                paramsMap.put("passwd", passwd);
+                                            //申请修改手机号
+                                            RequestURL.sendPOST("https://app.feimayun.com/User/editPhone", handleEditPhone, paramsMap);
+//                                            }
                                         }
                                     }
                                     break;

@@ -49,6 +49,18 @@ public class InputView {
     private InputUser user = null;
     private View view_bg;
 
+    public InputView(Context context, int protraitHeight, int landspaceHeight) {
+        this.context = context;
+        keyboardHeight_portrait = protraitHeight;
+        keyboardHeight_landspace = landspaceHeight;
+        initView();
+        initEmoji();
+        hasVirtual = KeyBoardManager.hasVirtualButton(context);
+        if (hasVirtual) {
+            virtualHeight = KeyBoardManager.getVirtualButtonHeight(context);
+        }
+    }
+
     public void setClickCallback(ClickCallback clickCallback) {
         mCallback = clickCallback;
     }
@@ -74,34 +86,12 @@ public class InputView {
         return contentView;
     }
 
-    //发送点击回调
-    public interface SendMsgClickListener {
-        void onSendClick(String msg, InputUser user);
-    }
-
     public void setOnSendClickListener(SendMsgClickListener onSendClickListener) {
         this.onSendClickListener = onSendClickListener;
     }
 
-    //键盘高度获取回调
-    public interface KeyboardHeightListener {
-        void onHeightReceived(int screenOri, int height);
-    }
-
     public void setOnHeightReceivedListener(KeyboardHeightListener onHeightReceivedListener) {
         this.onHeightReceivedListener = onHeightReceivedListener;
-    }
-
-    public InputView(Context context, int protraitHeight, int landspaceHeight) {
-        this.context = context;
-        keyboardHeight_portrait = protraitHeight;
-        keyboardHeight_landspace = landspaceHeight;
-        initView();
-        initEmoji();
-        hasVirtual = KeyBoardManager.hasVirtualButton(context);
-        if (hasVirtual) {
-            virtualHeight = KeyBoardManager.getVirtualButtonHeight(context);
-        }
     }
 
     public void initView() {
@@ -336,6 +326,16 @@ public class InputView {
                 previousKeyboardHeight = keyboardHeight;
             }
         });
+    }
+
+    //发送点击回调
+    public interface SendMsgClickListener {
+        void onSendClick(String msg, InputUser user);
+    }
+
+    //键盘高度获取回调
+    public interface KeyboardHeightListener {
+        void onHeightReceived(int screenOri, int height);
     }
 
     public interface ClickCallback {

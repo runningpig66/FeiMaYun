@@ -573,7 +573,9 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                             } else {
                                 finish();
                                 //计时器在后台时间到了以后，不提交。回到paperlist页面刷新一下
-                                refreshPaper.sendEmptyMessage(0);
+                                if (refreshPaper != null) {
+                                    refreshPaper.sendEmptyMessage(0);
+                                }
                             }
                         }
                     }.start();//开始计时

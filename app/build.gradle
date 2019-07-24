@@ -6,8 +6,8 @@ android {
         applicationId "cn.aura.feimayun"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 13
-        versionName "1.7"
+        versionCode 15
+        versionName "1.9"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构

@@ -108,6 +108,7 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
     }
 
     public WatchLivePresenter getmPresenter() {
+
         return watchLivePresenter;
     }
 
@@ -630,13 +631,11 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
                 moveMode.setLayoutParams(params2);
                 moveMode.setCanMove(false);
                 docFragment.setVisiable(false);
-
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
                 params.addRule(RelativeLayout.BELOW, R.id.moveMode);
                 activity_live_line0.setLayoutParams(params);
-
                 //将视频放下面小图
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                 params1.addRule(RelativeLayout.BELOW, R.id.activity_live_line);
@@ -646,7 +645,6 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
                 params1.topMargin = 0;
                 params1.rightMargin = 0;
                 contentVideo.setLayoutParams(params1);
-
             } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 //将PPT放上面大图
                 RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
@@ -657,13 +655,11 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
                 moveMode.setLayoutParams(params2);
                 moveMode.setCanMove(false);
                 docFragment.setVisiable(false);
-
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
                 params.addRule(RelativeLayout.BELOW, R.id.moveMode);
                 activity_live_line0.setLayoutParams(params);
-
                 //将视频放右上角
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                 params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -675,7 +671,6 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
                 params1.rightMargin = 0;
                 contentVideo.setLayoutParams(params1);
             }
-
             contentVideo.bringToFront();
             contentVideo.setCanMove(true);
             if (type == VhallUtil.WATCH_LIVE) {
@@ -713,8 +708,6 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
                 params2.topMargin = 0;
                 params2.rightMargin = 0;
                 moveMode.setLayoutParams(params2);
-
-
             } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 //将视频放上面大图
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
@@ -768,7 +761,7 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
         } else if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
             View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
         }
@@ -821,7 +814,6 @@ public class WatchActivity extends FragmentActivity implements WatchContract.Wat
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             if (onTop) {//如果播放器在上方
                 if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {//横屏
-
                     hideBottomUIMenu();
                     //隐藏播放器下方布局
 //                    activity_live_view.setVisibility(View.GONE);//隐藏状态栏

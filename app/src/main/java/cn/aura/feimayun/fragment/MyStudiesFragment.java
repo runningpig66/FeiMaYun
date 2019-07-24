@@ -66,6 +66,8 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
     private TabLayout my_studies_tablayout;
     private ViewPager my_studies_viewpager;
     private List<Fragment> fragments = new ArrayList<>();
+    private MyStudiesFragment1 myStudiesFragment1 = null;
+    private MyStudiesFragment2 myStudiesFragment2 = null;
 
     @SuppressLint("HandlerLeak")
     private void handler() {
@@ -75,9 +77,14 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
                 my_studies_tablayout.setVisibility(View.VISIBLE);
                 my_studies_viewpager.setVisibility(View.VISIBLE);
                 fragment_my_studies_level2.setVisibility(View.GONE);
+
                 //通知进行刷新
-                MyStudiesFragment1.handleRefresh.obtainMessage().sendToTarget();
-                MyStudiesFragment2.handleRefresh.obtainMessage().sendToTarget();
+                if (myStudiesFragment1 != null) {
+                    myStudiesFragment1.handleRefresh.obtainMessage().sendToTarget();
+                }
+                if (myStudiesFragment2 != null) {
+                    myStudiesFragment2.handleRefresh.obtainMessage().sendToTarget();
+                }
             }
         };
         handleLogout = new Handler() {
@@ -97,8 +104,8 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
                 }
                 fragment_my_studies_textView1.setText("立即登录");
                 fragment_my_studies_level2.setVisibility(View.VISIBLE);
-                my_studies_tablayout.setVisibility(View.GONE);
-                my_studies_viewpager.setVisibility(View.GONE);
+                my_studies_tablayout.setVisibility(View.INVISIBLE);
+                my_studies_viewpager.setVisibility(View.INVISIBLE);
                 fragment_my_studies_textView1.setClickable(true);
             }
         };
@@ -149,7 +156,6 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
         fragment_my_studies_textView1.setOnClickListener(this);
         fragment_my_studies_textView2.setOnClickListener(this);
         fragment_my_studies_imageView0.setOnClickListener(this);
-
         my_studies_tablayout = view.findViewById(R.id.my_studies_tablayout);
         my_studies_viewpager = view.findViewById(R.id.my_studies_viewpager);
         initFragment();
@@ -172,8 +178,8 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
     }
 
     private void initFragment() {
-        MyStudiesFragment1 myStudiesFragment1 = new MyStudiesFragment1();
-        MyStudiesFragment2 myStudiesFragment2 = new MyStudiesFragment2();
+        myStudiesFragment1 = new MyStudiesFragment1();
+        myStudiesFragment2 = new MyStudiesFragment2();
         fragments.clear();
         fragments.add(myStudiesFragment1);
         fragments.add(myStudiesFragment2);

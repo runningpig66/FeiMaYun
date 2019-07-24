@@ -86,6 +86,8 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     private List<Map<String, String>> data_mapList;
     private List<String> bannerStringList;
     private List<Map<String, String>> bannerMapList;
+    //类目list，首页的5个横格子数据：leimu
+    private List<Map<String, String>> leimuList;
     //顶部轮播图的ViewPager的相关变量
     //存储顶部轮播图片item视图
     private List<String[]> lmListName;//存储1级和2级的name
@@ -196,7 +198,6 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
             progressDialog.show();
             isFirstIn = false;
         }
-
         initData();
     }
 
@@ -472,80 +473,87 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
         try {
             JSONTokener jsonTokener = new JSONTokener(jsonData);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-            String status = jsonObject.getString("status");
-
+            String status = jsonObject.optString("status");
             if (status.equals("1")) {
                 //解析banner
-                String bannerString = jsonObject.getString("banner");
+                String bannerString = jsonObject.optString("banner");
                 bannerStringList = new ArrayList<>();
                 bannerMapList = new ArrayList<>();
                 if (!bannerString.equals("null")) {
-                    JSONArray banner = jsonObject.getJSONArray("banner");
-                    for (int i = 0; i < banner.length(); i++) {
-                        JSONObject bannerObject = banner.getJSONObject(i);
-                        bannerStringList.add(bannerObject.getString("bg_url"));
-                        Map<String, String> bannerItemMap = new LinkedHashMap<>();
-                        bannerItemMap.put("teach_type", bannerObject.getString("teach_type"));
-                        bannerItemMap.put("lid", bannerObject.getString("lid"));
-                        bannerMapList.add(bannerItemMap);
+                    JSONArray banner = jsonObject.optJSONArray("banner");
+                    if (banner != null) {
+                        for (int i = 0; i < banner.length(); i++) {
+                            JSONObject bannerObject = banner.optJSONObject(i);
+                            if (bannerObject != null) {
+                                bannerStringList.add(bannerObject.optString("bg_url"));
+                                Map<String, String> bannerItemMap = new LinkedHashMap<>();
+                                bannerItemMap.put("teach_type", bannerObject.optString("teach_type"));
+                                bannerItemMap.put("lid", bannerObject.optString("lid"));
+                                bannerMapList.add(bannerItemMap);
+                            }
+                        }
                     }
                 }
+                //解析类目，leimuList是我最后把leimu拼接整合为一个list
+                leimuList = new ArrayList<>();
+
 
                 //解析data
-                JSONArray data = jsonObject.getJSONArray("data");
+                JSONArray data = jsonObject.optJSONArray("data");
                 data_mapList = new ArrayList<>();
                 lmListId = new ArrayList<>();
                 lmListName = new ArrayList<>();
                 dataName.clear();
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject item = data.getJSONObject(i);
-                    Map<String, String> map = new HashMap<>();
-
-                    map.put("id", item.getString("id"));
-                    map.put("company_id", item.getString("company_id"));
-                    map.put("name", item.getString("name"));
-
-                    dataName.add(item.getString("name"));
-
-                    map.put("pid", item.getString("pid"));
-                    map.put("level", item.getString("level"));
-                    map.put("path", item.getString("path"));
-                    map.put("sort", item.getString("sort"));
-                    map.put("bg_img", item.getString("bg_img"));
-                    map.put("icon_img", item.getString("icon_img"));
-                    map.put("about", item.getString("about"));
-                    map.put("create_time", item.getString("create_time"));
-                    map.put("create_uid", item.getString("create_uid"));
-                    map.put("update_uid", item.getString("update_uid"));
-                    map.put("update_time", item.getString("update_time"));
-                    map.put("status", item.getString("status"));
-                    map.put("is_del", item.getString("is_del"));
-                    if (item.has("children")) {
-                        JSONArray jsonArray_children = item.getJSONArray("children");
-                        map.put("children", jsonArray_children.toString());
-                        String[] lmListIdString = new String[jsonArray_children.length() + 1];
-                        String[] lmListNameString = new String[jsonArray_children.length() + 1];
-                        lmListIdString[0] = item.getString("id");
+                if (data != null) {
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject item = data.optJSONObject(i);
+                        if (item != null) {
+                            Map<String, String> map = new HashMap<>();
+                            map.put("id", item.getString("id"));
+                            map.put("company_id", item.getString("company_id"));
+                            map.put("name", item.getString("name"));
+                            dataName.add(item.getString("name"));
+                            map.put("pid", item.getString("pid"));
+                            map.put("level", item.getString("level"));
+                            map.put("path", item.getString("path"));
+                            map.put("sort", item.getString("sort"));
+                            map.put("bg_img", item.getString("bg_img"));
+                            map.put("icon_img", item.getString("icon_img"));
+                            map.put("about", item.getString("about"));
+                            map.put("create_time", item.getString("create_time"));
+                            map.put("create_uid", item.getString("create_uid"));
+                            map.put("update_uid", item.getString("update_uid"));
+                            map.put("update_time", item.getString("update_time"));
+                            map.put("status", item.getString("status"));
+                            map.put("is_del", item.getString("is_del"));
+                            if (item.has("children")) {
+                                JSONArray jsonArray_children = item.getJSONArray("children");
+                                map.put("children", jsonArray_children.toString());
+                                String[] lmListIdString = new String[jsonArray_children.length() + 1];
+                                String[] lmListNameString = new String[jsonArray_children.length() + 1];
+                                lmListIdString[0] = item.getString("id");
 //                        lmListNameString[0] = item.getString("name");
-                        lmListNameString[0] = "全部";
-                        for (int j = 0; j < jsonArray_children.length(); j++) {
-                            JSONObject jsonArray_childrenObject = jsonArray_children.getJSONObject(j);
-                            lmListIdString[j + 1] = jsonArray_childrenObject.getString("id");
-                            lmListNameString[j + 1] = jsonArray_childrenObject.getString("name");
+                                lmListNameString[0] = "全部";
+                                for (int j = 0; j < jsonArray_children.length(); j++) {
+                                    JSONObject jsonArray_childrenObject = jsonArray_children.getJSONObject(j);
+                                    lmListIdString[j + 1] = jsonArray_childrenObject.getString("id");
+                                    lmListNameString[j + 1] = jsonArray_childrenObject.getString("name");
+                                }
+                                lmListId.add(lmListIdString);
+                                lmListName.add(lmListNameString);
+                            } else {
+                                String[] lmListIdString = new String[1];
+                                String[] lmListNameString = new String[1];
+                                lmListIdString[0] = item.getString("id");
+//                        lmListNameString[0] = item.getString("name");
+                                lmListNameString[0] = "全部";
+                                lmListId.add(lmListIdString);
+                                lmListName.add(lmListNameString);
+                                map.put("children", "");
+                            }
+                            data_mapList.add(map);
                         }
-                        lmListId.add(lmListIdString);
-                        lmListName.add(lmListNameString);
-                    } else {
-                        String[] lmListIdString = new String[1];
-                        String[] lmListNameString = new String[1];
-                        lmListIdString[0] = item.getString("id");
-//                        lmListNameString[0] = item.getString("name");
-                        lmListNameString[0] = "全部";
-                        lmListId.add(lmListIdString);
-                        lmListName.add(lmListNameString);
-                        map.put("children", "");
                     }
-                    data_mapList.add(map);
                 }
 
                 //初始化顶部ViewPager轮播图

@@ -58,7 +58,6 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
             }
             cur_page = bundle.getInt("cur_page");
             max_page = bundle.getInt("max_page");
-//            Gson gson = new Gson();
         }
         //为了防止第二次加载的时候重复调用了这个方法onCreateView(),重新new了一个pageadapter导致fragment不显示，显示空白
         if (view != null) {
@@ -92,7 +91,7 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
 
         MySimpleAdapter mySimpleAdapter = new MySimpleAdapter(mainActivity, data_mapList2);
         fragment_homepage_viewpager2_gridview.setAdapter(mySimpleAdapter);
-        SetHeightUtil.setGridViewHeight2(fragment_homepage_viewpager2_gridview, 6, 3);
+        SetHeightUtil.setGridViewHeight2(fragment_homepage_viewpager2_gridview, 5, 5);
 
         //GridView点击事件
         fragment_homepage_viewpager2_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -59,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/et_gray_radius_10"
             android:orientation="horizontal">
 
@@ -114,7 +115,8 @@
             android:paddingBottom="13dp"
             android:textColor="#666666"
             android:textColorHint="#cccccc"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

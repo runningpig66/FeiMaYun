@@ -356,8 +356,10 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
             }
         } else {
             WatchLivePresenter watchLivePresenter = context.getmPresenter();
-            watchLivePresenter.start();
-            mPresenter = watchLivePresenter;
+            if (watchLivePresenter != null) {
+                watchLivePresenter.start();
+                mPresenter = watchLivePresenter;
+            }
         }
     }
 

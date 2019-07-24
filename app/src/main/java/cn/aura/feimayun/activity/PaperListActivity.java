@@ -38,35 +38,27 @@ import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.view.ProgressDialog;
 
 public class PaperListActivity extends BaseActivity implements View.OnClickListener {
+    public static Handler refreshPaper;//计时器后台结束后直接finish不提交，再次进入paper刷新
     private LinearLayout activity_paper_list_layout1;//有试卷的布局
     private RelativeLayout activity_paper_list_layout2;//空白布局
-
     private RefreshLayout activity_paper_list_refreshLayout;
     private boolean isFirstIn = true;
-
     private int p = 1;//需要传的页号
     private int currentPosition = 0;//记录当前listview的位置
-
     private ProgressDialog progressDialog;
-
     private List<Map<String, String>> listList;//解析list标签的列表
     private PaperListActivity_ListView_Adapter adapter;
-
     private TextView activity_paper_list_textview1;
     private TextView activity_paper_list_textview2;
     private ListView activity_paper_list_listview1;
     private TextView activity_paper_list_textview3;//单选题标题，需要在没题时隐藏
     private View activity_paper_list_line1;//单选题下划线，需要在没题时隐藏
-
     private String sid;
-
-
     private int clickPosition = -1;
     private int clickP = 0;
     //请求面授详情
     private Handler handleNetwork;
     private Handler handleNetwork2;
-    public static Handler refreshPaper;//计时器后台结束后直接finish不提交，再次进入paper刷新
 
     public int getClickPosition() {
         return clickPosition;
