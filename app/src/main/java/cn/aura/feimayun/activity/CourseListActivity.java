@@ -55,12 +55,10 @@ public class CourseListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
-
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             Intent intent = getIntent();
             series = intent.getStringExtra("series");
             id = intent.getStringExtra("id");
-
             //初始化hander
             hander();
             initData();

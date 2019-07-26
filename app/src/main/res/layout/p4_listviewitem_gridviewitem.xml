@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--首页P4页ListView子项GridView的item布局-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <!--这里需要包一层布局，测量高度-->
@@ -18,20 +19,35 @@
             <ImageView
                 android:id="@+id/gridview1_imageview"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="90dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/sy_pic_lit_banner" />
         </com.gcssloop.widget.RCRelativeLayout>
 
-        <TextView
-            android:id="@+id/gridview1_textview"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:text="测试标题"
-            android:textColor="#555555"
-            android:textSize="12sp" />
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/gridview1_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#555555"
+                android:textSize="10sp"
+                tools:text="测试标题" />
+
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="10dp"
+                android:src="@drawable/icon_sy_arrow" />
+        </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>

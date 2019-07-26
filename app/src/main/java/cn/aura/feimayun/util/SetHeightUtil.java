@@ -1,6 +1,7 @@
 package cn.aura.feimayun.util;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -138,9 +139,7 @@ public class SetHeightUtil {
                     }
                 }
                 ViewGroup.LayoutParams params = listView.getLayoutParams();
-
                 params.height = totalHeight;
-
                 listView.setLayoutParams(params);
             }
         });

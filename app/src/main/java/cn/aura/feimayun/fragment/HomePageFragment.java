@@ -15,13 +15,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -51,15 +57,16 @@ import java.util.Objects;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.CoursePackageActivity;
-import cn.aura.feimayun.activity.ExamListActivity;
 import cn.aura.feimayun.activity.FaceToFaceActivity;
 import cn.aura.feimayun.activity.LiveListActivity;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.activity.PlayDetailActivity;
-import cn.aura.feimayun.activity.QuestionListActivity;
+import cn.aura.feimayun.activity.SingleCourseActivity;
+import cn.aura.feimayun.adapter.Bottom_ListView_Adapter;
 import cn.aura.feimayun.adapter.Fragment_home_page_viewpager2_Adapter;
 import cn.aura.feimayun.adapter.P4_ListView_Adapter;
 import cn.aura.feimayun.bean.List_Bean;
+import cn.aura.feimayun.util.OnClickListener;
 import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.SetHeightUtil;
@@ -88,6 +95,10 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     private List<Map<String, String>> bannerMapList;
     //类目list，首页的5个横格子数据：leimu
     private List<Map<String, String>> leimuList;
+    //存储后台解析后的data2标签的JSON数据，大格子和小格子
+    private List<Map<String, String>> data2MapList;
+    //光环微课
+    private List<Map<String, String>> data3MapList;
     //顶部轮播图的ViewPager的相关变量
     //存储顶部轮播图片item视图
     private List<String[]> lmListName;//存储1级和2级的name
@@ -103,7 +114,20 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     private ImageView[] pointImageviews;
     private Banner banner;
     private ListView p_4_listView;
-    private View staticview1, staticview2, staticview3;
+    private ListView bottom_listview;
+    private EditText top_editText;
+    private RelativeLayout weike_relativeLayout;
+    private TextView weike_textView;
+    //red point
+    private ImageView activity_main_layout_redpoint;
+    //跳转到全部课程时微课的position
+//    private int weike_position = 0;
+    private LinearLayout zhibo_linearLayout;
+    private TextView message_textView;
+    private FrameLayout search_layout;
+    //小红点布局
+    private RelativeLayout notify_relativeLayout;
+
 
     @SuppressLint("HandlerLeak")
     public void handler() {
@@ -172,33 +196,73 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
 
     //初始化布局和handler
     public void initView() {
+        notify_relativeLayout = view.findViewById(R.id.notify_relativeLayout);
+        notify_relativeLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.onCheckedChanged(mainActivity.rg_bt, R.id.selector4_rb);
+            }
+        });
+        activity_main_layout_redpoint = view.findViewById(R.id.activity_main_layout_redpoint);
         banner = view.findViewById(R.id.banner);
         p_4_listView = view.findViewById(R.id.p_4_listView);
+        bottom_listview = view.findViewById(R.id.bottom_listview);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) banner.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = (int) (ScreenUtils.getWidth(mainActivity) * 0.5);
+        params.height = (int) (ScreenUtils.getWidth(mainActivity) * 0.425);
         banner.setLayoutParams(params);
         fragment_home_page_viewpager2 = view.findViewById(R.id.fragment_home_page_viewpager2);
         fragment_home_page_layout1 = view.findViewById(R.id.fragment_home_page_layout1);
-
-        LinearLayout live = view.findViewById(R.id.live);
-        live.setOnClickListener(this);
-        LinearLayout exam = view.findViewById(R.id.exam);
-        exam.setOnClickListener(this);
-        LinearLayout answer = view.findViewById(R.id.answer);
-        answer.setOnClickListener(this);
-        LinearLayout more = view.findViewById(R.id.more);
-        more.setOnClickListener(this);
-        staticview1 = view.findViewById(R.id.staticview1);
-        staticview2 = view.findViewById(R.id.staticview2);
-        staticview3 = view.findViewById(R.id.staticview3);
-
+        top_editText = view.findViewById(R.id.top_editText);
+        top_editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    String searchMessage = top_editText.getText().toString();
+                    if (searchMessage.isEmpty()) {
+                        Toast.makeText(mainActivity, "请输入查询信息", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(mainActivity, SingleCourseActivity.class);
+                        intent.putExtra("searchMessage", searchMessage);
+                        mainActivity.startActivity(intent);
+                    }
+                }
+                return false;
+            }
+        });
+        top_editText.post(new Runnable() {
+            @Override
+            public void run() {
+                top_editText.clearFocus();
+            }
+        });
+        weike_relativeLayout = view.findViewById(R.id.weike_relativeLayout);
+        weike_textView = view.findViewById(R.id.weike_textView);
+        zhibo_linearLayout = view.findViewById(R.id.zhibo_linearLayout);
+        zhibo_linearLayout.setOnClickListener(this);
+        message_textView = view.findViewById(R.id.message_textView);
+        search_layout = view.findViewById(R.id.search_layout);
+        search_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchMessage = top_editText.getText().toString();
+                if (searchMessage.isEmpty()) {
+                    Toast.makeText(mainActivity, "请输入查询信息", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(mainActivity, SingleCourseActivity.class);
+                    intent.putExtra("searchMessage", searchMessage);
+                    mainActivity.startActivity(intent);
+                }
+            }
+        });
         if (isFirstIn) {
             progressDialog = new ProgressDialog(mainActivity);
             progressDialog.show();
             isFirstIn = false;
         }
+
         initData();
+
     }
 
     public void initData() {
@@ -209,7 +273,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.live://直播中心
+            case R.id.zhibo_linearLayout:
                 new TListDialog.Builder(mainActivity.getSupportFragmentManager())
                         .setScreenWidthAspect(mainActivity, 0.8f)
                         .setScreenHeightAspect(mainActivity, 0.6f)
@@ -249,63 +313,103 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                         .create()
                         .show();
                 break;
-            case R.id.exam://考试中心
-                Intent intentExamListActivity = new Intent(mainActivity, ExamListActivity.class);
-                startActivity(intentExamListActivity);
-                break;
-            case R.id.answer://答疑中心
+//            case R.id.live://直播中心
+//                new TListDialog.Builder(mainActivity.getSupportFragmentManager())
+//                        .setScreenWidthAspect(mainActivity, 0.8f)
+//                        .setScreenHeightAspect(mainActivity, 0.6f)
+//                        .setListLayoutRes(R.layout.dialog_live, LinearLayoutManager.VERTICAL)
+//                        .setGravity(Gravity.CENTER)
+//                        .setCancelOutside(true)
+//                        .setAdapter(new TBaseAdapter<String>(R.layout.dialog_live_textviewitem, dataName) {
+//                            @Override
+//                            protected void onBind(BindViewHolder holder, int position, String s) {
+//                                holder.setText(R.id.tv, s);
+//                            }
+//                        })
+//                        .setOnAdapterItemClickListener(new TBaseAdapter.OnAdapterItemClickListener<String>() {
+//                            @Override
+//                            public void onItemClick(BindViewHolder holder, int position, String item, TDialog tDialog) {
+//                                //TODO 直播列表跳转
+//                                String series_1 = data_mapList.get(position).get("id");
+//                                Intent intent = new Intent(mainActivity, LiveListActivity.class);
+//                                intent.putExtra("series_1", series_1);
+//                                intent.putExtra("is_live", "1");
+//                                startActivity(intent);
+////                                Toast.makeText(mainActivity, position + "", Toast.LENGTH_SHORT).show();
+//                                tDialog.dismiss();
+//                            }
+//                        })
+//                        .addOnClickListener(R.id.dialog_live_imageview1)
+//                        .setOnViewClickListener(new OnViewClickListener() {
+//                            @Override
+//                            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+//                                switch (view.getId()) {
+//                                    case R.id.dialog_live_imageview1:
+//                                        tDialog.dismiss();
+//                                        break;
+//                                }
+//                            }
+//                        })
+//                        .create()
+//                        .show();
+//                break;
+//            case R.id.exam://考试中心
+//                Intent intentExamListActivity = new Intent(mainActivity, ExamListActivity.class);
+//                startActivity(intentExamListActivity);
+//                break;
+//            case R.id.answer://答疑中心
+////                Toast.makeText(mainActivity, "敬请期待", Toast.LENGTH_SHORT).show();
+//                new TListDialog.Builder(mainActivity.getSupportFragmentManager())
+//                        .setScreenWidthAspect(mainActivity, 0.8f)
+//                        .setScreenHeightAspect(mainActivity, 0.6f)
+//                        .setListLayoutRes(R.layout.dialog_live, LinearLayoutManager.VERTICAL)
+//                        .setGravity(Gravity.CENTER)
+//                        .setCancelOutside(true)
+//                        .setAdapter(new TBaseAdapter<String>(R.layout.dialog_live_textviewitem, dataName) {
+//                            @Override
+//                            protected void onBind(BindViewHolder holder, int position, String s) {
+//                                holder.setText(R.id.tv, s);
+//                            }
+//                        })
+//                        .setOnAdapterItemClickListener(new TBaseAdapter.OnAdapterItemClickListener<String>() {
+//                            @Override
+//                            public void onItemClick(BindViewHolder holder, int position, String item, TDialog tDialog) {
+//                                Intent intent = new Intent(mainActivity, QuestionListActivity.class);
+//                                List_Bean list_beanId = new List_Bean();
+//                                list_beanId.setListString(lmListId);
+//                                List_Bean list_beanName = new List_Bean();
+//                                list_beanName.setListString(lmListName);
+//                                intent.putExtra("list_beanId", list_beanId);
+//                                intent.putExtra("list_beanName", list_beanName);
+//                                intent.putExtra("position", position);
+//                                startActivity(intent);
+//                                tDialog.dismiss();
+//                            }
+//                        })
+//                        .addOnClickListener(R.id.dialog_live_imageview1)
+//                        .setOnViewClickListener(new OnViewClickListener() {
+//                            @Override
+//                            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+//                                switch (view.getId()) {
+//                                    case R.id.dialog_live_imageview1:
+//                                        tDialog.dismiss();
+//                                        break;
+//                                }
+//                            }
+//                        })
+//                        .create()
+//                        .show();
+//                break;
+//            case R.id.more://敬请期待
 //                Toast.makeText(mainActivity, "敬请期待", Toast.LENGTH_SHORT).show();
-                new TListDialog.Builder(mainActivity.getSupportFragmentManager())
-                        .setScreenWidthAspect(mainActivity, 0.8f)
-                        .setScreenHeightAspect(mainActivity, 0.6f)
-                        .setListLayoutRes(R.layout.dialog_live, LinearLayoutManager.VERTICAL)
-                        .setGravity(Gravity.CENTER)
-                        .setCancelOutside(true)
-                        .setAdapter(new TBaseAdapter<String>(R.layout.dialog_live_textviewitem, dataName) {
-                            @Override
-                            protected void onBind(BindViewHolder holder, int position, String s) {
-                                holder.setText(R.id.tv, s);
-                            }
-                        })
-                        .setOnAdapterItemClickListener(new TBaseAdapter.OnAdapterItemClickListener<String>() {
-                            @Override
-                            public void onItemClick(BindViewHolder holder, int position, String item, TDialog tDialog) {
-                                Intent intent = new Intent(mainActivity, QuestionListActivity.class);
-                                List_Bean list_beanId = new List_Bean();
-                                list_beanId.setListString(lmListId);
-                                List_Bean list_beanName = new List_Bean();
-                                list_beanName.setListString(lmListName);
-                                intent.putExtra("list_beanId", list_beanId);
-                                intent.putExtra("list_beanName", list_beanName);
-                                intent.putExtra("position", position);
-                                startActivity(intent);
-                                tDialog.dismiss();
-                            }
-                        })
-                        .addOnClickListener(R.id.dialog_live_imageview1)
-                        .setOnViewClickListener(new OnViewClickListener() {
-                            @Override
-                            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                                switch (view.getId()) {
-                                    case R.id.dialog_live_imageview1:
-                                        tDialog.dismiss();
-                                        break;
-                                }
-                            }
-                        })
-                        .create()
-                        .show();
-                break;
-            case R.id.more://敬请期待
-                Toast.makeText(mainActivity, "敬请期待", Toast.LENGTH_SHORT).show();
-                break;
+//                break;
         }
     }
 
     //初始化底部ListView
     private void initListView() {
         //底部ListView的相关变量
-        P4_ListView_Adapter adapter = new P4_ListView_Adapter(mainActivity, data_mapList);
+        P4_ListView_Adapter adapter = new P4_ListView_Adapter(mainActivity, data2MapList);
         p_4_listView.setAdapter(adapter);
         //固定ListView的高度和数量
         SetHeightUtil.measureListViewHeight(p_4_listView);
@@ -314,13 +418,13 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //实现碎片页面跳转
                 mainActivity.onCheckedChanged(mainActivity.rg_bt, R.id.selector2_rb);
-
                 //实现碎片页面数据传递
-                String data_position = String.valueOf(position);
-                String data_id = data_mapList.get(position).get("id");
+//                String data_position = String.valueOf(position);
+//                String data_id = data_mapList.get(position).get("id");
+                String data2_id = data2MapList.get(position).get("id");
                 Bundle bundle = new Bundle();
-                bundle.putString("data_position", data_position);
-                bundle.putString("data_id", data_id);
+                bundle.putString("data2_id", data2_id);
+//                bundle.putString("data_id", data_id);
                 Message message = new Message();
                 message.what = StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE;
                 message.obj = bundle;
@@ -394,8 +498,8 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     //初始化顶部ViewPager2，也就是6个方格布局
     private void initViewPager2() {
         //每页存放6个，a表示存放的页数
-        int a = data_mapList.size() / 6;
-        int b = data_mapList.size() % 6;
+        int a = leimuList.size() / 6;
+        int b = leimuList.size() % 6;
         if (b != 0) {
             a = a + 1;
         }
@@ -414,7 +518,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
             bundle.putInt("cur_page", (i + 1));
             bundle.putInt("max_page", a);
             List_Bean bean = new List_Bean();
-            bean.setList(data_mapList);
+            bean.setList(leimuList);
             bundle.putSerializable("data_Bean", bean);
             fragment.setArguments(bundle);
             fragmentArrayList.add(fragment);
@@ -458,11 +562,6 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
             pointImageviews[i] = imageView;
             fragment_home_page_layout1.addView(point_panel);
         }
-
-        staticview1.setVisibility(View.VISIBLE);
-        staticview2.setVisibility(View.VISIBLE);
-        staticview3.setVisibility(View.VISIBLE);
-
         //初始化ListView
         initListView();
     }
@@ -494,10 +593,30 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
+                //解析Message
+                JSONObject messageObject = jsonObject.optJSONObject("message");
+                String title = messageObject.optString("title");
+                message_textView.setText(title);
                 //解析类目，leimuList是我最后把leimu拼接整合为一个list
                 leimuList = new ArrayList<>();
-
-
+                JSONArray leimuArray = jsonObject.optJSONArray("leimu");
+                if (leimuArray != null) {
+                    for (int i = 0; i < leimuArray.length(); i++) {
+                        JSONArray innerArray = leimuArray.optJSONArray(i);
+                        if (innerArray != null) {
+                            for (int j = 0; j < innerArray.length(); j++) {
+                                JSONObject inner2Object = innerArray.optJSONObject(j);
+                                if (inner2Object != null) {
+                                    Map<String, String> map = new HashMap<>();
+                                    map.put("id", inner2Object.optString("id"));
+                                    map.put("name", inner2Object.optString("name"));
+                                    map.put("icon_img", inner2Object.optString("icon_img"));
+                                    leimuList.add(map);
+                                }
+                            }
+                        }
+                    }
+                }
                 //解析data
                 JSONArray data = jsonObject.optJSONArray("data");
                 data_mapList = new ArrayList<>();
@@ -555,11 +674,35 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
-
+                //TODO 解析data2
+                data2MapList = new ArrayList<>();
+                data3MapList = new ArrayList<>();
+                JSONArray data2Array = jsonObject.optJSONArray("data2");
+                if (data2Array != null) {
+//                    weike_position = data2Array.length() - 1;
+                    for (int i = 0; i < data2Array.length(); i++) {
+                        JSONObject innerObject = data2Array.optJSONObject(i);
+                        Map<String, String> innerMap = new HashMap<>();
+                        innerMap.put("id", innerObject.optString("id"));
+                        innerMap.put("type", innerObject.optString("type"));
+                        innerMap.put("name", innerObject.optString("name"));
+                        if (innerObject.has("lessons")) {
+                            JSONArray lessonsArray = innerObject.optJSONArray("lessons");
+                            innerMap.put("lessons", lessonsArray.toString());
+                        }
+                        if (innerObject.optString("type").equals("1")) {
+                            data2MapList.add(innerMap);
+                        } else {
+                            data3MapList.add(innerMap);
+                        }
+                    }
+                }
                 //初始化顶部ViewPager轮播图
                 initViewPager();
                 //初始化GridView
                 initViewPager2();
+                //todo 初始化底部listview
+                initBottomListView();
                 homepage_refreshLayout.finishRefresh(true);
             }
             if (progressDialog != null) {
@@ -573,6 +716,43 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 progressDialog.dismiss();
                 progressDialog = null;
             }
+        }
+    }
+
+    private void initBottomListView() {
+        weike_textView.setText(data3MapList.get(0).get("name"));
+        Bottom_ListView_Adapter adapter = new Bottom_ListView_Adapter(mainActivity, data3MapList);
+        bottom_listview.setAdapter(adapter);
+        //固定ListView的高度和数量
+        SetHeightUtil.measureListViewHeight(bottom_listview);
+        //微课的列表时单独摘出来的，所以
+        weike_relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //实现碎片页面跳转
+                mainActivity.onCheckedChanged(mainActivity.rg_bt, R.id.selector2_rb);
+                //实现碎片页面数据传递
+//                String data_position = String.valueOf(weike_position);
+//                String data_id = data_mapList.get(position).get("id");
+                String data2_id = data3MapList.get(0).get("id");
+                Bundle bundle = new Bundle();
+                bundle.putString("data2_id", data2_id);
+//                bundle.putString("data_id", data_id);
+                Message message = new Message();
+                message.what = StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE;
+                message.obj = bundle;
+                FullCourseFragment.handleJump.sendMessage(message);
+            }
+        });
+        bottom_listview.setFocusable(false);
+    }
+
+    //设置未读消息小圆点是否显示：true显示
+    public void setRedPointVisiable2(boolean isShow) {
+        if (isShow) {
+            activity_main_layout_redpoint.setVisibility(View.VISIBLE);
+        } else {
+            activity_main_layout_redpoint.setVisibility(View.GONE);
         }
     }
 }

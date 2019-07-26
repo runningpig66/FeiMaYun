@@ -189,7 +189,6 @@ public class CourseListFragment extends Fragment {
             //从bean对象中取出需要的list数据
             lmList_List = Objects.requireNonNull(bean).getList();
         }
-
     }
 
     //在界面可见时再加载网络数据
@@ -259,7 +258,6 @@ public class CourseListFragment extends Fragment {
                 RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
             }
         });
-//        if (isFirstIn) {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
         courselist_viewpager_recyclerview1.setLayoutManager(gridLayoutManager);
         adapter = new CouseListViewPagerRvAdapter(context, null);
@@ -270,7 +268,6 @@ public class CourseListFragment extends Fragment {
                 .setShowLastLine(false)
                 .build();
         courselist_viewpager_recyclerview1.addItemDecoration(divider);
-//        isFirstIn = false;
 
         adapter.setItemClickListener(new CouseListViewPagerRvAdapter.OnItemClickListener() {
             @Override
@@ -306,108 +303,6 @@ public class CourseListFragment extends Fragment {
                 }
             }
         });
-//        } else {
-//            adapter.notifyDataSetChanged();
-//        }
         return view;
     }
-
-    //    private void initGridView() {
-//        if (isFirstIn) {
-//            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
-//            courselist_viewpager_recyclerview1.setLayoutManager(gridLayoutManager);
-//            adapter = new CouseListViewPagerRvAdapter(context, data_List);
-//            courselist_viewpager_recyclerview1.setAdapter(adapter);
-//            GridItemDecoration divider = new GridItemDecoration.Builder(context)
-//                    .setVerticalSpan(R.dimen.dp5)
-//                    .setColorResource(R.color.eeeeee)
-//                    .setShowLastLine(false)
-//                    .build();
-//            courselist_viewpager_recyclerview1.addItemDecoration(divider);
-//            isFirstIn = false;
-//
-//            adapter.setItemClickListener(new CouseListViewPagerRvAdapter.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(View view, int position) {
-//                    //添加课程列表页面点击事件
-//                    String data_id = data_List.get(position).get("id");
-//                    String data_teach_type = data_List.get(position).get("teach_type");
-//                    switch (Integer.parseInt(data_teach_type)) {
-//                        case 1://直播
-//                            Intent intentLiveActivity = new Intent(context, WatchActivity.class);
-//                            intentLiveActivity.putExtra("data_id", data_id);
-//                            intentLiveActivity.putExtra("data_teach_type", data_teach_type);
-//                            startActivity(intentLiveActivity);
-//                            break;
-//                        case 2://录播
-//                            Intent intentPlayDeatilActivity = new Intent(context, PlayDetailActivity.class);
-//                            intentPlayDeatilActivity.putExtra("data_id", data_id);
-//                            intentPlayDeatilActivity.putExtra("data_teach_type", data_teach_type);
-//                            startActivity(intentPlayDeatilActivity);
-//                            break;
-//                        case 3://课程包
-//                            Intent intentCoursePackageActivity = new Intent(context, CoursePackageActivity.class);
-//                            intentCoursePackageActivity.putExtra("data_id", data_id);
-//                            intentCoursePackageActivity.putExtra("data_teach_type", data_teach_type);
-//                            startActivity(intentCoursePackageActivity);
-//                            break;
-//                        case 4://面授
-//                            Intent intentFaceToFaceActivity = new Intent(context, FaceToFaceActivity.class);
-//                            intentFaceToFaceActivity.putExtra("data_id", data_id);
-//                            intentFaceToFaceActivity.putExtra("data_teach_type", data_teach_type);
-//                            startActivity(intentFaceToFaceActivity);
-//                            break;
-//                    }
-//                }
-//            });
-//        } else {
-//            adapter.notifyDataSetChanged();
-//        }
-
-//        DividerItemDecoration divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-//        divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.recyclerview_decoration)));
-//        courselist_viewpager_recyclerview1.addItemDecoration(divider);
-
-//        courselist_viewpager_gridview.setAdapter(adapter);
-
-//        courselist_viewpager_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //添加课程列表页面点击事件
-//                String data_id = data_List.get(position).get("id");
-//                String data_teach_type = data_List.get(position).get("teach_type");
-//                switch (Integer.parseInt(data_teach_type)) {
-//                    case 1://直播
-//                        Intent intentLiveActivity = new Intent(context, WatchActivity.class);
-//                        intentLiveActivity.putExtra("data_id", data_id);
-//                        intentLiveActivity.putExtra("data_teach_type", data_teach_type);
-//                        startActivity(intentLiveActivity);
-//                        break;
-//                    case 2://录播
-//                        Intent intentPlayDeatilActivity = new Intent(context, PlayDetailActivity.class);
-//                        intentPlayDeatilActivity.putExtra("data_id", data_id);
-//                        intentPlayDeatilActivity.putExtra("data_teach_type", data_teach_type);
-//                        startActivity(intentPlayDeatilActivity);
-//                        break;
-//                    case 3://课程包
-//                        Intent intentCoursePackageActivity = new Intent(context, CoursePackageActivity.class);
-//                        intentCoursePackageActivity.putExtra("data_id", data_id);
-//                        intentCoursePackageActivity.putExtra("data_teach_type", data_teach_type);
-//                        startActivity(intentCoursePackageActivity);
-//                        break;
-//                    case 4://面授
-//                        Intent intentFaceToFaceActivity = new Intent(context, FaceToFaceActivity.class);
-//                        intentFaceToFaceActivity.putExtra("data_id", data_id);
-//                        intentFaceToFaceActivity.putExtra("data_teach_type", data_teach_type);
-//                        startActivity(intentFaceToFaceActivity);
-//                        break;
-//                }
-//            }
-//        });
-//            isFirstIn = false;
-//        } else {
-//            adapter.notifyDataSetChanged();
-//        }
-
-//    }
 }

@@ -22,7 +22,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="28dp"
             android:background="@drawable/message_notread"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <RadioGroup
             android:id="@+id/rg_bt"

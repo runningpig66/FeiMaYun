@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <!--细分割线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d1d1d1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.gcssloop.widget.RCRelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="2"
+            app:round_corner="5dp">
+
+            <ImageView
+                android:id="@+id/bottom_imageview1"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/sy_pic_lit_banner" />
+        </com.gcssloop.widget.RCRelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/bottom_textview1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                tools:text="标题标题标题标题标题标题标题标题标题标题标题标题" />
+
+            <TextView
+                android:id="@+id/bottom_textview2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="11sp"
+                tools:text="描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="bottom|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/bottom_textview3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#666666"
+                    android:textSize="11sp"
+                    tools:text="11人报名" />
+
+                <TextView
+                    android:id="@+id/bottom_textview4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/blue_corner_textview"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="2dp"
+                    android:text="学习"
+                    android:textColor="#01D7FF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

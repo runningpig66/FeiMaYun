@@ -81,8 +81,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public void setRedPointVisiable(boolean isShow) {
         if (isShow) {
             activity_main_layout_redpoint.setVisibility(View.VISIBLE);
+            homePageFragment.setRedPointVisiable2(true);
         } else {
             activity_main_layout_redpoint.setVisibility(View.GONE);
+            homePageFragment.setRedPointVisiable2(false);
         }
     }
 
@@ -99,7 +101,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
     private void parseUpdate(String s) {
-        Util.d("061401", s);
+//        Util.d("061401", s);
         JSONTokener jsonTokener = new JSONTokener(s);
         try {
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -158,6 +160,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             handle();
             initView();
         }
+
     }
 
     @Override

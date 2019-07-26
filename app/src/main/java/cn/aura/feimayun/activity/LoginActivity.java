@@ -12,6 +12,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -251,10 +252,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                 //向消息中心发送登录成功的信息，刷新消息界面
                 MessageCenterFragment.handleLogin.obtainMessage().sendToTarget();
-
                 //登录成功后，关闭登录页面，并向我的学习返回成功成功的消息
                 MyStudiesFragment.handleLogin.obtainMessage().sendToTarget();
-
+                //关闭键盘
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                View v = getWindow().peekDecorView();
+                if (null != v) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
                 finish();
             }
             String msgReturn = jsonObject.getString("msg");

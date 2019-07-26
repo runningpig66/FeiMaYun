@@ -139,7 +139,6 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
 
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             handle();
-
             initView();
 
             progressDialog = new ProgressDialog(this);

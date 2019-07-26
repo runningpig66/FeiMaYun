@@ -156,7 +156,6 @@ public class RequestURL {
                     connection.connect();
                     //判断请求是否成功
 //                    if (connection.getResponseCode() == 200) {
-
                     //获取URLConnection对象对应的输出流
                     DataOutputStream out = new DataOutputStream(connection.getOutputStream());
                     StringBuilder builder = new StringBuilder();
@@ -164,11 +163,9 @@ public class RequestURL {
                         builder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
                     }
                     builder.deleteCharAt(builder.length() - 1);
-
                     out.write(builder.toString().getBytes());//注意中文
                     //flush输出流的缓冲
                     out.flush();
-
                     //得到输入流
                     InputStream in = connection.getInputStream();
                     reader = new BufferedReader(new InputStreamReader(in));
@@ -465,6 +462,89 @@ public class RequestURL {
         }).start();
     }
 
+    //在子线程中访问网络，GET访问，path传参
+    public static void sendGetPath(final String urlPath, final Handler handler, final Map<String, String> paramsMap) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String aptk;
+                String apud = Util.getUid();
+                if (apud.equals("")) {
+                    aptk = new Md5().getDateToken();
+                } else {
+                    aptk = new Md5().getUidToken(apud);
+                }
+                HttpURLConnection connection = null;
+                BufferedReader reader = null;
+                try {
+                    StringBuilder params = new StringBuilder();
+                    for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
+                        params.append(entry.getKey());
+                        params.append("=");
+                        params.append(entry.getValue());
+                        params.append("&");
+                    }
+                    if (params.length() > 0) {
+                        params.deleteCharAt(params.lastIndexOf("&"));
+                    }
+                    URL url = new URL(urlPath + (params.length() > 0 ? "?" + params.toString() : ""));
+                    //打开连接
+                    connection = (HttpURLConnection) url.openConnection();
+                    //接收模式
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestProperty("apud", apud);
+                    connection.setRequestProperty("aptk", aptk);
+                    connection.setRequestProperty("osName", osName);
+                    connection.setRequestProperty("verName", verName);
+                    connection.setRequestProperty("version", version);
+                    connection.setRequestProperty("apid", apidString);
+                    //连接超时，单位毫秒
+                    connection.setConnectTimeout(4000);
+                    //读取超时，单位毫秒
+                    connection.setReadTimeout(4000);
+                    //开始连接
+                    connection.connect();
+                    //判断请求是否成功
+//                    if (connection.getResponseCode() == 200) {
+
+                    //得到输入流
+                    InputStream in = connection.getInputStream();
+                    reader = new BufferedReader(new InputStreamReader(in));
+                    //response存放从服务器接收到的字符串
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    //创建消息并发送
+                    Message message = handler.obtainMessage();
+                    message.obj = response.toString();
+                    message.sendToTarget();
+//                    }
+                } catch (IOException e) {
+                    Message message = handler.obtainMessage();
+                    message.obj = "网络异常";
+                    message.sendToTarget();
+                    e.printStackTrace();
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }
+            }
+        }).start();
+    }
+
+
 }
+
 
 

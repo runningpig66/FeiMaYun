@@ -69,6 +69,8 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
     private ImageView banner_img;
     private LayoutInflater inflater;
     private int data_position = -1;
+    //记录data课程的id数组，通过首页传来的id和data数组中的id作比较，得出首页跳转过来的position
+    private int[] id_array;
 
     @SuppressLint("HandlerLeak")
     public void handler() {
@@ -96,7 +98,16 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
                 switch (msg.what) {
                     case StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE:
                         Bundle bundle = (Bundle) msg.obj;
-                        data_position = Integer.parseInt(bundle.getString("data_position"));
+                        int data2_id = Integer.parseInt(bundle.getString("data2_id", "0"));
+                        for (int i = 0; i < id_array.length; i++) {
+                            if (id_array[i] == data2_id) {
+                                data_position = i;
+                                break;
+                            }
+                        }
+                        if (data_position == -1) {
+                            data_position = 0;
+                        }
                         //从其他页面跳转过来，要判断本页面是否网络加载成功
                         if (isRequestSuccess) {
                             //根据id的不同，设置不同的按钮背景和对应的页面
@@ -175,10 +186,12 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
                 //解析data
                 JSONArray data = jsonObject.getJSONArray("data");
                 data_mapList = new ArrayList<>();
+                id_array = new int[data.length()];
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject item = data.getJSONObject(i);
                     Map<String, String> map = new HashMap<>();
                     map.put("id", item.getString("id"));
+                    id_array[i] = Integer.valueOf(item.getString("id"));
                     map.put("name", item.getString("name"));
                     map.put("bg_img", item.getString("bg_img"));
                     map.put("icon_img", item.getString("icon_img"));

@@ -97,12 +97,12 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
         fragment_homepage_viewpager2_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 //这里的position要根据页面增加
-                int newPosition = position;
-                if (cur_page > 1) {
-                    newPosition = (cur_page - 1) * 6 + position;
-                }
+//                int newPosition = position;
+//                if (cur_page > 1) {
+//                    newPosition = (cur_page - 1) * 6 + position;
+//                }
+
 
                 //实现碎片页面跳转
                 mainActivity.onCheckedChanged(mainActivity.rg_bt, R.id.selector2_rb);
@@ -114,12 +114,12 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
 //                });
 //                mainActivity.forSkip();
                 //实现碎片页面数据传递
-
-                String data_position = String.valueOf(newPosition);
-                String data_id = data_mapList.get(newPosition).get("id");
+                String data2_id = data_mapList.get(position).get("id");
+//                String data_position = String.valueOf(newPosition);
+//                String data_id = data_mapList.get(newPosition).get("id");
                 Bundle bundle = new Bundle();
-                bundle.putString("data_position", data_position);
-                bundle.putString("data_id", data_id);
+                bundle.putString("data2_id", data2_id);
+//                bundle.putString("data_id", data_id);
                 Message message = new Message();
                 message.what = StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE;
                 message.obj = bundle;
