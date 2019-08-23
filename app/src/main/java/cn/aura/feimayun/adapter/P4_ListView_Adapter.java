@@ -2,6 +2,7 @@ package cn.aura.feimayun.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +33,7 @@ import cn.aura.feimayun.activity.FaceToFaceActivity;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.activity.PlayDetailActivity;
 import cn.aura.feimayun.application.MyApplication;
+import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.SetHeightUtil;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.watch.WatchActivity;
@@ -39,11 +42,16 @@ import cn.aura.feimayun.vhall.watch.WatchActivity;
  * 描述：首页P4页ListView适配器，下方有一个内部类是ListView子项GridView的适配器
  */
 public class P4_ListView_Adapter extends BaseAdapter {
+    public int mScreenWidth;
     private MainActivity activity;
     private List<Map<String, String>> data;
 
     public P4_ListView_Adapter(Activity activity, List<Map<String, String>> data) {
         this.activity = (MainActivity) activity;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        (activity).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        mScreenWidth = displayMetrics.widthPixels;
+//        itemWidth = (mScreenWidth - ScreenUtils.dp2px(context, 84)) / 4;
         this.data = data;
     }
 
@@ -73,13 +81,18 @@ public class P4_ListView_Adapter extends BaseAdapter {
         title_left.setText(data.get(position).get("name"));
         final ImageView top_img = convertView.findViewById(R.id.top_img);
 
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) top_img.getLayoutParams();
+        //大图是1054*456的，比例为2.3114
+        params.height = (int) ((mScreenWidth - ScreenUtils.dp2px(activity, 30)) / 2.3114f);
+        top_img.setLayoutParams(params);
+
         TextView main_title_textview = convertView.findViewById(R.id.main_title_textview);
         GridView gridView = convertView.findViewById(R.id.p_4_item_gridview);
         //记录解析的各1级children信息
         final List<Map<String, String>> gridViewList = new ArrayList<>();
         String lessonsString = data.get(position).get("lessons");
-        int lessonsCount = 0;
-        if (lessonsString.equals("")) {
+        int lessonsCount;
+        if (lessonsString == null || lessonsString.equals("")) {
             lessonsCount = 0;
         } else {
             //解析二级目录，也就是lessons
@@ -194,7 +207,7 @@ public class P4_ListView_Adapter extends BaseAdapter {
 
 
     //ListView子项GridView适配器
-    static class P4_ListViewItem_GridView_Adapter extends BaseAdapter {
+    class P4_ListViewItem_GridView_Adapter extends BaseAdapter {
         private List<Map<String, String>> data;
 
         P4_ListViewItem_GridView_Adapter(List<Map<String, String>> data) {
@@ -231,6 +244,12 @@ public class P4_ListView_Adapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.p4_listviewitem_gridviewitem, parent, false);
                 }
                 ImageView gridview1_imageview = convertView.findViewById(R.id.gridview1_imageview);
+
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) gridview1_imageview.getLayoutParams();
+                //大图是1054*456的，比例为2.3114
+                params.height = (int) ((mScreenWidth - ScreenUtils.dp2px(activity, 40)) / 2.0f / 1.8065f);
+                gridview1_imageview.setLayoutParams(params);
+
                 TextView gridview1_textview = convertView.findViewById(R.id.gridview1_textview);
                 gridview1_textview.setText(data.get(position).get("name"));
                 RequestOptions options = new RequestOptions().fitCenter();

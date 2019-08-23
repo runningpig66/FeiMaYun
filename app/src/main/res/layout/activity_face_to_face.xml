@@ -11,14 +11,6 @@
         android:background="#ffffff"
         android:orientation="vertical">
 
-        <include layout="@layout/headtitle_layout" />
-
-        <!--灰色的分割粗线-->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="#f0f0f0" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,31 +31,13 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#eeeeee" />
-
+        <!--灰色的分割粗线-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
-            <com.gcssloop.widget.RCRelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:round_corner="5dp">
-
-                <ImageView
-                    android:id="@+id/activity_face_to_face_imageview1"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/guanghuanguoji_auto" />
-            </com.gcssloop.widget.RCRelativeLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -95,34 +69,57 @@
                     android:ellipsize="end"
                     android:maxLines="1" />
             </LinearLayout>
+
+            <com.gcssloop.widget.RCRelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:round_corner="5dp">
+
+                <ImageView
+                    android:id="@+id/activity_face_to_face_imageview1"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/guanghuanguoji_auto" />
+            </com.gcssloop.widget.RCRelativeLayout>
         </LinearLayout>
-        <!--灰色的分割粗线-->
-        <View
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="22dp"
+                android:src="@drawable/icon_t" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="课程详情"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="#f0f0f0" />
+            android:layout_height="match_parent"
+            android:background="#ffffff">
+
+            <com.tencent.smtt.sdk.WebView
+                android:id="@+id/activity_face_to_face_webview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp" />
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp">
-
-            <com.gcssloop.widget.RCRelativeLayout
-                android:id="@+id/rcLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                app:round_corner="40dp"
-                app:stroke_color="#eeeeee"
-                app:stroke_width="1dp">
-
-                <ImageView
-                    android:id="@+id/activity_face_to_face_imageview2"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_launcher" />
-            </com.gcssloop.widget.RCRelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -149,49 +146,52 @@
                     android:textSize="16sp"
                     tools:text="课程数量：3test" />
             </LinearLayout>
-        </RelativeLayout>
 
+            <com.gcssloop.widget.RCRelativeLayout
+                android:id="@+id/rcLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                app:round_corner="40dp"
+                app:stroke_color="#eeeeee"
+                app:stroke_width="1dp">
+
+                <ImageView
+                    android:id="@+id/activity_face_to_face_imageview2"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_launcher" />
+            </com.gcssloop.widget.RCRelativeLayout>
+        </RelativeLayout>
+        <!--灰色的分割粗线-->
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
-            android:background="#eeeeee" />
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="22dp"
-                android:src="@drawable/icon_t" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="课程详情"
-                android:textColor="#000000"
-                android:textSize="18sp" />
-        </LinearLayout>
+            android:background="#f0f0f0" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#eeeeee" />
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ffffff">
+            android:layout_height="10dp"
+            android:background="#f0f0f0" />
 
-            <com.tencent.smtt.sdk.WebView
-                android:id="@+id/activity_face_to_face_webview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp" />
-        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#eeeeee" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eeeeee" />
+
+        <include layout="@layout/headtitle_layout" />
 
     </LinearLayout>
 

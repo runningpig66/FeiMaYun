@@ -7,6 +7,12 @@
     tools:context=".activity.MainActivity">
 
 
+    <FrameLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_line" />
+
     <RelativeLayout
         android:id="@+id/activity_main_layout"
         android:layout_width="match_parent"
@@ -18,9 +24,9 @@
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="28dp"
+            android:layout_marginEnd="28dp"
             android:background="@drawable/message_notread"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -42,21 +48,21 @@
             <cn.aura.feimayun.view.MyRadioButton
                 android:id="@+id/selector2_rb"
                 style="@style/bottom_radio"
-                android:text="全部课程"
+                android:text="课程"
                 app:drawableTop="@drawable/icon_nav_selector2"
                 app:myDrawableSize="30dp" />
 
             <cn.aura.feimayun.view.MyRadioButton
                 android:id="@+id/selector3_rb"
                 style="@style/bottom_radio"
-                android:text="我的学习"
+                android:text="学习"
                 app:drawableTop="@drawable/icon_nav_selector3"
                 app:myDrawableSize="30dp" />
 
             <cn.aura.feimayun.view.MyRadioButton
                 android:id="@+id/selector4_rb"
                 style="@style/bottom_radio"
-                android:text="消息中心"
+                android:text="消息"
                 app:drawableTop="@drawable/icon_nav_selector4"
                 app:myDrawableSize="30dp" />
         </RadioGroup>
@@ -68,12 +74,6 @@
         android:layout_height="1px"
         android:layout_above="@id/activity_main_layout"
         android:background="#d1d4d8" />
-
-    <FrameLayout
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/main_line" />
 </RelativeLayout>
 
     <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:orientation="vertical">-->

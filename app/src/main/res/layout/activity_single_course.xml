@@ -5,51 +5,61 @@
     android:background="#eeeeee"
     android:orientation="vertical">
 
-    <include layout="@layout/headtitle_layout" />
-
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/single_course_refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <!--没有消息界面-->
-            <RelativeLayout
-                android:id="@+id/single_course_relativeLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--没有消息界面-->
+                <RelativeLayout
+                    android:id="@+id/single_course_relativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/none_message_imageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
-                    android:src="@drawable/none_message" />
+                    <ImageView
+                        android:id="@+id/none_message_imageView"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="50dp"
+                        android:src="@drawable/none_message" />
 
-                <TextView
-                    android:id="@+id/none_message_textView"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/none_message_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/none_message_imageView"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="50dp"
+                        android:text="搜索失败"
+                        android:textColor="#515151"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+                <!--有消息界面-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/none_message_imageView"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="50dp"
-                    android:text="搜索失败"
-                    android:textColor="#515151"
-                    android:textSize="12sp" />
-            </RelativeLayout>
-            <!--有消息界面-->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/none_message_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp" />
-        </LinearLayout>
+                    android:descendantFocusability="blocksDescendants">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/none_message_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <include layout="@layout/headtitle_layout" />
 </LinearLayout>

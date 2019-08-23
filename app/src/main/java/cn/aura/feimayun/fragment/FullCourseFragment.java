@@ -172,7 +172,7 @@ public class FullCourseFragment extends Fragment implements View.OnClickListener
 
     public void initData() {
         //请求后台网络数据，数据会在handleNetwork接收并处理
-        RequestURL.sendGET("https://app.feimayun.com/Index/index", handleNetwork);
+        RequestURL.sendGET("https://app.feimayun.com/Index/index", handleNetwork, mainActivity);
     }
 
     //解析后台返回的JSON数据,同时调用本碎片中各个页面加载方法，传入页面所需的数据

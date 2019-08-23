@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ import cn.aura.feimayun.view.GridItemDecoration;
  * 描述：CourseListActivity中动态添加的碎片
  */
 public class CourseListFragment extends Fragment {
-    private Context context;
+    private AppCompatActivity context;
     private CouseListViewPagerRvAdapter adapter;
     private SmartRefreshLayout fragment_courselist_refreshlayou;
     private int position;
@@ -79,7 +80,7 @@ public class CourseListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
+        this.context = (AppCompatActivity) context;
     }
 
     private void parseData(String data) {
@@ -206,7 +207,7 @@ public class CourseListFragment extends Fragment {
             }
             Map<String, String> paramsMap = new HashMap<>();
             paramsMap.put(series, id);
-            RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
+            RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap, context);
         }
     }
 
@@ -241,7 +242,7 @@ public class CourseListFragment extends Fragment {
         }
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put(series, id);
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap, context);
 
         fragment_courselist_refreshlayou.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -255,7 +256,7 @@ public class CourseListFragment extends Fragment {
                 }
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put(series, id);
-                RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap);
+                RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleData, paramsMap, context);
             }
         });
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);

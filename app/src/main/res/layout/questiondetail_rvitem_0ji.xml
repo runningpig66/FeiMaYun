@@ -7,11 +7,6 @@
     android:background="#fff"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#d1d1d1" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,21 +30,6 @@
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/rvitem0ji_textview1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000"
-                tools:text="老师我想问一个问题？这是问题标题。" />
-
-            <TextView
-                android:id="@+id/rvitem0ji_textview2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                tools:text="这是问题具体描述，这是问题具体描述，这是问题具体描述，这是问题具体描述。" />
-
-            <!--动态添加图片的布局-->
             <LinearLayout
                 android:id="@+id/rvitem0ji_layout1"
                 android:layout_width="match_parent"
@@ -64,41 +44,6 @@
                 android:layout_height="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
-
-                <com.gcssloop.widget.RCRelativeLayout
-                    android:id="@+id/rcLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:round_corner="10dp">
-
-                    <ImageView
-                        android:id="@+id/rvitem0ji_imageview1"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:scaleType="fitXY" />
-                </com.gcssloop.widget.RCRelativeLayout>
-
-                <TextView
-                    android:id="@+id/rvitem0ji_textview3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/rcLayout"
-                    android:gravity="center_vertical"
-                    android:textSize="12sp"
-                    tools:text="明月学员" />
-
-                <TextView
-                    android:id="@+id/rvitem0ji_textview4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/rvitem0ji_textview3"
-                    android:gravity="center_vertical"
-                    android:textColor="#999"
-                    android:textSize="12sp"
-                    tools:text="2018-09-26 11:03:28" />
-
 
                 <LinearLayout
                     android:id="@+id/rvitem0ji_layout2"
@@ -125,10 +70,65 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/rvitem0ji_textview4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@id/rvitem0ji_textview3"
+                    android:gravity="center_vertical"
+                    android:textColor="#999"
+                    android:textSize="12sp"
+                    tools:text="2018-09-26 11:03:28" />
+
+                <TextView
+                    android:id="@+id/rvitem0ji_textview3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@id/rcLayout"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"
+                    tools:text="明月学员" />
+
+
+                <com.gcssloop.widget.RCRelativeLayout
+                    android:id="@+id/rcLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:round_corner="10dp">
+
+                    <ImageView
+                        android:id="@+id/rvitem0ji_imageview1"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY" />
+                </com.gcssloop.widget.RCRelativeLayout>
+
             </RelativeLayout>
+
+            <!--动态添加图片的布局-->
+            <TextView
+                android:id="@+id/rvitem0ji_textview1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                tools:text="老师我想问一个问题？这是问题标题。" />
+
+            <TextView
+                android:id="@+id/rvitem0ji_textview2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                tools:text="这是问题具体描述，这是问题具体描述，这是问题具体描述，这是问题具体描述。" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d1d1d1" />
 
 </LinearLayout>

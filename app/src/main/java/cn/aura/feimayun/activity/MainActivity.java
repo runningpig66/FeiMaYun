@@ -40,7 +40,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,6 +64,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, EasyPermissions.PermissionCallbacks {
     public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public static Handler handleIndexStart;
     private static Handler mHandler;//检查版本更新
     public RadioGroup rg_bt;
     public boolean[] isRequestSuccess = new boolean[4];
@@ -95,6 +98,16 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             public void handleMessage(Message msg) {
                 if (!msg.obj.toString().equals("网络异常")) {
                     parseUpdate(msg.obj.toString());
+                }
+            }
+        };
+        handleIndexStart = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.obj.toString().equals("网络异常")) {
+                } else {
+//                    Util.d("062002", msg.obj.toString());
                 }
             }
         };
@@ -149,6 +162,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        if (!Util.getUid().isEmpty()) {
+            //登录成功后开始请求个人课程列表
+            Map<String, String> paramsMap = new HashMap<>();
+            paramsMap.put("uid", Util.getUid());
+            RequestURL.sendPOST("https://app.feimayun.com/Index/start", handleIndexStart, paramsMap, MainActivity.this);
         }
     }
 
@@ -222,7 +241,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     private void initData() {
         //开始版本检查
-        RequestURL.sendUpdate("https://app.feimayun.com/version/version", mHandler);
+        RequestURL.sendUpdate("https://app.feimayun.com/version/version", mHandler, MainActivity.this);
     }
 
     //设置默认加载页
@@ -460,7 +479,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//判断版本大于7.0 需要内容提供器
             //生成文件的uri
             //包名+fileprovider
-            data = FileProvider.getUriForFile(MainActivity.this, "cn.aura.app.fileprovider", new File(filePath));
+            data = FileProvider.getUriForFile(MainActivity.this, "cn.aura.feimayun.fileprovider", new File(filePath));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//给目标应用一个临时授权
         } else {
             data = Uri.fromFile(file);

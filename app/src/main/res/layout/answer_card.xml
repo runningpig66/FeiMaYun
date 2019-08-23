@@ -23,6 +23,12 @@
                 android:layout_height="20dp"
                 android:src="@drawable/choose" />
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="19dp"
+                android:src="@drawable/unchoose" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,12 +36,6 @@
                 android:text="已回答"
                 android:textColor="@color/orange"
                 android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="19dp"
-                android:src="@drawable/unchoose" />
 
             <TextView
                 android:layout_width="wrap_content"

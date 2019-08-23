@@ -210,35 +210,35 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         //发送验证码
                         Map<String, String> paramsMap = new HashMap<>();
                         paramsMap.put("phone", phone0);
-                        RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap);
+                        RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap, RegisterActivity.this);
                     }
                 }
                 break;
             case R.id.activity_register_editText3://请输入您的真实姓名
 
                 break;
-//            case R.id.activity_register_editText4://请输入密码，6 - 16位密码
-//
-//                break;
+            case R.id.activity_register_editText4://请输入密码，6 - 16位密码
+
+                break;
             case R.id.activity_register_layout2://注册按钮布局
                 //获取各个输入框的内容
                 String phone1 = activity_register_editText1.getText().toString();
                 String msg1 = activity_register_editText2.getText().toString();
                 String nickname1 = activity_register_editText3.getText().toString();
-//                String password1 = activity_register_editText4.getText().toString();
-                if (phone1.equals("") || msg1.equals("") || nickname1.equals("")) {
+                String password1 = activity_register_editText4.getText().toString();
+                if (phone1.equals("") || msg1.equals("") || nickname1.equals("") || password1.equals("")) {
                     Toast.makeText(this, "请完成输入注册信息", Toast.LENGTH_SHORT).show();
                 } else {
                     if (Util.isMobile(phone1)) {
-//                        if (Util.isPassword(password1)) {
-                        //发送注册请求
-                        Map<String, String> paramsMap = new HashMap<>();
-                        paramsMap.put("phone", phone1);
-                        paramsMap.put("nick_name", nickname1);
-                        paramsMap.put("code", msg1);
-//                        paramsMap.put("passwd", password1);
-                        RequestURL.sendPOST("https://app.feimayun.com/Login/register", handleRegister, paramsMap);
-//                        }
+                        if (Util.isPassword(password1)) {
+                            //发送注册请求
+                            Map<String, String> paramsMap = new HashMap<>();
+                            paramsMap.put("phone", phone1);
+                            paramsMap.put("nick_name", nickname1);
+                            paramsMap.put("code", msg1);
+                            paramsMap.put("passwd", password1);
+                            RequestURL.sendPOST("https://app.feimayun.com/Login/register", handleRegister, paramsMap, RegisterActivity.this);
+                        }
                     }
                 }
                 break;

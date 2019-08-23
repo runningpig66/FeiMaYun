@@ -65,7 +65,7 @@ public class MessageCenterFragment extends Fragment {
 
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("uid", uid);
-                RequestURL.sendPOST("https://app.feimayun.com/Message/index", hanldeNetwork, paramsMap);
+                RequestURL.sendPOST("https://app.feimayun.com/Message/index", hanldeNetwork, paramsMap, mainActivity);
             }
         };
         hanldeNetwork = new Handler() {
@@ -116,7 +116,7 @@ public class MessageCenterFragment extends Fragment {
                 String uid = Util.getUid();
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("uid", uid);
-                RequestURL.sendPOST("https://app.feimayun.com/Message/index", hanldeNetwork, paramsMap);
+                RequestURL.sendPOST("https://app.feimayun.com/Message/index", hanldeNetwork, paramsMap, mainActivity);
             } else {
                 Toast.makeText(mainActivity, "标记消息失败", Toast.LENGTH_SHORT).show();
             }
@@ -174,7 +174,7 @@ public class MessageCenterFragment extends Fragment {
                                         Map<String, String> paramsMap = new HashMap<>();
                                         paramsMap.put("uid", uid);
                                         paramsMap.put("ids", idString);
-                                        RequestURL.sendPOST("https://app.feimayun.com/Message/signMessages", handleSignMessages, paramsMap);
+                                        RequestURL.sendPOST("https://app.feimayun.com/Message/signMessages", handleSignMessages, paramsMap, mainActivity);
                                     }
                                 }
                             });
@@ -225,7 +225,7 @@ public class MessageCenterFragment extends Fragment {
         if (!uid.equals("")) {//如果登录成功的状态
             Map<String, String> paramsMap = new HashMap<>();
             paramsMap.put("uid", uid);
-            RequestURL.sendPOST("https://app.feimayun.com/Message/index", hanldeNetwork, paramsMap);
+            RequestURL.sendPOST("https://app.feimayun.com/Message/index", hanldeNetwork, paramsMap, mainActivity);
         } else {
             isRequestSuccess = true;
             messageCenter_refreshLayout.finishRefresh(500, true);

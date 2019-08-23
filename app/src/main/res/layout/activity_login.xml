@@ -6,11 +6,6 @@
     android:background="@drawable/login_bg">
 
     <!--顶部的状态栏预留-->
-    <View
-        android:id="@+id/activity_login_view"
-        android:layout_width="match_parent"
-        android:layout_height="25dp" />
-
     <RelativeLayout
         android:id="@+id/activity_login_layout0"
         android:layout_width="45dp"
@@ -103,7 +98,7 @@
                     android:layout_height="12dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/icon_close_password"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/activity_login_textview3"
@@ -116,7 +111,7 @@
                     android:text="获取验证码"
                     android:textColor="#ffffff"
                     android:textSize="12sp"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
             </RelativeLayout>
         </LinearLayout>
         <!--登录-->
@@ -150,16 +145,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp">
 
-            <View
-                android:id="@+id/activity_login_line"
-                android:layout_width="1px"
-                android:layout_height="20dp"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="#bbbbbb"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/activity_login_textView1"
                 android:layout_width="wrap_content"
@@ -167,17 +152,30 @@
                 android:layout_toLeftOf="@id/activity_login_line"
                 android:gravity="center"
                 android:text="验证码登录"
-                android:textColor="#bbbbbb"
-                android:visibility="gone" />
+                android:textColor="#bbbbbb" />
 
             <TextView
                 android:id="@+id/activity_login_textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@id/activity_login_line"
                 android:gravity="center"
                 android:text="立即注册"
                 android:textColor="#bbbbbb" />
+
+            <View
+                android:id="@+id/activity_login_line"
+                android:layout_width="1px"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#bbbbbb" />
         </RelativeLayout>
     </RelativeLayout>
+
+    <View
+        android:id="@+id/activity_login_view"
+        android:layout_width="match_parent"
+        android:layout_height="25dp" />
 </RelativeLayout>

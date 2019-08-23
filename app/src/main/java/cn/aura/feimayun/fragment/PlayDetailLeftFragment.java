@@ -166,7 +166,7 @@ public class PlayDetailLeftFragment extends Fragment implements View.OnClickList
                     paramsMap.put("ids", ids);
                     paramsMap.put("order_price", order_price);
                     paramsMap.put("pay_price", pay_price);
-                    RequestURL.sendPOST("https://app.feimayun.com/Lesson/buyLessons", handleBuyLessons, paramsMap);
+                    RequestURL.sendPOST("https://app.feimayun.com/Lesson/buyLessons", handleBuyLessons, paramsMap, context);
                 }
             } else {//收费课程显示立即咨询按钮
                 fragment_playdeatil_left_textView6.setVisibility(View.VISIBLE);

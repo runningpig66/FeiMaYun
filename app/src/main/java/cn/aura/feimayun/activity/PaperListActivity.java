@@ -200,23 +200,25 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
                     } else {
 //                        //第二次加载失败的情况也是分两种
 //                        if (listList.isEmpty()) {//说明在第一次加载的时候没有试卷
-//
 //                        } else {//说明在第一次加载的时候有试卷，上拉加载后无更多试卷的情况
-//
 //                        }
                         activity_paper_list_refreshLayout.finishRefresh(true);
                     }
                     activity_paper_list_refreshLayout.finishLoadMore(0, true, true);
+                } else {
+                    activity_paper_list_refreshLayout.finishRefresh(false);
+                    activity_paper_list_refreshLayout.finishLoadMore(false);
                 }
-            }
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-                progressDialog = null;
             }
         } catch (JSONException e) {
             activity_paper_list_refreshLayout.finishRefresh(false);
             activity_paper_list_refreshLayout.finishLoadMore(false);
             e.printStackTrace();
+        } finally {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         }
     }
 
@@ -306,17 +308,16 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initData() {
-        String uid = Util.getUid();
         //请求试卷课表
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("sid", sid);
-        paramsMap.put("uid", uid);
+        paramsMap.put("uid", Util.getUid());
         paramsMap.put("p", String.valueOf(p));
         if (isFirstIn) {
             progressDialog = new ProgressDialog(this);
             progressDialog.show();
         }
-        RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpList", handleNetwork, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpList", handleNetwork, paramsMap, PaperListActivity.this);
     }
 
     private void initData2() {//用来更新单页的数据
@@ -331,7 +332,7 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
             progressDialog = new ProgressDialog(this);
             progressDialog.show();
         }
-        RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpList", handleNetwork2, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpList", handleNetwork2, paramsMap, PaperListActivity.this);
     }
 
 

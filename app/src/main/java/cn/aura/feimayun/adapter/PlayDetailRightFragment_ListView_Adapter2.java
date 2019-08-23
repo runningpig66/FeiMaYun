@@ -43,7 +43,6 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
     private PlayDetailActivity activity;
     private List<PlayDetailBean> detailBeans;
     private String sid;
-    private String uid;
     private String isBuy;
 
     public PlayDetailRightFragment_ListView_Adapter2(Context context, List<PlayDetailBean> detailBeans, String sid, String uid, String isBuy) {
@@ -51,7 +50,6 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
         this.detailBeans = detailBeans;
 //        printList(detailBeans);
         this.sid = sid;
-        this.uid = uid;
         this.isBuy = isBuy;
     }
 
@@ -67,7 +65,6 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
     public void setData(List<PlayDetailBean> detailBeans, String sid, String uid, String isBuy) {
         this.detailBeans = detailBeans;
         this.sid = sid;
-        this.uid = uid;
         this.isBuy = isBuy;
     }
 
@@ -139,7 +136,7 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
 //                                    Toast.makeText(activity, "isDoubleClick", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                if (uid.equals("")) {
+                                if (Util.getUid().equals("")) {
                                     Toast.makeText(activity, R.string.vhall_login_first, Toast.LENGTH_SHORT).show();
                                 } else {
                                     if (sid == null && isBuy.equals("0")) {//未登录的、未购买的都拿不到sid
@@ -228,8 +225,10 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
                             viewHolder1.fragment_playdeatil_right_listview1_item1_imageview1.setImageResource(R.drawable.pen_gray);
                             break;
                     }
-                    //文字设置橘色
-                    viewHolder1.fragment_playdeatil_right_listview1_item1_textView1.setTextColor(Color.parseColor("#ee7708"));
+                    if (!Util.getUid().equals("")) {
+                        //文字设置橘色
+                        viewHolder1.fragment_playdeatil_right_listview1_item1_textView1.setTextColor(Color.parseColor("#ee7708"));
+                    }
                 } else {
                     switch (playDetailBean.getFtype()) {
                         case "video":
@@ -311,7 +310,9 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
                         viewHolder3.fragment_playdeatil_right_listview1_item3_imageview1.setImageResource(R.drawable.pen_gray);
                         break;
                 }
-                viewHolder3.fragment_playdeatil_right_listview1_item3_textview1.setTextColor(Color.parseColor("#ee7708"));
+                if (!Util.getUid().equals("")) {
+                    viewHolder3.fragment_playdeatil_right_listview1_item3_textview1.setTextColor(Color.parseColor("#ee7708"));
+                }
             } else {
                 switch (playDetailBean.getFtype()) {
                     case "video":
@@ -339,7 +340,7 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
 //                                        Toast.makeText(activity, "isDoubleClick", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
-                                    if (uid.equals("")) {
+                                    if (Util.getUid().equals("")) {
                                         Toast.makeText(activity, R.string.vhall_login_first, Toast.LENGTH_SHORT).show();
                                     } else {
                                         if (sid == null && isBuy.equals("0")) {//未登录的、未购买的都拿不到sid
@@ -351,14 +352,14 @@ public class PlayDetailRightFragment_ListView_Adapter2 extends BaseAdapter {
                                     }
                                     break;
                                 case "test":
-                                    if (uid.equals("")) {
+                                    if (Util.getUid().equals("")) {
                                         Toast.makeText(activity, R.string.vhall_login_first, Toast.LENGTH_SHORT).show();
                                     } else {
                                         //TODO
                                         final String sid2 = playDetailBean.getStore_id();
                                         final String tid = playDetailBean.getTid();
-                                        String uid = Util.getUid();
-                                        String fileName = "paper" + sid2 + tid + uid;//由题库id+试卷id共同构建的唯一文件名
+                                        String uid2 = Util.getUid();
+                                        String fileName = "paper" + sid2 + tid + uid2;//由题库id+试卷id共同构建的唯一文件名
 
                                         File file = new File("/data/data/" + activity.getPackageName() + "/shared_prefs", fileName + ".xml");
                                         boolean fileExists = file.exists();

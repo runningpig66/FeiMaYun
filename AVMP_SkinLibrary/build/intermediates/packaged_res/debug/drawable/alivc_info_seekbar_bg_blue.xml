@@ -4,8 +4,8 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="1dip" />
-            <solid android:color="#999999" />
             <size android:height="2dp" />
+            <solid android:color="#999999" />
         </shape>
     </item>
 
@@ -13,8 +13,8 @@
         <clip>
             <shape>
                 <corners android:radius="1dip" />
-                <solid android:color="#cccccc" />
                 <size android:height="2dp" />
+                <solid android:color="#cccccc" />
             </shape>
         </clip>
     </item>
@@ -23,8 +23,8 @@
         <clip>
             <shape>
                 <corners android:radius="1dip" />
-                <solid android:color="@color/alivc_blue" />
                 <size android:height="2dp" />
+                <solid android:color="@color/alivc_blue" />
             </shape>
         </clip>
     </item>

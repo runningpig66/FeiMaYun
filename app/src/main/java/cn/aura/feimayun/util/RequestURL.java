@@ -1,8 +1,14 @@
 package cn.aura.feimayun.util;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -17,30 +23,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * 描述：访问网络的模板类
  */
 
 public class RequestURL {
-    public static final String version = "14";
+    public static final String version = "16";
     private static final String osName = "Android";
-    private static final String verName = "1.8";
+    private static final String verName = "2.0";
     private static boolean isTest = false;//测试  ？
     private static String apidString = isTest ? "school.feimayun.com" : "yun.aura.cn";
 
     //在子线程中访问网络，GET访问
-    public static void sendGET(final String urlPath, final Handler handler) {
+    public static void sendGET(final String urlPath, final Handler handler, final AppCompatActivity activity) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String aptk;
                 String apud = Util.getUid();
+                String secret = Util.getSecret();
                 if (apud.equals("")) {
                     aptk = new Md5().getDateToken();
                 } else {
                     aptk = new Md5().getUidToken(apud);
                 }
-
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
                 try {
@@ -51,6 +59,7 @@ public class RequestURL {
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("apud", apud);
                     connection.setRequestProperty("aptk", aptk);
+                    connection.setRequestProperty("secket", secret);
                     connection.setRequestProperty("osName", osName);
                     connection.setRequestProperty("verName", verName);
                     connection.setRequestProperty("version", version);
@@ -59,11 +68,11 @@ public class RequestURL {
                     connection.setConnectTimeout(4000);
                     //读取超时，单位毫秒
                     connection.setReadTimeout(4000);
+
                     //开始连接
                     connection.connect();
                     //判断请求是否成功
 //                    if (connection.getResponseCode() == 200) {
-
                     //得到输入流
                     InputStream in = connection.getInputStream();
                     reader = new BufferedReader(new InputStreamReader(in));
@@ -73,15 +82,30 @@ public class RequestURL {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    //创建消息并发送
-                    Message message = handler.obtainMessage();
-                    message.obj = response.toString();
-                    message.sendToTarget();
+                    //TODO 判断是否其他设备登录
+                    JSONTokener jsonTokener = new JSONTokener(response.toString());
+                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                    int status = jsonObject.optInt("status");
+                    int exit = jsonObject.optInt("exit");
+                    String msg = jsonObject.optString("msg");
+                    if (status == 0 && exit == 1) {
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                        editor.clear().apply();
+                        Util.showLogoutDialog(activity);
+                        sendGET(urlPath, handler, activity);//重新请求一次
+                    } else {
+                        //创建消息并发送
+                        Message message = handler.obtainMessage();
+                        message.obj = response.toString();
+                        message.sendToTarget();
+                    }
 //                    }
                 } catch (IOException e) {
                     Message message = handler.obtainMessage();
                     message.obj = "网络异常";
                     message.sendToTarget();
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
                     if (reader != null) {
@@ -98,7 +122,6 @@ public class RequestURL {
             }
         }).start();
     }
-
 //    Map<String, String> paramsMap = new HashMap<>();
 //                        paramsMap.put("phone",phone1);
 //                        paramsMap.put("nick_name",nickname1);
@@ -113,12 +136,13 @@ public class RequestURL {
      * @param handler   处理网络返回结果的handler
      * @param paramsMap post请求参数
      */
-    public static void sendPOST(final String urlPath, final Handler handler, final Map<String, String> paramsMap) {
+    public static void sendPOST(final String urlPath, final Handler handler, final Map<String, String> paramsMap, final AppCompatActivity activity) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String aptk;
                 String apud = Util.getUid();
+                String secret = Util.getSecret();
                 if (apud.equals("")) {
                     aptk = new Md5().getDateToken();
                 } else {
@@ -139,7 +163,7 @@ public class RequestURL {
                     connection.setConnectTimeout(4000);
                     //读取超时，单位毫秒
                     connection.setReadTimeout(4000);
-
+                    connection.setRequestProperty("secket", secret);
                     connection.setRequestProperty("apud", apud);
                     connection.setRequestProperty("aptk", aptk);
                     connection.setRequestProperty("osName", osName);
@@ -156,16 +180,22 @@ public class RequestURL {
                     connection.connect();
                     //判断请求是否成功
 //                    if (connection.getResponseCode() == 200) {
+
                     //获取URLConnection对象对应的输出流
                     DataOutputStream out = new DataOutputStream(connection.getOutputStream());
                     StringBuilder builder = new StringBuilder();
                     for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
                         builder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
                     }
+                    if (builder.length() > 0) {
+
+                    }
                     builder.deleteCharAt(builder.length() - 1);
+
                     out.write(builder.toString().getBytes());//注意中文
                     //flush输出流的缓冲
                     out.flush();
+
                     //得到输入流
                     InputStream in = connection.getInputStream();
                     reader = new BufferedReader(new InputStreamReader(in));
@@ -175,16 +205,31 @@ public class RequestURL {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-
-                    //创建消息并发送
-                    Message message = handler.obtainMessage();
-                    message.obj = response.toString();
-                    message.sendToTarget();
+                    //TODO 判断是否其他设备登录
+                    JSONTokener jsonTokener = new JSONTokener(response.toString());
+                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                    int status = jsonObject.optInt("status");
+                    int exit = jsonObject.optInt("exit");
+                    String msg = jsonObject.optString("msg");
+                    if (status == 0 && exit == 1) {
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                        editor.clear().apply();
+                        Util.showLogoutDialog(activity);
+                        paramsMap.put("uid", "");
+                        sendPOST(urlPath, handler, paramsMap, activity);//重新请求一次
+                    } else {
+                        //创建消息并发送
+                        Message message = handler.obtainMessage();
+                        message.obj = response.toString();
+                        message.sendToTarget();
+                    }
 //                    }
                 } catch (IOException e) {
                     Message message = handler.obtainMessage();
                     message.obj = "网络异常";
                     message.sendToTarget();
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
                     if (reader != null) {
@@ -202,12 +247,13 @@ public class RequestURL {
         }).start();
     }
 
-    public static void uploadFile(final List<String> filePathList, final String url, final Handler handler) {
+    public static void uploadFile(final List<String> filePathList, final String url, final Handler handler, final AppCompatActivity activity) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String aptk;
                 String apud = Util.getUid();
+                String secret = Util.getSecret();
                 if (apud.equals("")) {
                     aptk = new Md5().getDateToken();
                 } else {
@@ -282,26 +328,41 @@ public class RequestURL {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    //创建消息并发送
-                    Message message = handler.obtainMessage();
-                    message.obj = response.toString();
-                    message.sendToTarget();
+                    //TODO 判断是否其他设备登录
+                    JSONTokener jsonTokener = new JSONTokener(response.toString());
+                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                    int status = jsonObject.optInt("status");
+                    int exit = jsonObject.optInt("exit");
+                    String msg = jsonObject.optString("msg");
+                    if (status == 0 && exit == 1) {
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                        editor.clear().apply();
+                        Util.showLogoutDialog(activity);
+                        uploadFile(filePathList, url, handler, activity);//重新请求一次
+                    } else {
+                        //创建消息并发送
+                        Message message = handler.obtainMessage();
+                        message.obj = response.toString();
+                        message.sendToTarget();
+                    }
                 } catch (Exception e) {
                     Message message = handler.obtainMessage();
                     message.obj = "网络异常";
                     message.sendToTarget();
                     e.printStackTrace();
                 }
+
             }
         }).start();
     }
 
-    public static void uploadFile2(final List<String> filePathList, final String url, final Handler handler) {
+    public static void uploadFile2(final List<String> filePathList, final String url, final Handler handler, final AppCompatActivity activity) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String aptk;
                 String apud = Util.getUid();
+                String secret = Util.getSecret();
                 if (apud.equals("")) {
                     aptk = new Md5().getDateToken();
                 } else {
@@ -376,10 +437,23 @@ public class RequestURL {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    //创建消息并发送
-                    Message message = handler.obtainMessage();
-                    message.obj = response.toString();
-                    message.sendToTarget();
+                    //TODO 判断是否其他设备登录
+                    JSONTokener jsonTokener = new JSONTokener(response.toString());
+                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                    int status = jsonObject.optInt("status");
+                    int exit = jsonObject.optInt("exit");
+                    String msg = jsonObject.optString("msg");
+                    if (status == 0 && exit == 1) {
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                        editor.clear().apply();
+                        Util.showLogoutDialog(activity);
+                        uploadFile2(filePathList, url, handler, activity);//重新请求一次
+                    } else {
+                        //创建消息并发送
+                        Message message = handler.obtainMessage();
+                        message.obj = response.toString();
+                        message.sendToTarget();
+                    }
                 } catch (Exception e) {
                     Message message = handler.obtainMessage();
                     message.obj = "网络异常";
@@ -390,12 +464,13 @@ public class RequestURL {
         }).start();
     }
 
-    public static void sendUpdate(final String urlPath, final Handler handler) {
+    public static void sendUpdate(final String urlPath, final Handler handler, final AppCompatActivity activity) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String aptk;
                 String apud = Util.getUid();
+                String secret = Util.getSecret();
                 if (apud.equals("")) {
                     aptk = new Md5().getDateToken();
                 } else {
@@ -436,15 +511,30 @@ public class RequestURL {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    //创建消息并发送
-                    Message message = handler.obtainMessage();
-                    message.obj = response.toString();
-                    message.sendToTarget();
+                    //TODO 判断是否其他设备登录
+                    JSONTokener jsonTokener = new JSONTokener(response.toString());
+                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                    int status = jsonObject.optInt("status");
+                    int exit = jsonObject.optInt("exit");
+                    String msg = jsonObject.optString("msg");
+                    if (status == 0 && exit == 1) {
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                        editor.clear().apply();
+                        Util.showLogoutDialog(activity);
+                        sendUpdate(urlPath, handler, activity);//重新请求一次
+                    } else {
+                        //创建消息并发送
+                        Message message = handler.obtainMessage();
+                        message.obj = response.toString();
+                        message.sendToTarget();
+                    }
 //                    }
                 } catch (IOException e) {
                     Message message = handler.obtainMessage();
                     message.obj = "网络异常";
                     message.sendToTarget();
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
                     if (reader != null) {
@@ -463,12 +553,13 @@ public class RequestURL {
     }
 
     //在子线程中访问网络，GET访问，path传参
-    public static void sendGetPath(final String urlPath, final Handler handler, final Map<String, String> paramsMap) {
+    public static void sendGetPath(final String urlPath, final Handler handler, final Map<String, String> paramsMap, final AppCompatActivity activity) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String aptk;
                 String apud = Util.getUid();
+                String secret = Util.getSecret();
                 if (apud.equals("")) {
                     aptk = new Md5().getDateToken();
                 } else {
@@ -495,6 +586,7 @@ public class RequestURL {
                     connection.setRequestProperty("Accept", "application/json");
                     connection.setRequestProperty("apud", apud);
                     connection.setRequestProperty("aptk", aptk);
+                    connection.setRequestProperty("secket", secret);
                     connection.setRequestProperty("osName", osName);
                     connection.setRequestProperty("verName", verName);
                     connection.setRequestProperty("version", version);
@@ -517,15 +609,30 @@ public class RequestURL {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    //创建消息并发送
-                    Message message = handler.obtainMessage();
-                    message.obj = response.toString();
-                    message.sendToTarget();
+                    //TODO 判断是否其他设备登录
+                    JSONTokener jsonTokener = new JSONTokener(response.toString());
+                    JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+                    int status = jsonObject.optInt("status");
+                    int exit = jsonObject.optInt("exit");
+                    String msg = jsonObject.optString("msg");
+                    if (status == 0 && exit == 1) {
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("user_info", MODE_PRIVATE).edit();
+                        editor.clear().apply();
+                        Util.showLogoutDialog(activity);
+                        sendGetPath(urlPath, handler, paramsMap, activity);//重新请求一次
+                    } else {
+                        //创建消息并发送
+                        Message message = handler.obtainMessage();
+                        message.obj = response.toString();
+                        message.sendToTarget();
+                    }
 //                    }
                 } catch (IOException e) {
                     Message message = handler.obtainMessage();
                     message.obj = "网络异常";
                     message.sendToTarget();
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
                     if (reader != null) {

@@ -55,11 +55,30 @@
             android:textColorHint="#cccccc"
             android:textSize="13sp" />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/e_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/et_gray_radius_10"
+            android:hint="请输入密码"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:maxLines="1"
+            android:paddingLeft="7dp"
+            android:paddingTop="13dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="13dp"
+            android:textColor="#666666"
+            android:textColorHint="#cccccc"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:background="@drawable/et_gray_radius_10"
             android:orientation="horizontal">
 
@@ -96,27 +115,6 @@
                 android:textColor="#ffffff"
                 android:textSize="12sp" />
         </LinearLayout>
-
-        <EditText
-            android:id="@+id/e_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/et_gray_radius_10"
-            android:hint="请输入密码"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:maxLength="16"
-            android:maxLines="1"
-            android:paddingLeft="7dp"
-            android:paddingTop="13dp"
-            android:paddingRight="7dp"
-            android:paddingBottom="13dp"
-            android:textColor="#666666"
-            android:textColorHint="#cccccc"
-            android:textSize="13sp"
-            android:visibility="gone" />
 
     </LinearLayout>
 

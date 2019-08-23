@@ -12,13 +12,6 @@
         android:background="#ffffff"
         android:orientation="vertical">
 
-        <include layout="@layout/headtitle_layout" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="#f0f0f0" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -75,11 +68,18 @@
 
         </RelativeLayout>
 
-        <!--灰色的分割粗线-->
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
             android:background="#f0f0f0" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#f0f0f0" />
+
+        <!--灰色的分割粗线-->
+        <include layout="@layout/headtitle_layout" />
     </LinearLayout>
 
     <ScrollView
@@ -99,13 +99,6 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="按题型统计"
-                    android:textSize="16sp" />
-
                 <ListView
                     android:id="@+id/activity_exam_result_listview1"
                     android:layout_width="match_parent"
@@ -116,6 +109,13 @@
                     android:divider="@null"
                     android:dividerHeight="12dp"
                     android:scrollbars="none" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="按题型统计"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -124,13 +124,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="按标签统计"
-                    android:textSize="16sp" />
 
                 <ListView
                     android:id="@+id/activity_exam_result_listview2"
@@ -142,6 +135,13 @@
                     android:divider="@null"
                     android:dividerHeight="12dp"
                     android:scrollbars="none" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="按标签统计"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

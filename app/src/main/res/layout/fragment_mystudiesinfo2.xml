@@ -4,6 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/fragment_mystudiesinfo2_textview1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/orange"
+        android:gravity="center"
+        android:text="提问"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/info2_refreshLayout"
         android:layout_width="match_parent"
@@ -14,13 +25,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/fragment_mystudiesinfo2_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
-
-            <!--没有试卷的界面-->
             <RelativeLayout
                 android:id="@+id/activity_paper_list_layout2"
                 android:layout_width="wrap_content"
@@ -45,17 +49,13 @@
                     android:textSize="16sp" />
             </RelativeLayout>
 
+            <!--没有试卷的界面-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_mystudiesinfo2_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+
         </FrameLayout>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-    <TextView
-        android:id="@+id/fragment_mystudiesinfo2_textview1"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/orange"
-        android:gravity="center"
-        android:text="提问"
-        android:textColor="#ffffff"
-        android:textSize="18sp"
-        android:visibility="visible" />
 </LinearLayout>

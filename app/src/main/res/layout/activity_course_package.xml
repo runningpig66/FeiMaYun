@@ -10,14 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/headtitle_layout" />
-
-        <!--灰色的分割粗线-->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="#f0f0f0" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,31 +31,13 @@
                 tools:text="混合微课" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#eeeeee" />
-
+        <!--灰色的分割粗线-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
-            <com.gcssloop.widget.RCRelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:round_corner="5dp">
-
-                <ImageView
-                    android:id="@+id/activity_course_package_imageview1"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/guanghuanguoji_auto" />
-            </com.gcssloop.widget.RCRelativeLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -149,13 +123,21 @@
                         tools:text="测试文字" />
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <!--灰色的分割粗线-->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="#f0f0f0" />
+            <com.gcssloop.widget.RCRelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:round_corner="5dp">
+
+                <ImageView
+                    android:id="@+id/activity_course_package_imageview1"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/guanghuanguoji_auto" />
+            </com.gcssloop.widget.RCRelativeLayout>
+        </LinearLayout>
 
         <ListView
             android:id="@+id/activity_course_package_listview1"
@@ -164,5 +146,23 @@
             android:divider="@null"
             android:dividerHeight="0dp"
             android:scrollbars="none" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#f0f0f0" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#f0f0f0" />
+
+        <!--灰色的分割粗线-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eeeeee" />
+
+        <include layout="@layout/headtitle_layout" />
     </LinearLayout>
 </RelativeLayout>

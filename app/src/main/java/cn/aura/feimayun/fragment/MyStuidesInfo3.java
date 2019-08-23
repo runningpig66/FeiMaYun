@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +35,7 @@ import cn.aura.feimayun.util.Util;
 public class MyStuidesInfo3 extends Fragment {
 
     private static Handler handleNetwork;
-    private Context context;
+    private AppCompatActivity context;
     private String uid;
     private RelativeLayout mystudiesinfo3_layout1;//没有班级的界面
     private RecyclerView fragment_mystudiesinfo3_recyclerview;
@@ -129,7 +130,7 @@ public class MyStuidesInfo3 extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
+        this.context = (AppCompatActivity) context;
         uid = Util.getUid();
     }
 
@@ -149,7 +150,7 @@ public class MyStuidesInfo3 extends Fragment {
         Map<String, String> map = new HashMap<>();
         map.put("uid", uid);
         map.put("lid", lid);
-        RequestURL.sendPOST("https://app.feimayun.com/User/myClass", handleNetwork, map);
+        RequestURL.sendPOST("https://app.feimayun.com/User/myClass", handleNetwork, map, context);
 
         View view = inflater.inflate(R.layout.fragment_mystudiesinfo3, container, false);
         mystudiesinfo3_layout1 = view.findViewById(R.id.mystudiesinfo3_layout1);

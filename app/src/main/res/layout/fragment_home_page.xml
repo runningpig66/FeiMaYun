@@ -28,56 +28,15 @@
             android:scrollbars="none">
             <!--ScrollView只能有一个子项item-->
             <LinearLayout
+                android:id="@+id/root_linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
                 <!--云课堂title-->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:gravity="center"
-                        android:text="云课堂"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
-
-                    <RelativeLayout
-                        android:id="@+id/notify_relativeLayout"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="10dp">
-
-                        <ImageView
-                            android:id="@+id/notify_imageView"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_centerInParent="true"
-                            android:src="@drawable/notify" />
-
-                        <ImageView
-                            android:id="@+id/activity_main_layout_redpoint"
-                            android:layout_width="6dp"
-                            android:layout_height="6dp"
-                            android:layout_alignTop="@id/notify_imageView"
-                            android:layout_toEndOf="@id/notify_imageView"
-                            android:background="@drawable/message_notread"
-                            android:visibility="gone"
-                            tools:visibility="visible" />
-                    </RelativeLayout>
-                </RelativeLayout>
-                <!--顶部的搜索框-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
@@ -117,17 +76,7 @@
                     </FrameLayout>
 
                 </LinearLayout>
-
-                <!--首页顶部ViewPager布局-->
-                <com.youth.banner.Banner
-                    android:id="@+id/banner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
-                    tools:layout_height="10dp" />
-
+                <!--顶部的搜索框-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -159,29 +108,12 @@
                         tools:text="首页全新上线啦" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="光环学院"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
-
-                <!--6个方格-->
+                <!--首页顶部ViewPager布局-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <cn.aura.feimayun.view.HomePageFragment_ViewPage2
-                        android:id="@+id/fragment_home_page_viewpager2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="15dp" />
-                    <!--切换的圆点-->
                     <LinearLayout
                         android:id="@+id/fragment_home_page_layout1"
                         android:layout_width="match_parent"
@@ -189,6 +121,12 @@
                         android:layout_gravity="bottom|center_horizontal"
                         android:gravity="center"
                         android:orientation="horizontal" />
+                    <!--切换的圆点-->
+                    <cn.aura.feimayun.view.HomePageFragment_ViewPage2
+                        android:id="@+id/fragment_home_page_viewpager2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -212,7 +150,6 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <!--P4页：下方的ListView，它的子项包含GridView-->
                 <ListView
                     android:id="@+id/p_4_listView"
                     android:layout_width="match_parent"
@@ -220,7 +157,59 @@
                     android:divider="@null"
                     android:listSelector="@android:color/transparent" />
 
-                <!--标题栏-->
+                <!--6个方格-->
+                <ListView
+                    android:id="@+id/bottom_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:listSelector="@android:color/transparent" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/notify_relativeLayout"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp">
+
+                        <ImageView
+                            android:id="@+id/notify_imageView"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/notify" />
+
+                        <ImageView
+                            android:id="@+id/activity_main_layout_redpoint"
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:layout_alignTop="@id/notify_imageView"
+                            android:layout_toEndOf="@id/notify_imageView"
+                            android:background="@drawable/message_notread"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:text="光环云课堂"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <!--P4页：下方的ListView，它的子项包含GridView-->
                 <RelativeLayout
                     android:id="@+id/weike_relativeLayout"
                     android:layout_width="match_parent"
@@ -235,18 +224,8 @@
                         android:layout_height="22dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/icon_t" />
-
-                    <TextView
-                        android:id="@+id/weike_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_toRightOf="@id/title_left_imageview"
-                        android:textColor="#000000"
-                        android:textSize="16sp"
-                        tools:text="测试标题" />
+                        android:src="@drawable/icon_t"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/title_right_imageview"
@@ -256,6 +235,16 @@
                         android:layout_centerVertical="true"
                         android:adjustViewBounds="true"
                         android:src="@drawable/icon_sy_arrow" />
+
+                    <TextView
+                        android:id="@+id/weike_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/title_left_imageview"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        tools:text="测试标题" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -268,12 +257,26 @@
                         android:textSize="12sp" />
                 </RelativeLayout>
 
-                <ListView
-                    android:id="@+id/bottom_listview"
+                <!--标题栏-->
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@null"
-                    android:listSelector="@android:color/transparent" />
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="光环学院"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    tools:layout_height="10dp" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>

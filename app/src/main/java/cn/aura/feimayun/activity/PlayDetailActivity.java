@@ -89,7 +89,6 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
     //存放intent中获取到的数据
     private String data_id = null;
     private String data_teach_type = null;
-    private String uid = null;
     private String pkid = null;
     private AliyunVodPlayerView aliyunVodPlayerView;
     //    private ScreenStatusController mScreenStatusController = null;
@@ -182,11 +181,11 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("id", data_id);
         paramsMap.put("teach_type", data_teach_type);
-        paramsMap.put("uid", uid);
+        paramsMap.put("uid", Util.getUid());
         paramsMap.put("pkid", pkid);
         paramsMap.put("sid", sid);
 //        Log.i("021303", "id:" + data_id + ", teach_type:" + data_teach_type + ", uid:" + uid + ", pkid" + pkid + ", sid:" + sid);
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/play", handlePlay, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/play", handlePlay, paramsMap, PlayDetailActivity.this);
 
         JSONTokener jsonTokener = new JSONTokener(s);
         try {
@@ -322,7 +321,6 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
             if (status == 1) {
                 //play请求成功，说明这个sid已经learned过了
                 sidLearned.add(sid);
-
                 errno = "";//将错误码置空
                 JSONObject dataObject = jsonObject.getJSONObject("data");
                 playDataMap = new HashMap<>();
@@ -350,6 +348,7 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
                 //从后台获取到vid后，设置播放源
                 if (playDataMap.get("isBuy").equals("1")) {//只有购买了初始化播放器
                     if (!playDataMap.get("alvid").equals("null")) {//只有章的情况，没有可播放的视频
+//                        Log.i("070103", "alvid:" + playDataMap.get("alvid"));
                         setPlaySource(playDataMap.get("alvid"), playDataMap.get("kj_name"));
                     }
                 }
@@ -389,27 +388,25 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
     //设置vid，点击三级item调用
     public void setSid(String sid) {
         this.sid = sid;
-
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("id", data_id);
         paramsMap.put("teach_type", data_teach_type);
-        paramsMap.put("uid", uid);
+        paramsMap.put("uid", Util.getUid());
         paramsMap.put("pkid", pkid);
         paramsMap.put("sid", sid);
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/play", handlePlay, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/play", handlePlay, paramsMap, PlayDetailActivity.this);
     }
 
     public void initData() {
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
 
-        uid = Util.getUid();
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("id", data_id);
         paramsMap.put("teach_type", data_teach_type);
-        paramsMap.put("uid", uid);
+        paramsMap.put("uid", Util.getUid());
         paramsMap.put("pkid", pkid);
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleDetail, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleDetail, paramsMap, PlayDetailActivity.this);
     }
 
     @Override
@@ -486,7 +483,13 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
 //                    "errno":"E2002",
 //                    "error":"还未到指定的学习时间哦。",
 //                    "show":1
-            if (!errno.equals("E2002")) {
+
+//                    "status":0,
+//                    "msg":"请登录~",
+//                    "errno":"E1000",
+//                    "error":"请登录。",
+//                    "show":1
+            if (!errno.equals("E2002") && !errno.equals("E1000")) {
                 PlayDetailRightFragment fragment = (PlayDetailRightFragment) adapter.getItem(1);
                 fragment.setSid(sid, detailDataMap.get("isBuy"), sidLearned);
             }
@@ -558,7 +561,6 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
                 if (playDataMap != null) {
                     if (aliyunVodPlayerView != null) {
                         String lid = playDataMap.get("id");
-                        String uid = Util.getUid();
                         String sid = playDataMap.get("sid");
 
                         int seekPosition = aliyunVodPlayerView.getCurrentPosition() / 1000 - 5;
@@ -569,10 +571,10 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
 
                         Map<String, String> map = new HashMap<>();
                         map.put("lid", lid);
-                        map.put("uid", uid);
+                        map.put("uid", Util.getUid());
                         map.put("sid", sid);
                         map.put("time", time);
-                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map);
+                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map, PlayDetailActivity.this);
 //                                Log.i("tianyanyurecordsecond", "我执行了一次记录:在首帧：" + playDataMap.get("sid") + ", " + time);
                     }
                 }
@@ -591,6 +593,7 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
     }
 
     private void onCompletion() {
+//        Log.i("070104", "onCompletion: ");
         //播放结束提交一下0秒
         if (timer != null) {
             timer.cancel();
@@ -608,16 +611,15 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
                 if (playDataMap != null) {
                     if (aliyunVodPlayerView != null) {
                         String lid = playDataMap.get("id");
-                        String uid = Util.getUid();
                         String sid = playDataMap.get("sid");
                         String time = "0";
 
                         Map<String, String> map = new HashMap<>();
                         map.put("lid", lid);
-                        map.put("uid", uid);
+                        map.put("uid", Util.getUid());
                         map.put("sid", sid);
                         map.put("time", time);
-                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map);
+                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map, PlayDetailActivity.this);
 //                                Log.i("tianyanyurecordsecond", "播放结束：" + playDataMap.get("sid") + ", " + time);
                     }
                 }
@@ -636,18 +638,19 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
                     nextSid = (String) iterator.next();
                     break;
                 } else {
-                    aliyunVodPlayerView.setTipsViewVisivle();
+                    aliyunVodPlayerView.setTipsViewVisivle();//播放结束的框框
                 }
             }
         }
-        if (!currentSid.equals(nextSid)) {//相当于：如果当前不是最后一个视频的话
+        if (!currentSid.equals(nextSid) && !(Util.getUid().isEmpty())) {//相当于：如果当前不是最后一个视频的话
             setSid(nextSid);
+        } else {
+            aliyunVodPlayerView.setTipsViewVisivle();//播放结束的框框
         }
     }
 
     private void onSeekComplete() {
         String lid = playDataMap.get("id");
-        String uid = Util.getUid();
         String sid = playDataMap.get("sid");
 
         int seekPosition = aliyunVodPlayerView.getCurrentPosition() / 1000 - 5;
@@ -658,10 +661,10 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
 
         Map<String, String> map = new HashMap<>();
         map.put("lid", lid);
-        map.put("uid", uid);
+        map.put("uid", Util.getUid());
         map.put("sid", sid);
         map.put("time", time);
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map, PlayDetailActivity.this);
     }
 
     private void initAliyunPlayerView() {
@@ -837,7 +840,6 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
                     if (playDataMap != null) {
                         if (aliyunVodPlayerView != null) {
                             String lid = playDataMap.get("id");
-                            String uid = Util.getUid();
                             String sid = playDataMap.get("sid");
 
                             int seekPosition = aliyunVodPlayerView.getCurrentPosition() / 1000 - 5;
@@ -848,10 +850,10 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
 
                             Map<String, String> map = new HashMap<>();
                             map.put("lid", lid);
-                            map.put("uid", uid);
+                            map.put("uid", Util.getUid());
                             map.put("sid", sid);
                             map.put("time", time);
-                            RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map);
+                            RequestURL.sendPOST("https://app.feimayun.com/Lesson/saveRecord", handleSaveRecord, map, PlayDetailActivity.this);
 //                                Log.i("tianyanyurecordsecond", "我执行了一次记录，在start：" + playDataMap.get("sid") + ", " + time);
                         }
                     }
@@ -1077,7 +1079,6 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
 
         @Override
         public void onCompletion() {
-
             PlayDetailActivity activity = activityWeakReference.get();
             if (activity != null) {
                 activity.onCompletion();

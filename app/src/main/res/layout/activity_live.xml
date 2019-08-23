@@ -5,18 +5,18 @@
     android:layout_height="match_parent">
 
     <!--播放器窗口-->
-    <cn.aura.feimayun.view.MoveFrameLayout
-        android:id="@+id/contentVideo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/guanghuanguoji_auto"
-        android:visibility="gone" />
-
     <View
         android:id="@+id/activity_live_line0"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_below="@id/contentVideo"
+        android:background="#d1d1d1" />
+
+    <View
+        android:id="@+id/activity_live_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/activity_live_tabLayout"
         android:background="#d1d1d1" />
 
     <android.support.design.widget.TabLayout
@@ -29,18 +29,18 @@
         app:tabIndicatorHeight="3dp"
         app:tabSelectedTextColor="#ee7708" />
 
-    <View
-        android:id="@+id/activity_live_line"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_below="@id/activity_live_tabLayout"
-        android:background="#d1d1d1" />
-
     <android.support.v4.view.ViewPager
         android:id="@+id/activity_live_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/activity_live_line" />
+
+    <cn.aura.feimayun.view.MoveFrameLayout
+        android:id="@+id/contentVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/guanghuanguoji_auto"
+        android:visibility="gone" />
 
     <cn.aura.feimayun.view.MoveFrameLayout
         android:id="@+id/moveMode"

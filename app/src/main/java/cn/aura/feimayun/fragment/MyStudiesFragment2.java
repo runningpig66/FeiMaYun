@@ -272,13 +272,12 @@ public class MyStudiesFragment2 extends Fragment {
     }
 
     public void initData() {
-        String uid = Util.getUid();
-        if (!uid.equals("")) {
+        if (!Util.getUid().equals("")) {
             //登录成功后开始请求个人课程列表
             Map<String, String> paramsMap = new HashMap<>();
-            paramsMap.put("uid", uid);
+            paramsMap.put("uid", Util.getUid());
             paramsMap.put("p", String.valueOf(p));
-            RequestURL.sendPOST("https://app.feimayun.com/Lesson/myClassLessons", handleMyLessons, paramsMap);
+            RequestURL.sendPOST("https://app.feimayun.com/Lesson/myClassLessons", handleMyLessons, paramsMap, mainActivity);
         } else {
             isRequestSuccess = true;
             if (msf2_refreshLayout != null) {

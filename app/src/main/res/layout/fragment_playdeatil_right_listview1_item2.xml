@@ -22,6 +22,13 @@
             android:layout_gravity="left|center_vertical"
             android:src="@drawable/course_icon_gray3x" />
 
+        <ImageView
+            android:id="@+id/fragment_playdeatil_right_listview1_item2_imageview2"
+            android:layout_width="15dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/next" />
+
         <TextView
             android:id="@+id/fragment_playdeatil_right_listview1_item2_textview1"
             android:layout_width="0dp"
@@ -30,13 +37,6 @@
             android:layout_weight="1"
             android:paddingLeft="5dp"
             android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/fragment_playdeatil_right_listview1_item2_imageview2"
-            android:layout_width="15dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:src="@drawable/next" />
     </LinearLayout>
 
     <View

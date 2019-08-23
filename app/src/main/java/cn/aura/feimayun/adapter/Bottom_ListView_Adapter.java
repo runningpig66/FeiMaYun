@@ -2,11 +2,13 @@ package cn.aura.feimayun.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +30,7 @@ import cn.aura.feimayun.activity.FaceToFaceActivity;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.activity.PlayDetailActivity;
 import cn.aura.feimayun.application.MyApplication;
+import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.watch.WatchActivity;
 
@@ -35,16 +38,20 @@ import cn.aura.feimayun.vhall.watch.WatchActivity;
  * 描述：首页P4页ListView适配器，下方有一个内部类是ListView子项GridView的适配器
  */
 public class Bottom_ListView_Adapter extends BaseAdapter {
+    public int mScreenWidth;
     private MainActivity activity;
     private List<Map<String, String>> data;
 
     public Bottom_ListView_Adapter(Activity activity, List<Map<String, String>> data) {
         this.activity = (MainActivity) activity;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        (activity).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        mScreenWidth = displayMetrics.widthPixels;
         //记录解析的各1级children信息
         final List<Map<String, String>> lessonsList = new ArrayList<>();
         String lessonsString = data.get(0).get("lessons");
         int lessonsCount;
-        if (lessonsString.equals("")) {
+        if (lessonsString == null || lessonsString.equals("")) {
             lessonsCount = 0;
         } else {
             //解析二级目录，也就是lessons
@@ -83,7 +90,12 @@ public class Bottom_ListView_Adapter extends BaseAdapter {
 
     @Override
     public Map<String, String> getItem(int position) {
-        return data.get(position);
+        if (data != null) {
+            return data.get(position);
+        } else {
+            return null;
+        }
+
     }
 
     @Override
@@ -100,25 +112,33 @@ public class Bottom_ListView_Adapter extends BaseAdapter {
         }
         View bottom_root = convertView.findViewById(R.id.bottom_root);
         ImageView bottom_imageview1 = convertView.findViewById(R.id.bottom_imageview1);
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) bottom_imageview1.getLayoutParams();
+//        //小图是560*310，比例为1.8065
+        params.height = (int) ((mScreenWidth - ScreenUtils.dp2px(activity, 35)) * 2.0f / 5.0f / 1.8065f);
+        bottom_imageview1.setLayoutParams(params);
+
         TextView bottom_textview1 = convertView.findViewById(R.id.bottom_textview1);
         TextView bottom_textview2 = convertView.findViewById(R.id.bottom_textview2);
         TextView bottom_textview3 = convertView.findViewById(R.id.bottom_textview3);
         TextView bottom_textview4 = convertView.findViewById(R.id.bottom_textview4);
-        RequestOptions options = new RequestOptions().fitCenter();
-        if (Util.isOnMainThread()) {
-            Glide.with(MyApplication.context).load(mapItem.get("bg_url")).apply(options).into(bottom_imageview1);
-        }
-        bottom_textview1.setText(mapItem.get("name"));
-        bottom_textview2.setText(mapItem.get("title"));
-        bottom_textview3.setText(mapItem.get("sells") + "人报名");
-        bottom_root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String data_id = mapItem.get("id");
-                String data_teach_type = mapItem.get("teach_type");
-                startActivity(data_id, data_teach_type);
+        if (mapItem != null) {
+            RequestOptions options = new RequestOptions().fitCenter();
+            if (Util.isOnMainThread()) {
+                Glide.with(MyApplication.context).load(mapItem.get("bg_url")).apply(options).into(bottom_imageview1);
             }
-        });
+            bottom_textview1.setText(mapItem.get("name"));
+            bottom_textview2.setText(mapItem.get("title"));
+            bottom_textview3.setText(mapItem.get("sells") + "人报名");
+            bottom_root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String data_id = mapItem.get("id");
+                    String data_teach_type = mapItem.get("teach_type");
+                    startActivity(data_id, data_teach_type);
+                }
+            });
+        }
         return convertView;
     }
 

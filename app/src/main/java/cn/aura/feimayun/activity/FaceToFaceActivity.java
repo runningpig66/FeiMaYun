@@ -176,7 +176,7 @@ public class FaceToFaceActivity extends BaseActivity implements View.OnClickList
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
 
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleNetwork, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleNetwork, paramsMap, FaceToFaceActivity.this);
 
     }
 

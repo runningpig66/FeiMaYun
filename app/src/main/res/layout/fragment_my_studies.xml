@@ -5,58 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/fragment_my_studies_level1"
-        android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:background="@drawable/data_bg">
-
-        <!--顶部的状态栏预留-->
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="25dp" />
-
-        <ImageView
-            android:id="@+id/fragment_my_studies_imageView0"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_below="@id/view"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/icon_toolbar"
-            android:visibility="gone" />
-
-        <com.gcssloop.widget.RCRelativeLayout
-            android:id="@+id/rcLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:round_corner="35dp"
-            app:stroke_color="#ffffff"
-            app:stroke_width="1dp">
-
-            <ImageView
-                android:id="@+id/fragment_my_studies_imageView1"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/data_head" />
-        </com.gcssloop.widget.RCRelativeLayout>
-
-        <TextView
-            android:id="@+id/fragment_my_studies_textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rcLayout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="立即登录"
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
-    </RelativeLayout>
-    <!--未登录展示的界面-->
     <LinearLayout
         android:id="@+id/fragment_my_studies_level2"
         android:layout_width="wrap_content"
@@ -95,6 +43,58 @@
             android:textColor="#ffffff"
             android:textSize="16sp" />
     </LinearLayout>
+    <!--未登录展示的界面-->
+    <RelativeLayout
+        android:id="@+id/fragment_my_studies_level1"
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
+        android:background="@drawable/data_bg">
+
+        <!--顶部的状态栏预留-->
+        <ImageView
+            android:id="@+id/fragment_my_studies_imageView0"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/view"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/icon_toolbar"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/fragment_my_studies_textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rcLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="立即登录"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="25dp" />
+
+        <com.gcssloop.widget.RCRelativeLayout
+            android:id="@+id/rcLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:round_corner="35dp"
+            app:stroke_color="#ffffff"
+            app:stroke_width="1dp">
+
+            <ImageView
+                android:id="@+id/fragment_my_studies_imageView1"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/data_head" />
+        </com.gcssloop.widget.RCRelativeLayout>
+    </RelativeLayout>
     <!--登陆后有课程的展示的界面-->
     <android.support.design.widget.TabLayout
         android:id="@+id/my_studies_tablayout"

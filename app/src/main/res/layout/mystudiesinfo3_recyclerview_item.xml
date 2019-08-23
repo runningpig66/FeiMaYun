@@ -5,13 +5,6 @@
     android:background="#f5f5f5"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/info3_recycler_view0"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:background="#f5f5f5"
-        android:visibility="gone" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,4 +54,11 @@
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:id="@+id/info3_recycler_view0"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:background="#f5f5f5"
+        android:visibility="gone" />
 </LinearLayout>

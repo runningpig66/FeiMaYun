@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,7 +41,7 @@ public class MyStuidesInfo4 extends Fragment {
     private static Handler handleNetwork2;
     private boolean isFirstIn = true;
     private boolean isFirstInitRecyclerView = true;
-    private Context context;
+    private AppCompatActivity context;
     private String lid;
     private String uid;
     private int p = 1;
@@ -216,7 +217,7 @@ public class MyStuidesInfo4 extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
+        this.context = (AppCompatActivity) context;
         uid = Util.getUid();
     }
 
@@ -234,7 +235,7 @@ public class MyStuidesInfo4 extends Fragment {
         map.put("uid", uid);
         map.put("lid", lid);
         map.put("p", String.valueOf(p));
-        RequestURL.sendPOST("https://app.feimayun.com/User/myTest", handleNetwork, map);
+        RequestURL.sendPOST("https://app.feimayun.com/User/myTest", handleNetwork, map, context);
     }
 
     public void requestNetwork2() {
@@ -244,7 +245,7 @@ public class MyStuidesInfo4 extends Fragment {
             map.put("uid", uid);
             map.put("lid", lid);
             map.put("p", String.valueOf(clickP));
-            RequestURL.sendPOST("https://app.feimayun.com/User/myTest", handleNetwork2, map);
+            RequestURL.sendPOST("https://app.feimayun.com/User/myTest", handleNetwork2, map, context);
         }
     }
 

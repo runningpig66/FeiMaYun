@@ -178,13 +178,11 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
     //发送网络请求
     private void initData() {
         String uid = Util.getUid();
-
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("id", data_id);
         paramsMap.put("teach_type", data_teach_type);
         paramsMap.put("uid", uid);
-
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleNetwork, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/detail", handleNetwork, paramsMap, CoursePackageActivity.this);
     }
 
     private void initView() {

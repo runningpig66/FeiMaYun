@@ -33,10 +33,11 @@ import cn.aura.feimayun.adapter.LiveListActivityListViewAdapter;
 import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.vhall.watch.WatchActivity;
+import cn.aura.feimayun.view.ProgressDialog;
 
 public class LiveListActivity extends BaseActivity implements View.OnClickListener {
-
     private static Handler handleNetwork;
+    private ProgressDialog progressDialog;
     private String is_live;
     private SmartRefreshLayout activityLivelist_refreshLayout;
     private LiveListActivityListViewAdapter adapter;
@@ -61,6 +62,7 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void parseNetwork(String s) {
+//        Util.d("081301", s);
         JSONTokener jsonTokener = new JSONTokener(s);
         try {
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -123,6 +125,11 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
         } catch (JSONException e) {
             e.printStackTrace();
             activityLivelist_refreshLayout.finishRefresh(false);
+        } finally {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
         }
     }
 
@@ -148,11 +155,9 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
                     if (is_live.equals("1")) {
                         paramsMap.put("is_live", "1");
                     }
-                    RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetwork, paramsMap);
+                    RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetwork, paramsMap, LiveListActivity.this);
                 }
             });
-
-
             //返回
             RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);
             headtitle_layout.setOnClickListener(this);
@@ -168,7 +173,9 @@ public class LiveListActivity extends BaseActivity implements View.OnClickListen
             if (is_live.equals("1")) {
                 paramsMap.put("is_live", "1");
             }
-            RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetwork, paramsMap);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.show();
+            RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetwork, paramsMap, LiveListActivity.this);
         }
 
     }

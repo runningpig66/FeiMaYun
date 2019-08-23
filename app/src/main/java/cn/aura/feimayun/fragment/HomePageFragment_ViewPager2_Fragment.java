@@ -123,7 +123,10 @@ public class HomePageFragment_ViewPager2_Fragment extends Fragment {
                 Message message = new Message();
                 message.what = StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE;
                 message.obj = bundle;
-                FullCourseFragment.handleJump.sendMessage(message);
+                if (FullCourseFragment.handleJump != null) {
+                    FullCourseFragment.handleJump.sendMessage(message);
+                }
+
             }
         });
     }

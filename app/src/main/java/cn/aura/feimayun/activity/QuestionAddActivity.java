@@ -143,7 +143,7 @@ public class QuestionAddActivity extends BaseActivity implements View.OnClickLis
                 if (data != null && !data.equals("")) {
                     map.put("images", data);
                 }
-                RequestURL.sendPOST("https://app.feimayun.com/Qa/add", handleAdd, map);
+                RequestURL.sendPOST("https://app.feimayun.com/Qa/add", handleAdd, map, QuestionAddActivity.this);
             } else {
                 Toast.makeText(this, "图片上传失败", Toast.LENGTH_SHORT).show();
                 isUploadNow = false;
@@ -293,7 +293,7 @@ public class QuestionAddActivity extends BaseActivity implements View.OnClickLis
                         map.put("leimu_1", leimu_1);
                         map.put("leimu_2", leimu_2);
                         map.put("uid", uid);
-                        RequestURL.sendPOST("https://app.feimayun.com/Qa/add", handleAdd, map);
+                        RequestURL.sendPOST("https://app.feimayun.com/Qa/add", handleAdd, map, QuestionAddActivity.this);
                     } else {//用户添加了回复图片，同时还有回复的文字信息
                         //构建图片File数组
 //                        List<File> files = new ArrayList<>();
@@ -303,7 +303,7 @@ public class QuestionAddActivity extends BaseActivity implements View.OnClickLis
 //                        }
                         //首先上传图片到图片服务器，等待返回图片保存的服务器地址
 
-                        RequestURL.uploadFile(mList, "https://app.feimayun.com/Upload/upImages", handleImages);
+                        RequestURL.uploadFile(mList, "https://app.feimayun.com/Upload/upImages", handleImages, QuestionAddActivity.this);
                     }
                 }
             }

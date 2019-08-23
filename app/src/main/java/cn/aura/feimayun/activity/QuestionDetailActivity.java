@@ -38,7 +38,6 @@ public class QuestionDetailActivity extends BaseActivity implements View.OnClick
     private SmartRefreshLayout qutiondetail_refreshlayout;
     private boolean isFirstIn = true;
     private String tid;
-    private String uid;
 
     @SuppressLint("HandlerLeak")
     private void handle() {
@@ -108,7 +107,6 @@ public class QuestionDetailActivity extends BaseActivity implements View.OnClick
 
             Intent intent = getIntent();
             tid = intent.getStringExtra("tid");
-            uid = Util.getUid();
 
             initData();
         }
@@ -116,13 +114,13 @@ public class QuestionDetailActivity extends BaseActivity implements View.OnClick
     }
 
     private void initData() {
-        if (uid.equals("")) {
+        if (Util.getUid().equals("")) {
             Toast.makeText(this, R.string.vhall_login_first, Toast.LENGTH_SHORT).show();
         } else {
             Map<String, String> map = new HashMap<>();
             map.put("tid", tid);
-            map.put("uid", uid);
-            RequestURL.sendPOST("https://app.feimayun.com/Qa/detail", handleMessage, map);
+            map.put("uid", Util.getUid());
+            RequestURL.sendPOST("https://app.feimayun.com/Qa/detail", handleMessage, map, QuestionDetailActivity.this);
         }
     }
 

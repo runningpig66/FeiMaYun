@@ -89,7 +89,7 @@ public class CourseListActivity extends BaseActivity {
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put(series, id);
 
-        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetWork, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Lesson/index", handleNetWork, paramsMap, CourseListActivity.this);
     }
 
     @SuppressLint("HandlerLeak")

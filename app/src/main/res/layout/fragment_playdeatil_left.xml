@@ -37,40 +37,30 @@
                     tools:text="PMP北京五道口面授精品教学test" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/fragment_playdeatil_left_textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="22dp"
-                android:layout_marginBottom="12dp"
-                tools:text="10课时test" />
-
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:background="#eeeeee" />
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#fff" />
+
+                <com.tencent.smtt.sdk.WebView
+                    android:id="@+id/fragment_playdeatil_left_textView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:text="测试内容\n测试内容" />
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp">
-
-                <com.gcssloop.widget.RCRelativeLayout
-                    android:id="@+id/rcLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:round_corner="40dp"
-                    app:stroke_color="#eeeeee"
-                    app:stroke_width="1dp">
-
-                    <ImageView
-                        android:id="@+id/fragment_playdeatil_left_circleImageView"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_centerVertical="true"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_launcher" />
-                </com.gcssloop.widget.RCRelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -97,12 +87,24 @@
                         android:textSize="14sp"
                         tools:text="讲师简介：3test" />
                 </LinearLayout>
-            </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:background="#eeeeee" />
+                <com.gcssloop.widget.RCRelativeLayout
+                    android:id="@+id/rcLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:round_corner="40dp"
+                    app:stroke_color="#eeeeee"
+                    app:stroke_width="1dp">
+
+                    <ImageView
+                        android:id="@+id/fragment_playdeatil_left_circleImageView"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_launcher" />
+                </com.gcssloop.widget.RCRelativeLayout>
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -112,31 +114,29 @@
                 android:textColor="#000000"
                 android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/fragment_playdeatil_left_textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="22dp"
+                android:layout_marginBottom="12dp"
+                tools:text="10课时test" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="#eeeeee" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#eeeeee" />
 
 
-            <LinearLayout
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ffffff"
-                android:orientation="vertical">
-
-                <com.tencent.smtt.sdk.WebView
-                    android:id="@+id/fragment_playdeatil_left_textView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:text="测试内容\n测试内容" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="#fff" />
-
-            </LinearLayout>
+                android:layout_height="10dp"
+                android:background="#eeeeee" />
 
         </LinearLayout>
 

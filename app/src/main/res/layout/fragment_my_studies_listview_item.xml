@@ -14,15 +14,6 @@
         app:stroke_color="#eeeeee"
         app:stroke_width="1dp">
 
-        <cn.aura.feimayun.view.CornerLabelView
-            android:id="@+id/cornerView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:bg_color="#ffffff"
-            app:position="left_top"
-            app:side_length="40dp"
-            app:text_size="12sp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,6 +73,15 @@
                 android:textColor="#ee7708"
                 android:textSize="14sp" />
         </LinearLayout>
+
+        <cn.aura.feimayun.view.CornerLabelView
+            android:id="@+id/cornerView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:bg_color="#ffffff"
+            app:position="left_top"
+            app:side_length="40dp"
+            app:text_size="12sp" />
 
     </com.gcssloop.widget.RCRelativeLayout>
 </FrameLayout>

@@ -6,25 +6,6 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/analysis_layout1"
-        layout="@layout/headtitle_layout" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/activity_analysis_viewpager1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/analysis_layout3"
-        android:layout_below="@id/analysis_layout1" />
-
-    <View
-        android:id="@+id/analysis_layout3"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_above="@id/analysis_layout2"
-        android:background="#d1d1d1" />
-
-    <!--底部按钮-->
     <RelativeLayout
         android:id="@+id/analysis_layout2"
         android:layout_width="match_parent"
@@ -62,5 +43,24 @@
                 android:src="@drawable/activity_exam_detail_right_orange" />
         </RelativeLayout>
     </RelativeLayout>
+
+    <View
+        android:id="@+id/analysis_layout3"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/analysis_layout2"
+        android:background="#d1d1d1" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_analysis_viewpager1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/analysis_layout3"
+        android:layout_below="@id/analysis_layout1" />
+
+    <!--底部按钮-->
+    <include
+        android:id="@+id/analysis_layout1"
+        layout="@layout/headtitle_layout" />
 
 </RelativeLayout>

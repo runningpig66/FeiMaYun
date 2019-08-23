@@ -49,8 +49,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private CountDownTimer countDownTimer;
     //铭文显示密码切换，默认不显示密码
     private boolean showPassword = false;
-    //验证码/密码登录切换，默认是验证按登录
-    private boolean isPassword = false;
+    //验证码/密码登录切换，默认是密码登录
+    private boolean isPassword = true;
     //请输入您的手机号
     private EditText activity_login_editText1;
     //请输入您的密码
@@ -96,10 +96,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             activity_login_textView1.setOnClickListener(this);
             activity_login_textView2.setOnClickListener(this);
             activity_login_textview3.setOnClickListener(this);
-
-            activity_login_editText2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());//显示文本
-            activity_login_editText2.setInputType(TYPE_CLASS_NUMBER);
-            activity_login_editText2.setHint("请输入验证码");
 
             //获取验证码按钮计数60秒
             int mCount = 60;
@@ -225,11 +221,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             int status = jsonObject.getInt("status");
             if (status == 1) {//登录成功
                 //保存用户的uid等信息
-                String apud = jsonObject.getString("apud");
-                String aptk = jsonObject.getString("aptk");
+                String apud = jsonObject.optString("apud");
+                String aptk = jsonObject.optString("aptk");
+                String secret = jsonObject.optString("secret");
                 SharedPreferences.Editor editor = getSharedPreferences("user_info", MODE_PRIVATE).edit();
                 editor.putString("apud", apud);
                 editor.putString("aptk", aptk);
+                editor.putString("secret", secret);
                 editor.apply();
                 //由于用户、流量2种vhall_account的类型只能在play和detail中获取到，这里只能取消登录vhall
 //                //登录聊天账号
@@ -252,6 +250,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                 //向消息中心发送登录成功的信息，刷新消息界面
                 MessageCenterFragment.handleLogin.obtainMessage().sendToTarget();
+
                 //登录成功后，关闭登录页面，并向我的学习返回成功成功的消息
                 MyStudiesFragment.handleLogin.obtainMessage().sendToTarget();
                 //关闭键盘
@@ -307,7 +306,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 paramsMap.put("phone", phone);
                                 paramsMap.put("pwd", pwd);
                                 paramsMap.put("type", "1");
-                                RequestURL.sendPOST("https://app.feimayun.com/Login/login", handleLogin, paramsMap);
+                                RequestURL.sendPOST("https://app.feimayun.com/Login/login", handleLogin, paramsMap, LoginActivity.this);
                             }
                         }
                     }
@@ -323,7 +322,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             paramsMap.put("phone", phone1);
                             paramsMap.put("vcode", code);
                             paramsMap.put("type", "2");
-                            RequestURL.sendPOST("https://app.feimayun.com/Login/login", handleLogin, paramsMap);
+                            RequestURL.sendPOST("https://app.feimayun.com/Login/login", handleLogin, paramsMap, LoginActivity.this);
                         }
                     }
                 }
@@ -370,7 +369,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     //发送验证码
                     Map<String, String> paramsMap = new HashMap<>();
                     paramsMap.put("phone", phone0);
-                    RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap);
+                    RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap, LoginActivity.this);
                 }
                 break;
         }

@@ -162,8 +162,7 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
         String des2 = Util.getNewContent(aboutString);
         watch_left_webview.loadData(des2, "text/html; charset=UTF-8", null);
 
-        String uid = Util.getUid();
-        if (uid.equals("")) {//未登录直接显示立即咨询，无论课程是否免费
+        if (Util.getUid().equals("")) {//未登录直接显示立即咨询，无论课程是否免费
             watch_left_textview7.setVisibility(View.VISIBLE);
             watch_left_textview7.setText("立即咨询");
         } else {//登录以后，再判断是否免费
@@ -179,11 +178,11 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
 
                         //免费的直接购买
                         Map<String, String> paramsMap = new HashMap<>();
-                        paramsMap.put("uid", uid);
+                        paramsMap.put("uid", Util.getUid());
                         paramsMap.put("ids", ids);
                         paramsMap.put("order_price", order_price);
                         paramsMap.put("pay_price", pay_price);
-                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/buyLessons", handleBuyLessons, paramsMap);
+                        RequestURL.sendPOST("https://app.feimayun.com/Lesson/buyLessons", handleBuyLessons, paramsMap, activity);
                     }
                 } else {//收费课程显示立即咨询
                     watch_left_textview7.setVisibility(View.VISIBLE);

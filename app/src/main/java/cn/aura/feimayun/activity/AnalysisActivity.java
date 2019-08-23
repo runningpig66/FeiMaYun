@@ -452,10 +452,10 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
         //请求考试结果
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("tid", tid);
-        paramsMap.put("uid", uid);
+        paramsMap.put("uid", Util.getUid());
         paramsMap.put("typer", typer);
         paramsMap.put("type", type);
-        RequestURL.sendPOST("https://app.feimayun.com/Test/alsTyper", handleNetwork1, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Test/alsTyper", handleNetwork1, paramsMap, AnalysisActivity.this);
     }
 
     //请求网络，按标签分析
@@ -465,10 +465,10 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
         //请求考试结果
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("id", tid);
-        paramsMap.put("uid", uid);
+        paramsMap.put("uid", Util.getUid());
         paramsMap.put("tids", tids);
         paramsMap.put("type", type);
-        RequestURL.sendPOST("https://app.feimayun.com/Test/alsSign", handleNetwork2, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Test/alsSign", handleNetwork2, paramsMap, AnalysisActivity.this);
     }
 
     //请求所有题目

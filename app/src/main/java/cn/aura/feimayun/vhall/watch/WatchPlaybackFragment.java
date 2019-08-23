@@ -434,8 +434,10 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
             mPresenter.onResume();
         } else {
             mPresenter = mContext.getPlaybackPresenter();
-            mPresenter.start();
-            mPresenter.onResume();
+            if (mPresenter != null) {
+                mPresenter.start();
+                mPresenter.onResume();
+            }
         }
         isVisible = true;
     }

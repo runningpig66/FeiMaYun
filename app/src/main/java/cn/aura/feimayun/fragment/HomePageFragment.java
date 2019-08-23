@@ -71,7 +71,6 @@ import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.SetHeightUtil;
 import cn.aura.feimayun.util.StaticUtil;
-import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.watch.WatchActivity;
 import cn.aura.feimayun.view.GlideImageLoader;
 import cn.aura.feimayun.view.ProgressDialog;
@@ -127,6 +126,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     private FrameLayout search_layout;
     //小红点布局
     private RelativeLayout notify_relativeLayout;
+    private LinearLayout root_linearLayout;
 
 
     @SuppressLint("HandlerLeak")
@@ -196,6 +196,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
 
     //初始化布局和handler
     public void initView() {
+        root_linearLayout = view.findViewById(R.id.root_linearLayout);
         notify_relativeLayout = view.findViewById(R.id.notify_relativeLayout);
         notify_relativeLayout.setOnClickListener(new OnClickListener() {
             @Override
@@ -209,7 +210,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
         bottom_listview = view.findViewById(R.id.bottom_listview);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) banner.getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = (int) (ScreenUtils.getWidth(mainActivity) * 0.425);
+        params.height = (int) (((ScreenUtils.getWidth(mainActivity) - ScreenUtils.dp2px(mainActivity, 30))) / 2.0f);
         banner.setLayoutParams(params);
         fragment_home_page_viewpager2 = view.findViewById(R.id.fragment_home_page_viewpager2);
         fragment_home_page_layout1 = view.findViewById(R.id.fragment_home_page_layout1);
@@ -218,8 +219,9 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    String searchMessage = top_editText.getText().toString();
+                    String searchMessage = top_editText.getText().toString().trim();
                     if (searchMessage.isEmpty()) {
+                        top_editText.setText("");
                         Toast.makeText(mainActivity, "请输入查询信息", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(mainActivity, SingleCourseActivity.class);
@@ -267,7 +269,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
 
     public void initData() {
         //请求后台网络数据，数据会在handleNetwork接收并处理
-        RequestURL.sendGET("https://app.feimayun.com/Index/index", handleNetwork);
+        RequestURL.sendGET("https://app.feimayun.com/Index/index", handleNetwork, mainActivity);
     }
 
     @Override
@@ -428,7 +430,9 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 Message message = new Message();
                 message.what = StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE;
                 message.obj = bundle;
-                FullCourseFragment.handleJump.sendMessage(message);
+                if (FullCourseFragment.handleJump != null) {
+                    FullCourseFragment.handleJump.sendMessage(message);
+                }
             }
         });
     }
@@ -568,12 +572,13 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
 
     //解析后台返回的JSON数据,同时调用本碎片中各个页面加载方法，传入页面所需的数据
     private void parseJson(String jsonData) {
-        Util.d("061701", jsonData);
+//        Util.d("061701", jsonData);
         try {
             JSONTokener jsonTokener = new JSONTokener(jsonData);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
             String status = jsonObject.optString("status");
             if (status.equals("1")) {
+                root_linearLayout.setVisibility(View.VISIBLE);
                 //解析banner
                 String bannerString = jsonObject.optString("banner");
                 bannerStringList = new ArrayList<>();
@@ -688,7 +693,9 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                         innerMap.put("name", innerObject.optString("name"));
                         if (innerObject.has("lessons")) {
                             JSONArray lessonsArray = innerObject.optJSONArray("lessons");
-                            innerMap.put("lessons", lessonsArray.toString());
+                            if (lessonsArray != null) {
+                                innerMap.put("lessons", lessonsArray.toString());
+                            }
                         }
                         if (innerObject.optString("type").equals("1")) {
                             data2MapList.add(innerMap);
@@ -741,7 +748,9 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 Message message = new Message();
                 message.what = StaticUtil.FROM_HOMEPAGE_TO_FULLCOURSE;
                 message.obj = bundle;
-                FullCourseFragment.handleJump.sendMessage(message);
+                if (FullCourseFragment.handleJump != null) {
+                    FullCourseFragment.handleJump.sendMessage(message);
+                }
             }
         });
         bottom_listview.setFocusable(false);

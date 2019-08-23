@@ -289,7 +289,7 @@ public class ExamResultActivity extends BaseActivity implements View.OnClickList
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
 
-        RequestURL.sendPOST("https://app.feimayun.com/Test/index", handleNetwork, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Test/index", handleNetwork, paramsMap, ExamResultActivity.this);
     }
 
     private void initView() {
@@ -325,7 +325,7 @@ public class ExamResultActivity extends BaseActivity implements View.OnClickList
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("tid", tid);
                 paramsMap.put("uid", uid);
-                RequestURL.sendPOST("https://app.feimayun.com/Test/analysis", handleAnalysis, paramsMap);//异步请求网络
+                RequestURL.sendPOST("https://app.feimayun.com/Test/analysis", handleAnalysis, paramsMap, ExamResultActivity.this);//异步请求网络
                 mList.clear();
 
                 View view = LayoutInflater.from(this).inflate(R.layout.answer_card, null);

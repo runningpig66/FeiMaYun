@@ -80,10 +80,14 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
 
                 //通知进行刷新
                 if (myStudiesFragment1 != null) {
-                    myStudiesFragment1.handleRefresh.obtainMessage().sendToTarget();
+                    if (myStudiesFragment1.handleRefresh != null) {
+                        myStudiesFragment1.handleRefresh.obtainMessage().sendToTarget();
+                    }
                 }
                 if (myStudiesFragment2 != null) {
-                    myStudiesFragment2.handleRefresh.obtainMessage().sendToTarget();
+                    if (myStudiesFragment2.handleRefresh != null) {
+                        myStudiesFragment2.handleRefresh.obtainMessage().sendToTarget();
+                    }
                 }
             }
         };

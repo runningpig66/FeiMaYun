@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -84,7 +85,6 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
     private List<Boolean> mList = new LinkedList<>();//记录是否选择
     private String sid;
     private String tid;
-    private String uid;
     private Map<String, String> dataMap;
     private List<Map<String, String>> listsList = new ArrayList<>();
     private TextView activity_exam_detail_textview1;//倒计时文本框
@@ -247,6 +247,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
             JSONTokener jsonTokener = new JSONTokener(s);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
             int status = jsonObject.getInt("status");
+            String msg = jsonObject.optString("msg");
             if (status == 1) {
                 //保存不提交成功，删除本地的异常记录文件
                 File file = new File("/data/data/" + getPackageName() + "/shared_prefs", fileName + ".xml");
@@ -266,7 +267,26 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                     }
                 }, 1000);
             } else {
-                Toast.makeText(this, "请答题后保存~", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                //如果保存不提交的时候，uid为空，那么提交异常（可能是因为账号被顶下线）
+                if (Util.getUid().equals("")) {
+                    if (mSelfDialog2 == null) {
+                        mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
+                        mSelfDialog2.setTitle("温馨提示");
+                        mSelfDialog2.setMessage("保存异常！答题记录将保存到本地");
+                        mSelfDialog2.setYesOnclickListener("确认", new SelfDialog2.onYesOnclickListener() {
+                            @Override
+                            public void onYesClick() {
+                                finish();
+                            }
+                        });
+                        WindowManager.LayoutParams params = mSelfDialog2.getWindow().getAttributes();
+                        params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
+                        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                        mSelfDialog2.getWindow().setAttributes(params);
+                    }
+                    mSelfDialog2.show();
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -537,6 +557,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                                     mSelfDialog.show();
                                 } else {
                                     if (isConnected) {
+                                        String uid = Util.getUid();
                                         //发送答案
                                         Map<String, String> paramsMap2 = new HashMap<>();
                                         paramsMap2.put("sid", sid);
@@ -550,7 +571,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
 
                                         paramsMap2.put("times", result1 + "");
                                         paramsMap2.put("answers", answer1.toString());
-                                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest2, paramsMap2);//提交
+                                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest2, paramsMap2, ExamDetailActivity.this);//提交
                                     } else {
                                         if (mSelfDialog2 == null) {
                                             mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
@@ -654,14 +675,13 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initData() {
-        uid = Util.getUid();
-
+        String uid = Util.getUid();
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("sid", sid);
         paramsMap.put("uid", uid);
         paramsMap.put("tid", tid);
         Log.i("190308", "sid:" + sid + ",uid:" + uid + ",tid:" + tid);
-        RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpDetail", handleNetwork, paramsMap);
+        RequestURL.sendPOST("https://app.feimayun.com/Tiku/tpDetail", handleNetwork, paramsMap, ExamDetailActivity.this);
     }
 
     private void initView() {
@@ -733,6 +753,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                                 e.printStackTrace();
                             }
                         }
+                        String uid = Util.getUid();
                         //TODO 发送答案
                         Map<String, String> paramsMap = new HashMap<>();
                         paramsMap.put("sid", sid);
@@ -741,13 +762,13 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                         paramsMap.put("state", "0");
 
                         long timelest = countDownMillis / 1000;//剩余时间
-                        long examtime = Long.parseLong(dataMap.get("answer_time"));//考试要求时间/秒
+                        long examtime = Long.parseLong(Objects.requireNonNull(dataMap.get("answer_time")));//考试要求时间/秒
                         long result = examtime - timelest;
 
                         paramsMap.put("times", result + "");
                         paramsMap.put("answers", answer.toString());
                         Util.d("052801", "times:" + result);
-                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest1, paramsMap);//保存不提交
+                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest1, paramsMap, ExamDetailActivity.this);//保存不提交
                     } else {
                         if (mSelfDialog2 == null) {
                             mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
@@ -881,6 +902,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                                                 e.printStackTrace();
                                             }
                                         }
+                                        String uid = Util.getUid();
                                         //TODO 发送答案
                                         Map<String, String> paramsMap2 = new HashMap<>();
                                         paramsMap2.put("sid", sid);
@@ -894,7 +916,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
 
                                         paramsMap2.put("times", result1 + "");
                                         paramsMap2.put("answers", answer1.toString());
-                                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest2, paramsMap2);//提交
+                                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest2, paramsMap2, ExamDetailActivity.this);//提交
                                         tDialog.dismiss();
                                         break;
                                 }

@@ -146,7 +146,7 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
 
             Map<String, String> paramsMap = new HashMap<>();
             paramsMap.put("p", String.valueOf(p));
-            RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap);
+            RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap, ExamListActivity.this);
         }
 
     }
@@ -161,7 +161,7 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
                 p = 1;
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("p", String.valueOf(p));
-                RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap);
+                RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap, ExamListActivity.this);
             }
         });
         activityExamList_refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -171,7 +171,7 @@ public class ExamListActivity extends BaseActivity implements View.OnClickListen
                 p++;
                 Map<String, String> paramsMap = new HashMap<>();
                 paramsMap.put("p", String.valueOf(p));
-                RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap);
+                RequestURL.sendPOST("https://app.feimayun.com/Tiku/index", handlerTiku, paramsMap, ExamListActivity.this);
             }
         });
         //返回按钮布局

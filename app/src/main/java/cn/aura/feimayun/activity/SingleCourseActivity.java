@@ -211,7 +211,7 @@ public class SingleCourseActivity extends BaseActivity {
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("keywd", searchMessage);
         paramsMap.put("p", String.valueOf(page));
-        RequestURL.sendGetPath("https://app.feimayun.com/Index/search", handleSearch, paramsMap);
+        RequestURL.sendGetPath("https://app.feimayun.com/Index/search", handleSearch, paramsMap, SingleCourseActivity.this);
     }
 
     private void initView() {
@@ -242,6 +242,7 @@ public class SingleCourseActivity extends BaseActivity {
                 initData();
             }
         });
+        none_message_recyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         none_message_recyclerView.setLayoutManager(gridLayoutManager);
         adapter = new CouseListViewPagerRvAdapter(this, null);
@@ -252,6 +253,8 @@ public class SingleCourseActivity extends BaseActivity {
                 .setShowLastLine(false)
                 .build();
         none_message_recyclerView.addItemDecoration(divider);
+        none_message_recyclerView.setNestedScrollingEnabled(false);
+
         adapter.setItemClickListener(new CouseListViewPagerRvAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

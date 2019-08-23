@@ -319,7 +319,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                 map.put("uid", uid);
                 map.put("bgImg", big_img);
                 map.put("smallImg", small_img);
-                RequestURL.sendPOST("https://app.feimayun.com/User/upAvater", handleUpAvater, map);
+                RequestURL.sendPOST("https://app.feimayun.com/User/upAvater", handleUpAvater, map, InformationActivity.this);
             } else {
                 Toast.makeText(this, "图片上传失败", Toast.LENGTH_SHORT).show();
                 isUploadNow = false;
@@ -473,7 +473,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             View view = inflater.inflate(R.layout.modify_phone, root, false);
             final EditText e_0 = view.findViewById(R.id.e_0);
             final EditText e_1 = view.findViewById(R.id.e_1);
-//            final EditText e_2 = view.findViewById(R.id.e_2);
+            final EditText e_2 = view.findViewById(R.id.e_2);
             if (activity_register_textView1 != null) {
                 activity_register_textView1 = null;
             }
@@ -518,27 +518,27 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                                             //发送验证码
                                             Map<String, String> paramsMap = new HashMap<>();
                                             paramsMap.put("phone", phone0);
-                                            RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap);
+                                            RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap, InformationActivity.this);
                                         }
                                     }
                                     break;
                                 case R.id.submit:
                                     phone = e_0.getText().toString();
                                     String code = e_1.getText().toString();
-//                                    String passwd = e_2.getText().toString();
-                                    if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {// || TextUtils.isEmpty(passwd)
+                                    String passwd = e_2.getText().toString();
+                                    if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(passwd)) {
                                         Toast.makeText(InformationActivity.this, "请完成输入修改信息", Toast.LENGTH_SHORT).show();
                                     } else {
                                         if (Util.isMobile(phone)) {
-//                                            if (Util.isPassword(passwd)) {
-                                            HashMap<String, String> paramsMap = new HashMap<>();
-                                            paramsMap.put("uid", Util.getUid());
-                                            paramsMap.put("phone", phone);
-                                            paramsMap.put("code", code);
-//                                                paramsMap.put("passwd", passwd);
-                                            //申请修改手机号
-                                            RequestURL.sendPOST("https://app.feimayun.com/User/editPhone", handleEditPhone, paramsMap);
-//                                            }
+                                            if (Util.isPassword(passwd)) {
+                                                HashMap<String, String> paramsMap = new HashMap<>();
+                                                paramsMap.put("uid", Util.getUid());
+                                                paramsMap.put("phone", phone);
+                                                paramsMap.put("code", code);
+                                                paramsMap.put("passwd", passwd);
+                                                //申请修改手机号
+                                                RequestURL.sendPOST("https://app.feimayun.com/User/editPhone", handleEditPhone, paramsMap, InformationActivity.this);
+                                            }
                                         }
                                     }
                                     break;
@@ -597,7 +597,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                                             //发送验证码
                                             Map<String, String> paramsMap = new HashMap<>();
                                             paramsMap.put("phone", phone0);
-                                            RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap);
+                                            RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap, InformationActivity.this);
                                         }
                                     }
                                     break;
@@ -618,7 +618,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                                                     paramsMap.put("passwd", passwd);
                                                     paramsMap.put("repasswd", repasswd);
                                                     //申请修改密码
-                                                    RequestURL.sendPOST("https://app.feimayun.com/User/resetPwd", handleResetPwd, paramsMap);
+                                                    RequestURL.sendPOST("https://app.feimayun.com/User/resetPwd", handleResetPwd, paramsMap, InformationActivity.this);
                                                 } else {
                                                     Toast.makeText(InformationActivity.this, "两次输入的密码不一致", Toast.LENGTH_SHORT).show();
                                                 }
@@ -740,7 +740,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
                             .setCancelableOutside(false)
                             .create()
                             .show();
-                    RequestURL.uploadFile2(mList, "https://app.feimayun.com/Upload/upImage", handleImages);
+                    RequestURL.uploadFile2(mList, "https://app.feimayun.com/Upload/upImage", handleImages, InformationActivity.this);
                 }
             }
         }
@@ -763,7 +763,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
 
         if (Build.VERSION.SDK_INT >= 24) {
             //通过FileProvider.getUriForFile获取URL，参数2应该与Provider在AndroidManifest.xml中定义的authorities标签一致
-            imageUri = FileProvider.getUriForFile(InformationActivity.this, "cn.aura.app.fileprovider", outputImage);
+            imageUri = FileProvider.getUriForFile(InformationActivity.this, "cn.aura.feimayun.fileprovider", outputImage);
         } else {
             imageUri = Uri.fromFile(outputImage);
         }

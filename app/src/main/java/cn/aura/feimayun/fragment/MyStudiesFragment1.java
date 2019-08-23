@@ -289,7 +289,7 @@ public class MyStudiesFragment1 extends Fragment {
             Map<String, String> paramsMap = new HashMap<>();
             paramsMap.put("uid", uid);
             paramsMap.put("p", String.valueOf(p));
-            RequestURL.sendPOST("https://app.feimayun.com/Lesson/myLessons", handleMyLessons, paramsMap);
+            RequestURL.sendPOST("https://app.feimayun.com/Lesson/myLessons", handleMyLessons, paramsMap, mainActivity);
         } else {
             isRequestSuccess = true;
             if (msf1_refreshLayout != null) {

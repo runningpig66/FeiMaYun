@@ -8,9 +8,9 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +34,7 @@ import cn.aura.feimayun.view.ProgressDialog;
 public class MyStuidesInfo1 extends Fragment {
     private static Handler handleNetwork;
     private ProgressDialog progressDialog;
-    private Context context;
-    private String uid;
+    private AppCompatActivity context;
     //    private List<Map<String, String>> dataList = new ArrayList<>();
     private List<MyStuidesInfo1Bean.DataBeanX.DataBean> dataBeanList;
     private RelativeLayout mystudiesinfo1_layout1;
@@ -153,8 +152,7 @@ public class MyStuidesInfo1 extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
-        uid = Util.getUid();
+        this.context = (AppCompatActivity) context;
     }
 
 //    @Override
@@ -185,10 +183,10 @@ public class MyStuidesInfo1 extends Fragment {
 
         String lid = Objects.requireNonNull(getArguments()).getString("lid");
         Map<String, String> map = new HashMap<>();
-        map.put("uid", uid);
+        map.put("uid", Util.getUid());
         map.put("lid", lid);
-        Log.i("021402", "uid:" + uid + ", lid:" + lid);
-        RequestURL.sendPOST("https://app.feimayun.com/User/myLesson", handleNetwork, map);
+//        Log.i("021402", "uid:" + Util.getUid() + ", lid:" + lid);
+        RequestURL.sendPOST("https://app.feimayun.com/User/myLesson", handleNetwork, map, context);
 
         View view = inflater.inflate(R.layout.fragment_mystudiesinfo1, container, false);
         mystudiesinfo1_recyclerview = view.findViewById(R.id.mystudiesinfo1_recyclerview);

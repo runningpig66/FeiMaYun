@@ -5,8 +5,6 @@
     android:background="#eeeeee"
     android:orientation="vertical">
 
-    <include layout="@layout/headtitle_layout" />
-
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/activity_paper_list_refreshLayout"
         android:layout_width="match_parent"
@@ -17,6 +15,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:id="@+id/activity_paper_list_layout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/none_message_imageview"
+                    android:layout_width="175dp"
+                    android:layout_height="175dp"
+                    android:src="@drawable/none_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/none_message_imageview"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="暂无试卷"
+                    android:textColor="#515151"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+            <!--没有试卷的界面-->
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -46,14 +68,6 @@
                             android:layout_marginBottom="25dp"
                             android:src="@drawable/activity_paper_list_i1" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:background="#eeeeee" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -79,6 +93,14 @@
                                 android:layout_marginTop="5dp"
                                 android:textSize="14sp" />
                         </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="#eeeeee" />
                     </LinearLayout>
 
                     <ListView
@@ -92,30 +114,8 @@
                         android:scrollbars="none" />
                 </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
-            <!--没有试卷的界面-->
-            <RelativeLayout
-                android:id="@+id/activity_paper_list_layout2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/none_message_imageview"
-                    android:layout_width="175dp"
-                    android:layout_height="175dp"
-                    android:src="@drawable/none_message" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/none_message_imageview"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:text="暂无试卷"
-                    android:textColor="#515151"
-                    android:textSize="16sp" />
-            </RelativeLayout>
         </RelativeLayout>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <include layout="@layout/headtitle_layout" />
 </LinearLayout>

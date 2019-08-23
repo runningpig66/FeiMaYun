@@ -153,7 +153,7 @@ public class QuestionReplyActivity extends BaseActivity implements View.OnClickL
                         map.put("call_uid", call_uid);
                     }
                 }
-                RequestURL.sendPOST("https://app.feimayun.com/Qa/answer", handleAnswer, map);
+                RequestURL.sendPOST("https://app.feimayun.com/Qa/answer", handleAnswer, map, QuestionReplyActivity.this);
             } else {
                 Toast.makeText(this, "图片上传失败", Toast.LENGTH_SHORT).show();
                 isUploadNow = false;
@@ -311,7 +311,7 @@ public class QuestionReplyActivity extends BaseActivity implements View.OnClickL
                                 map.put("call_uid", call_uid);
                             }
                         }
-                        RequestURL.sendPOST("https://app.feimayun.com/Qa/answer", handleAnswer, map);
+                        RequestURL.sendPOST("https://app.feimayun.com/Qa/answer", handleAnswer, map, QuestionReplyActivity.this);
                     } else {//用户添加了回复图片，同时还有回复的文字
                         //构建图片File数组
 //                        List<File> files = new ArrayList<>();
@@ -320,7 +320,7 @@ public class QuestionReplyActivity extends BaseActivity implements View.OnClickL
 //                            files.add(file);
 //                        }
                         //首先上传图片到图片服务器，等待返回图片保存的服务器地址
-                        RequestURL.uploadFile(mList, "https://app.feimayun.com/Upload/upImages", handleImages);
+                        RequestURL.uploadFile(mList, "https://app.feimayun.com/Upload/upImages", handleImages, QuestionReplyActivity.this);
                     }
                 }
             }

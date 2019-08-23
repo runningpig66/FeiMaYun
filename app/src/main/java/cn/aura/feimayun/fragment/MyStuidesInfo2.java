@@ -192,7 +192,7 @@ public class MyStuidesInfo2 extends Fragment {
                     Map<String, String> map = new HashMap<>();
                     map.put("tid", tid);
                     map.put("uid", uid);
-                    RequestURL.sendPOST("https://app.feimayun.com/Qa/detail", handleNetwork3, map);
+                    RequestURL.sendPOST("https://app.feimayun.com/Qa/detail", handleNetwork3, map, context);
                 }
             });
             isFirstIn = false;
@@ -282,7 +282,7 @@ public class MyStuidesInfo2 extends Fragment {
         map.put("p", String.valueOf(p));
         map.put("lesson_type", lesson_type);
         map.put("series_2", leimu_2);
-        RequestURL.sendPOST("https://app.feimayun.com/User/myQuest", handleNetwork1, map);
+        RequestURL.sendPOST("https://app.feimayun.com/User/myQuest", handleNetwork1, map, context);
     }
 
     public void requestNetwork2() {

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,7 +53,7 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
     private Handler handleNetwork1;
     private Handler handleNetwork2;
     private Handler handleNetwork3;//按钮中多请求一次下个页面，判断能否进去
-    private Context context;
+    private AppCompatActivity context;
     private String lid = "";
     private String uid;
     private String leimu_1;
@@ -255,7 +256,7 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
                     Map<String, String> map = new HashMap<>();
                     map.put("tid", tid);
                     map.put("uid", uid);
-                    RequestURL.sendPOST("https://app.feimayun.com/Qa/detail", handleNetwork3, map);
+                    RequestURL.sendPOST("https://app.feimayun.com/Qa/detail", handleNetwork3, map, context);
                 }
             });
             isFirstIn = false;
@@ -269,7 +270,7 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
+        this.context = (AppCompatActivity) context;
         uid = Util.getUid();
     }
 
@@ -342,13 +343,13 @@ public class MyStuidesInfo22 extends Fragment implements View.OnClickListener {
             map.put("leimu_1", leimu_1);
             map.put("leimu_2", leimu_2);
             map.put("p", String.valueOf(p));
-            RequestURL.sendPOST("https://app.feimayun.com/Qa/index", handleNetwork2, map);
+            RequestURL.sendPOST("https://app.feimayun.com/Qa/index", handleNetwork2, map, context);
         } else {//有lid走的是 课程包里的问答
             Map<String, String> map = new HashMap<>();
             map.put("uid", uid);
             map.put("lid", lid);
             map.put("p", String.valueOf(p));
-            RequestURL.sendPOST("https://app.feimayun.com/Qa/courseQa", handleNetwork1, map);
+            RequestURL.sendPOST("https://app.feimayun.com/Qa/courseQa", handleNetwork1, map, context);
         }
     }
 

@@ -12,11 +12,6 @@
         android:orientation="horizontal">
 
         <!--顶部的状态栏预留-->
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="25dp" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -44,6 +39,11 @@
                 android:textColor="#fff"
                 android:textSize="18sp" />
         </RelativeLayout>
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="25dp" />
     </RelativeLayout>
 
     <!--标题栏下方的分割线-->
