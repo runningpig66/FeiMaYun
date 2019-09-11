@@ -6,6 +6,24 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/alivc_error_msg"
+        android:textColor="@color/alivc_white"
+        android:textSize="@dimen/alivc_loading_font_size" />
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/alivc_error_code"
+        android:textColor="@color/alivc_white"
+        android:textSize="@dimen/alivc_loading_font_size" />
+
     <RelativeLayout
         android:id="@+id/retry"
         android:layout_width="82dp"
@@ -25,22 +43,4 @@
             android:textColor="@color/alivc_blue"
             android:textSize="@dimen/alivc_error_font_size" />
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text="@string/alivc_error_code"
-        android:textColor="@color/alivc_white"
-        android:textSize="@dimen/alivc_loading_font_size" />
-
-    <TextView
-        android:id="@+id/msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text="@string/alivc_error_msg"
-        android:textColor="@color/alivc_white"
-        android:textSize="@dimen/alivc_loading_font_size" />
 </LinearLayout>

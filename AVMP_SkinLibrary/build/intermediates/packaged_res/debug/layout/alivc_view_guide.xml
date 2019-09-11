@@ -48,6 +48,13 @@
             android:orientation="vertical">
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alivc_left_side"
+                android:textColor="#eeeeee"
+                android:textSize="17sp" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,13 +75,6 @@
                     android:textColor="#eeeeee"
                     android:textSize="17sp" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/alivc_left_side"
-                android:textColor="#eeeeee"
-                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -83,6 +83,13 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alivc_center"
+                android:textColor="#eeeeee"
+                android:textSize="17sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -104,13 +111,6 @@
                     android:textColor="#eeeeee"
                     android:textSize="17sp" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/alivc_center"
-                android:textColor="#eeeeee"
-                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -119,6 +119,13 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alivc_right_side"
+                android:textColor="#eeeeee"
+                android:textSize="17sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -140,13 +147,6 @@
                     android:textColor="#eeeeee"
                     android:textSize="17sp" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/alivc_right_side"
-                android:textColor="#eeeeee"
-                android:textSize="17sp" />
 
         </LinearLayout>
     </LinearLayout>

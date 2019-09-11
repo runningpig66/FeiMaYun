@@ -5,6 +5,12 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <ProgressBar
+        style="@android:style/Widget.ProgressBar"
+        android:layout_width="@dimen/alivc_loading_pbar_height"
+        android:layout_height="@dimen/alivc_loading_pbar_height"
+        android:indeterminateDrawable="@drawable/loading_rotate" />
+
     <LinearLayout
         android:id="@+id/loading_layout"
         android:layout_width="wrap_content"
@@ -21,12 +27,6 @@
             android:textColor="@color/alivc_white"
             android:textSize="@dimen/alivc_loading_font_size" />
     </LinearLayout>
-
-    <ProgressBar
-        style="@android:style/Widget.ProgressBar"
-        android:layout_width="@dimen/alivc_loading_pbar_height"
-        android:layout_height="@dimen/alivc_loading_pbar_height"
-        android:indeterminateDrawable="@drawable/loading_rotate" />
 
 
 </LinearLayout>
