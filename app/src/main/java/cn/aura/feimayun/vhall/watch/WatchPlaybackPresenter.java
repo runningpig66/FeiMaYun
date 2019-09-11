@@ -287,6 +287,10 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
     public void onLoginReturn() {
     }
 
+    @Override
+    public void signIn(String signId) {
+    }
+
     private class DocCallback implements WatchPlayback.DocumentEventCallback {
 
         @Override

@@ -37,134 +37,6 @@
                 android:visibility="gone"
                 tools:visibility="visible">
                 <!--云课堂title-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/corner_gray_edittext"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/top_editText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:hint="输入您要搜索的内容"
-                        android:imeOptions="actionDone"
-                        android:maxLines="1"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="10dp"
-                        android:singleLine="true"
-                        android:textColorHint="#aaaaaa"
-                        android:textSize="12sp" />
-
-                    <FrameLayout
-                        android:id="@+id/search_layout"
-                        android:layout_width="40dp"
-                        android:layout_height="30dp">
-
-                        <ImageView
-                            android:layout_width="13dp"
-                            android:layout_height="13dp"
-                            android:layout_gravity="center"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/home_search" />
-                    </FrameLayout>
-
-                </LinearLayout>
-                <!--顶部的搜索框-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/corner_gray_edittext"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="5dp">
-
-                    <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:src="@drawable/broadcast" />
-
-                    <TextView
-                        android:id="@+id/message_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="#F0B18A"
-                        android:textSize="10sp"
-                        tools:text="首页全新上线啦" />
-                </LinearLayout>
-
-                <!--首页顶部ViewPager布局-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/fragment_home_page_layout1"
-                        android:layout_width="match_parent"
-                        android:layout_height="14dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:gravity="center"
-                        android:orientation="horizontal" />
-                    <!--切换的圆点-->
-                    <cn.aura.feimayun.view.HomePageFragment_ViewPage2
-                        android:id="@+id/fragment_home_page_viewpager2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="15dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/zhibo_linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/zhibo_bg"
-                    android:scaleType="centerCrop">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="50dp"
-                        android:text="直播中心"
-                        android:textColor="#ffffff"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <ListView
-                    android:id="@+id/p_4_listView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@null"
-                    android:listSelector="@android:color/transparent" />
-
-                <!--6个方格-->
-                <ListView
-                    android:id="@+id/bottom_listview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@null"
-                    android:listSelector="@android:color/transparent" />
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
@@ -208,8 +80,145 @@
                         android:textColor="#000000"
                         android:textSize="18sp" />
                 </RelativeLayout>
+                <!--顶部的搜索框-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/corner_gray_edittext"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <EditText
+                        android:id="@+id/top_editText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="输入您要搜索的内容"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
+                        android:singleLine="true"
+                        android:textColorHint="#aaaaaa"
+                        android:textSize="12sp" />
+
+                    <FrameLayout
+                        android:id="@+id/search_layout"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/home_search" />
+                    </FrameLayout>
+                </LinearLayout>
+                <!--banner-->
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    tools:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/corner_gray_edittext"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/broadcast" />
+
+                    <TextView
+                        android:id="@+id/message_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="#F0B18A"
+                        android:textSize="10sp"
+                        tools:text="首页全新上线啦" />
+                </LinearLayout>
+                <!--标题栏-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="光环学院"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+                <!--首页顶部ViewPager布局-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/fragment_home_page_layout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="14dp"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:gravity="center"
+                        android:orientation="horizontal" />
+                    <!--切换的圆点-->
+                    <cn.aura.feimayun.view.HomePageFragment_ViewPage2
+                        android:id="@+id/fragment_home_page_viewpager2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="15dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/zhibo_linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/zhibo_bg"
+                    android:scaleType="centerCrop">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="50dp"
+                        android:text="直播中心"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp" />
+                </LinearLayout>
                 <!--P4页：下方的ListView，它的子项包含GridView-->
+                <ListView
+                    android:id="@+id/p_4_listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:listSelector="@android:color/transparent" />
+
                 <RelativeLayout
                     android:id="@+id/weike_relativeLayout"
                     android:layout_width="match_parent"
@@ -256,27 +265,13 @@
                         android:textColor="#555555"
                         android:textSize="12sp" />
                 </RelativeLayout>
-
-                <!--标题栏-->
-                <TextView
+                <!--6个方格-->
+                <ListView
+                    android:id="@+id/bottom_listview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="光环学院"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
-
-                <com.youth.banner.Banner
-                    android:id="@+id/banner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
-                    tools:layout_height="10dp" />
+                    android:divider="@null"
+                    android:listSelector="@android:color/transparent" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>

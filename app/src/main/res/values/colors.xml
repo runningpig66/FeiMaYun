@@ -25,4 +25,12 @@
     <color name="color666666">#666666</color>
     <color name="colorfefefe">#fefefe</color>
 
+    <color name="alpha">#5D000000</color>
+    <color name="common_content_color">@color/gray_normal</color>
+    <color name="gray_heavy">#707075</color>
+    <color name="radiogroup_bg">#18181C</color>
+    <color name="app_background_color">#e2e8eb</color>
+    <color name="black_title">#555555</color>
+    <color name="black_text">#222222</color>
+
 </resources>

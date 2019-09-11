@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alivc.player.VcPlayerLog;
@@ -62,6 +64,8 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
     //手势操作view
     private GestureView mGestureView;
     private RelativeLayout root;
+    //跑马灯
+    private TextView live_textview_marquee;
 
     public static WatchLiveFragment newInstance() {
         return new WatchLiveFragment();
@@ -142,6 +146,8 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
         mContainerLayout = view.findViewById(R.id.rl_container);
         progressbar = view.findViewById(R.id.progressbar);
         root = view.findViewById(R.id.root);
+        live_textview_marquee = view.findViewById(R.id.live_textview_marquee);
+        live_textview_marquee.setSelected(true);
 //        if (mPresenter != null) {
 //            mPresenter.start();
 //        }
@@ -292,6 +298,7 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
         }
     }
 
+
     protected void updateViewState(MyControlView.PlayState playState) {
         myControlView.setPlayState(playState);
         if (playState == MyControlView.PlayState.Idle) {
@@ -371,15 +378,23 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
         }
     }
 
+    private boolean mCanSee = false;
+
     public void setVisiable(boolean canSee) {
+        mCanSee = canSee;
         if (canSee) {
             ViewGroup.LayoutParams params =
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             root.addView(mGestureView, params);
             root.addView(myControlView, params);
+            //公告信息不为空才显示
+            if (mNoticeString != null && !TextUtils.isEmpty(mNoticeString)) {
+                live_textview_marquee.setVisibility(View.VISIBLE);
+            }
         } else {
             root.removeView(mGestureView);
             root.removeView(myControlView);
+            live_textview_marquee.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -419,7 +434,6 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                     .build();
-
             mFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
                     .setAudioAttributes(mPlaybackAttributes)
                     .setAcceptsDelayedFocusGain(true)
@@ -433,7 +447,6 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         }
-
     }
 
     //zxzhong 暂停、播放完成或退到后台释放音频焦点
@@ -453,6 +466,22 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
     @Override
     public WatchLiveFragment getLiveFragment() {
         return this;
+    }
+
+    private String mNoticeString = "";
+
+    //设置公告信息
+    public void setNotice(String noticeString) {
+        if (noticeString == null | TextUtils.isEmpty(noticeString)) {
+            live_textview_marquee.setVisibility(View.INVISIBLE);
+            live_textview_marquee.setText("");
+        } else {
+            mNoticeString = noticeString;
+            if (mCanSee) {
+                live_textview_marquee.setVisibility(VISIBLE);
+            }
+            live_textview_marquee.setText("公告：" + noticeString);
+        }
     }
 
 }

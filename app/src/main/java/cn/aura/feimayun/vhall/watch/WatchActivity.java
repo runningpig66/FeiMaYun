@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.Param;
 import cn.aura.feimayun.vhall.chat.ChatFragment;
+import cn.aura.feimayun.vhall.util.SignInDialog;
 import cn.aura.feimayun.vhall.util.VhallUtil;
 import cn.aura.feimayun.vhall.util.emoji.InputUser;
 import cn.aura.feimayun.vhall.util.emoji.InputView;
@@ -101,6 +103,7 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
     private String webinar_id;
     private String errno;
     private String vhall_account = "1";
+    private SignInDialog signInDialog;
 
     public int getType() {
         return type;
@@ -227,7 +230,7 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
     }
 
     private void parsePlay(String s) {
-//        Util.d("061002", s);
+        Util.d("061002", s);
         try {
             JSONTokener jsonTokener = new JSONTokener(s);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -779,6 +782,49 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
     }
 
     @Override
+    public void showNotice(String content) {//TODO 显示公告
+        if (content == null || TextUtils.isEmpty(content)) {
+            return;
+        }
+        //只有直播状态才显示公告
+        if (type == VhallUtil.WATCH_LIVE) {
+            liveFragment.setNotice(content);
+            docFragment.setNotice(content);
+        }
+    }
+
+    @Override
+    public void showSignIn(String signId, int startTime) {
+        if (signInDialog == null) {
+            signInDialog = new SignInDialog(this);
+        }
+        signInDialog.setSignInId(signId);
+        signInDialog.setCountDownTime(startTime);
+        signInDialog.setOnSignInClickListener(new SignInDialog.OnSignInClickListener() {
+            @Override
+            public void signIn(String signId) {
+                mPresenter.signIn(signId);
+            }
+
+            @Override
+            public void onDismiss() {
+                //弹窗消失时，如果是横屏，隐藏状态栏等
+                if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    hideBottomUIMenu();
+                }
+            }
+        });
+        signInDialog.show();
+    }
+
+    //隐藏签到框
+    @Override
+    public void dismissSignIn() {
+        if (signInDialog != null)
+            signInDialog.dismiss();
+    }
+
+    @Override
     public int changeOrientation() {
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -803,6 +849,16 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
     }
 
     @Override
+    public void showToast(String toast) {
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(int toast) {
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public Activity getActivity() {
         return this;
     }
@@ -818,7 +874,6 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             if (onTop) {//如果播放器在上方
                 if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {//横屏
-
                     hideBottomUIMenu();
                     //隐藏播放器下方布局
 //                    activity_live_view.setVisibility(View.GONE);//隐藏状态栏

@@ -22,6 +22,7 @@ import com.vhall.vhalllive.playlive.GLPlayInterface;
 import java.util.List;
 import java.util.Objects;
 
+import cn.aura.feimayun.R;
 import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.Param;
@@ -206,7 +207,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         //登录微吼账号，用于聊天
         String username = vhall_account.equals("1") ? "wxh" + uid : "sch" + uid;
         String userpass = "1q2w3e4r5t6y7u8i9o";
-//        Log.i("061005", username + "      " + userpass);
+        Log.i("0610051", username + "      " + userpass);
         VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
             @Override
             public void onSuccess(UserInfo userInfo) {
@@ -316,6 +317,27 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
             @Override
             public void onFailed(int errorcode, String messaage) {
                 Log.e(TAG, "onFailed->" + errorcode + ":" + messaage);
+            }
+        });
+    }
+
+    //签到
+    @Override
+    public void signIn(String signId) {
+        if (!VhallSDK.isLogin()) {
+            watchView.showToast(R.string.vhall_login_first);
+            return;
+        }
+        VhallSDK.performSignIn(params.watchId, signId, new RequestCallback() {
+            @Override
+            public void onSuccess() {
+                watchView.showToast("签到成功");
+                watchView.dismissSignIn();
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                watchView.showToast(errorMsg);
             }
         });
     }
@@ -479,13 +501,13 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                 case MessageServer.EVENT_END_LOTTERY://抽奖结束
 //                    watchView.showLottery(messageInfo);
                     break;
-                case MessageServer.EVENT_NOTICE:
-//                    watchView.showNotice(messageInfo.content);
+                case MessageServer.EVENT_NOTICE://公告
+                    watchView.showNotice(messageInfo.content);
                     break;
                 case MessageServer.EVENT_SIGNIN: //签到消息
-//                    if (!TextUtils.isEmpty(messageInfo.id) && !TextUtils.isEmpty(messageInfo.sign_show_time)) {
-//                        watchView.showSignIn(messageInfo.id, parseTime(messageInfo.sign_show_time, 30));
-//                    }
+                    if (!TextUtils.isEmpty(messageInfo.id) && !TextUtils.isEmpty(messageInfo.sign_show_time)) {
+                        watchView.showSignIn(messageInfo.id, parseTime(messageInfo.sign_show_time, 30));
+                    }
                     break;
                 case MessageServer.EVENT_QUESTION: // 问答开关
 //                    watchView.showToast("问答功能已" + (messageInfo.status == 0 ? "关闭" : "开启"));
@@ -545,6 +567,19 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
 //            }
 //            return currentTime;
 //        }
+
+        public int parseTime(String str, int defaultTime) {
+            int currentTime = 0;
+            try {
+                currentTime = Integer.parseInt(str);
+                if (currentTime == 0) {
+                    return defaultTime;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return currentTime;
+        }
 
         @Override
         public void onMsgServerConnected() {

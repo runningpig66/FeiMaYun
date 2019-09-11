@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alivc.player.VcPlayerLog;
 import com.aliyun.vodplayerview.view.GestureDialogManager;
@@ -61,6 +64,7 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
     private RelativeLayout root;
     //是否锁定全屏
     private boolean mIsFullScreenLocked = false;
+    private TextView document_textview_marquee;
 
     public DocumentFragment() {
     }
@@ -98,6 +102,8 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
         root = view.findViewById(R.id.root);
         iv_doc = view.findViewById(R.id.iv_doc);
         board = view.findViewById(R.id.board);
+        document_textview_marquee = view.findViewById(R.id.document_textview_marquee);
+        document_textview_marquee.setSelected(true);
         initVideoView();
         return view;
     }
@@ -390,7 +396,11 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
 
     }
 
+    private boolean mCanSee = true;//PPT在上方默认可见
+
     public void setVisiable(boolean canSee) {
+        mCanSee = canSee;
+        Log.d("asdfasdf", "setVisiable: " + canSee);
         int type = activity.getType();
         if (canSee) {
             ViewGroup.LayoutParams params =
@@ -398,8 +408,13 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
             root.addView(mGestureView, params);
             root.addView(myControlView, params);
 //            pb.setVisibility(View.VISIBLE);
+            //公告信息不为空才显示
+            if (mNoticeString != null && !TextUtils.isEmpty(mNoticeString)) {
+                document_textview_marquee.setVisibility(View.VISIBLE);
+            }
             if (type == VhallUtil.WATCH_PLAYBACK) {
                 myControlView.show();
+                document_textview_marquee.setVisibility(View.INVISIBLE);//回访隐藏公告信息栏
             }
         } else {
 //            myControlView = new MyControlView(activity);
@@ -409,6 +424,7 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
 //            pb.setVisibility(View.INVISIBLE);
             root.removeView(myControlView);
             root.removeView(mGestureView);
+            document_textview_marquee.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -445,5 +461,22 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
         mIsFullScreenLocked = lockScreen;
         myControlView.setScreenLockStatus(mIsFullScreenLocked);
         mGestureView.setScreenLockStatus(mIsFullScreenLocked);
+    }
+
+    private String mNoticeString = "";
+
+    //设置公告信息
+    public void setNotice(String noticeString) {
+        Log.d("asdfasdf", "setNotice: ");
+        if (noticeString == null | TextUtils.isEmpty(noticeString)) {
+            document_textview_marquee.setVisibility(View.INVISIBLE);
+            document_textview_marquee.setText("");
+        } else {
+            mNoticeString = noticeString;
+            if (mCanSee) {
+                document_textview_marquee.setVisibility(VISIBLE);
+            }
+            document_textview_marquee.setText("公告：" + noticeString);
+        }
     }
 }

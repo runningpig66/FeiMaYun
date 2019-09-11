@@ -26,16 +26,16 @@ public class WatchContract {
         void showChatView(boolean emoji, InputUser user, int limit);
 
         //显示公告
-//        void showNotice(String content);
+        void showNotice(String content);
 
         //隐藏公告
 //        void dismissNotice();
 
         //显示签到框
-//        void showSignIn(String signId, int startTime);
+        void showSignIn(String signId, int startTime);
 
         //隐藏签到框
-//        void dismissSignIn();
+        void dismissSignIn();
 
         //显示问卷
 //        void showSurvey(Survey survey);
@@ -47,9 +47,9 @@ public class WatchContract {
         int changeOrientation();
 
         //显示toast
-//        void showToast(String toast);
+        void showToast(String toast);
 
-//        void showToast(int toast);
+        void showToast(int toast);
 
         //获取当前activity实例
         Activity getActivity();
@@ -176,7 +176,7 @@ public class WatchContract {
 
     interface WatchPresenter extends BasePresenter {
 
-//        void signIn(String signId);
+        void signIn(String signId);
 
 //        void submitSurvey(Survey survey, String result);
 

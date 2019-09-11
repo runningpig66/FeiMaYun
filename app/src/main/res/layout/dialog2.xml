@@ -6,6 +6,40 @@
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_call_bg">
 
+    <TextView
+        android:id="@+id/dialog_call_textview1"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="#4D4D4D"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="课程咨询电话：" />
+
+    <TextView
+        android:id="@+id/dialog_call_textview2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="#4D4D4D"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_call_textview1"
+        tools:text="400-0893-521" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#F2F2F2"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_call_textview2" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -38,38 +72,4 @@
             app:layout_constraintTop_toBottomOf="@+id/line" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/dialog_call_textview2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:textColor="#4D4D4D"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_call_textview1"
-        tools:text="400-0893-521" />
-
-    <TextView
-        android:id="@+id/dialog_call_textview1"
-        android:layout_width="0dp"
-        android:layout_height="22dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:textColor="#4D4D4D"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="课程咨询电话：" />
-
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="#F2F2F2"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_call_textview2" />
 </android.support.constraint.ConstraintLayout>

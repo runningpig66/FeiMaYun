@@ -95,7 +95,6 @@ public class Bottom_ListView_Adapter extends BaseAdapter {
         } else {
             return null;
         }
-
     }
 
     @Override

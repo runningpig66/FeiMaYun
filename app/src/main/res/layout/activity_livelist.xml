@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/headtitle_layout" />
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/activityLivelist_refreshLayout"
         android:layout_width="match_parent"
@@ -49,6 +51,4 @@
             </RelativeLayout>
         </RelativeLayout>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-    <include layout="@layout/headtitle_layout" />
 </LinearLayout>

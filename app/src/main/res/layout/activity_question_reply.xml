@@ -6,6 +6,12 @@
     android:orientation="vertical">
 
     <!--顶部的状态栏预留-->
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="#eeeeee" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,6 +37,11 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#eeeeee" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,41 +50,6 @@
         android:text="描述"
         android:textColor="#000"
         android:textSize="16sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="图片"
-        android:textColor="#000"
-        android:textSize="16sp" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:background="#eeeeee" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="#eeeeee" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#eeeeee" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/questionreply_recyclerview1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp" />
 
     <com.classichu.lineseditview.LinesEditView
         android:id="@+id/questionreply_edittext1"
@@ -85,5 +61,29 @@
         app:classic_hintText="请输入回复内容"
         app:classic_ignoreCnOrEn="true"
         app:classic_maxCount="200" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#eeeeee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="图片"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/questionreply_recyclerview1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp" />
 
 </LinearLayout>

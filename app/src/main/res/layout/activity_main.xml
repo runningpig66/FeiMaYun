@@ -7,29 +7,11 @@
     tools:context=".activity.MainActivity">
 
 
-    <FrameLayout
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/main_line" />
-
     <RelativeLayout
         android:id="@+id/activity_main_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true">
-
-        <ImageView
-            android:id="@+id/activity_main_layout_redpoint"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="28dp"
-            android:background="@drawable/message_notread"
-            android:visibility="gone"
-            tools:visibility="visible" />
 
         <RadioGroup
             android:id="@+id/rg_bt"
@@ -66,6 +48,18 @@
                 app:drawableTop="@drawable/icon_nav_selector4"
                 app:myDrawableSize="30dp" />
         </RadioGroup>
+
+        <ImageView
+            android:id="@+id/activity_main_layout_redpoint"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="28dp"
+            android:background="@drawable/message_notread"
+            android:visibility="gone"
+            tools:visibility="visible" />
     </RelativeLayout>
 
     <View
@@ -74,6 +68,12 @@
         android:layout_height="1px"
         android:layout_above="@id/activity_main_layout"
         android:background="#d1d4d8" />
+
+    <FrameLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_line" />
 </RelativeLayout>
 
     <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:orientation="vertical">-->

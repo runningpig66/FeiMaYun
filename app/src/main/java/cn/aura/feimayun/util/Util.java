@@ -140,11 +140,13 @@ public class Util {
         if (VhallSDK.isLogin()) {
             VhallSDK.logout();
         }
-        for (TDialog tDialog : dialogList) {
+        for (int i = 0; i < dialogList.size(); i++) {
+            TDialog tDialog = dialogList.get(i);
             if (tDialog != null) {
                 tDialog.dismiss();
             }
         }
+
         dialogList.clear();
         int width = activity.getResources().getDimensionPixelSize(R.dimen.alivc_dialog_netchange_width);
         TDialog tDialog = new TDialog.Builder(activity.getSupportFragmentManager())

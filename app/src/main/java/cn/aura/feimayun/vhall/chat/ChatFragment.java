@@ -113,7 +113,6 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
                         //登录微吼账号，用于聊天
                         String username = vhall_account.equals("1") ? "wxh" + uid : "sch" + uid;
                         String userpass = "1q2w3e4r5t6y7u8i9o";
-
                         VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
                             @Override
                             public void onSuccess(UserInfo userInfo) {

@@ -5,18 +5,6 @@
     android:layout_height="match_parent">
 
     <!--mTitleBar-->
-    <ImageView
-        android:id="@+id/alivc_screen_lock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/alivc_screen_lock_left_margin"
-        android:layout_marginLeft="@dimen/alivc_screen_lock_left_margin"
-        android:src="@drawable/alivc_screen_unlock" />
-
-    <!--锁定屏幕-->
     <LinearLayout
         android:id="@+id/titlebar"
         android:layout_width="match_parent"
@@ -51,6 +39,18 @@
 
     </LinearLayout>
 
+    <!--锁定屏幕-->
+    <ImageView
+        android:id="@+id/alivc_screen_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/alivc_screen_lock_left_margin"
+        android:layout_marginLeft="@dimen/alivc_screen_lock_left_margin"
+        android:src="@drawable/alivc_screen_unlock" />
+
     <!--mControlBar-->
     <LinearLayout
         android:id="@+id/controlbar"
@@ -64,6 +64,12 @@
         android:orientation="horizontal">
 
         <!--播放按钮-->
+        <ImageView
+            android:id="@+id/alivc_player_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp" />
+
         <FrameLayout
             android:id="@+id/seekbarLayout"
             android:layout_width="0dp"
@@ -79,12 +85,13 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <SeekBar
-                    android:id="@+id/alivc_info_large_seekbar"
-                    style="@style/alivc_info_seekbar"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/alivc_info_large_position"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:textColor="@color/alivc_white"
+                    android:textSize="@dimen/alivc_info_text_large_size"
+                    tools:text="03:27" />
 
                 <TextView
                     android:id="@+id/alivc_info_large_duration"
@@ -94,13 +101,12 @@
                     android:textSize="@dimen/alivc_info_text_large_size"
                     tools:text="/09:36" />
 
-                <TextView
-                    android:id="@+id/alivc_info_large_position"
-                    android:layout_width="wrap_content"
+                <SeekBar
+                    android:id="@+id/alivc_info_large_seekbar"
+                    style="@style/alivc_info_seekbar"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/alivc_white"
-                    android:textSize="@dimen/alivc_info_text_large_size"
-                    tools:text="03:27" />
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -145,12 +151,6 @@
             </RelativeLayout>
 
         </FrameLayout>
-
-        <ImageView
-            android:id="@+id/alivc_player_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp" />
 
         <!--PPT按钮-->
         <ImageView

@@ -3,14 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/adbutton"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="-20dp"
-        android:src="@drawable/tuoyuan"
-        android:visibility="visible" />
-
     <com.yanzhenjie.album.widget.SquareImageView
         android:id="@+id/iv_album_content_image"
         android:layout_width="wrap_content"
@@ -18,5 +10,13 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/adbutton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="-20dp"
+        android:src="@drawable/tuoyuan"
+        android:visibility="visible" />
 
 </LinearLayout>

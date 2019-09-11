@@ -9,6 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ListView
+            android:id="@+id/msf2_listView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="12dp"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none" />
+        <!--没有消息界面-->
         <LinearLayout
             android:id="@+id/msf2_layout1"
             android:layout_width="wrap_content"
@@ -46,14 +55,5 @@
                 android:textColor="#ffffff"
                 android:textSize="16sp" />
         </LinearLayout>
-        <!--没有消息界面-->
-        <ListView
-            android:id="@+id/msf2_listView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="12dp"
-            android:listSelector="@android:color/transparent"
-            android:scrollbars="none" />
     </RelativeLayout>
 </com.scwang.smartrefresh.layout.SmartRefreshLayout>

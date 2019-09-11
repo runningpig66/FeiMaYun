@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/headtitle_layout" />
+
     <android.support.design.widget.TabLayout
         android:id="@+id/courselist_tabLayout"
         android:layout_width="match_parent"
@@ -17,7 +19,5 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#eee" />
-
-    <include layout="@layout/headtitle_layout" />
 
 </LinearLayout>

@@ -7,6 +7,8 @@
     android:orientation="vertical">
 
     <!--标题栏-->
+    <include layout="@layout/headtitle_layout" />
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/fullcourse_refreshLayout"
         android:layout_width="match_parent"
@@ -18,32 +20,32 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#d1d1d1" />
+
+            <!--主页：左侧是选择列表，右侧是详情页面-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
                 <!--左侧的ListView-->
+                <ListView
+                    android:id="@+id/full_course_list"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5"
+                    android:background="#eeeeee"
+                    android:divider="@null"
+                    android:listSelector="#00000000" />
+                <!--右侧的详情布局页-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="7.5"
                     android:orientation="vertical">
                     <!--上方的图片-->
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:scrollbars="none">
-
-                        <LinearLayout
-                            android:id="@+id/data_panel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-
-                    </ScrollView>
-
                     <com.gcssloop.widget.RCRelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -59,26 +61,24 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/list_classify" />
                     </com.gcssloop.widget.RCRelativeLayout>
-                </LinearLayout>
-                <!--右侧的详情布局页-->
-                <ListView
-                    android:id="@+id/full_course_list"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2.5"
-                    android:background="#eeeeee"
-                    android:divider="@null"
-                    android:listSelector="#00000000" />
-            </LinearLayout>
 
-            <!--主页：左侧是选择列表，右侧是详情页面-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#d1d1d1" />
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/data_panel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                    </ScrollView>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-    <include layout="@layout/headtitle_layout" />
 
 </LinearLayout>

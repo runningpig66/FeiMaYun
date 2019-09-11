@@ -5,6 +5,8 @@
     android:background="#eeeeee"
     android:orientation="vertical">
 
+    <include layout="@layout/headtitle_layout" />
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/single_course_refreshLayout"
         android:layout_width="match_parent"
@@ -60,6 +62,4 @@
             </LinearLayout>
         </ScrollView>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-    <include layout="@layout/headtitle_layout" />
 </LinearLayout>

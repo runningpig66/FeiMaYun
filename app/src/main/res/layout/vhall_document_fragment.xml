@@ -17,4 +17,17 @@
         android:background="@drawable/guanghuanguoji_auto"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/document_textview_marquee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#441F1E1E"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textColor="#E9E9E9"
+        android:textSize="16sp"
+        android:visibility="invisible" />
 </RelativeLayout>
