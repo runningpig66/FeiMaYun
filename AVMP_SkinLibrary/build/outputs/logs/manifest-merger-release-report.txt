@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
 	package
-		ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:11-52
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:11-52
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+		ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
 	android:versionCode
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml:1:1-64
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		ADDED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
-		INJECTED from D:\F\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		ADDED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml
+		INJECTED from G:\AndroidStudioProjects\FeiMaYun\AVMP_SkinLibrary\src\main\AndroidManifest.xml

@@ -35,7 +35,7 @@
     <dimen name="alivc_screen_lock_left_margin">10dp</dimen>
     <dimen name="alivc_titlebar_font_size">18sp</dimen>
     <dimen name="alivc_titlebar_title_left_margin">8dp</dimen>
-    <item name="custom_id_min" type="id"/>
+    <item name="custom_id_min" type="id" />
     <string name="alivc_alivc_replay_msg">Video ended</string>
     <string name="alivc_brightness">brightness</string>
     <string name="alivc_center">center</string>

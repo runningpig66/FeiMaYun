@@ -28,11 +28,10 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * 描述：访问网络的模板类
  */
-
 public class RequestURL {
-    public static final String version = "16";
+    public static final String version = "17";
     private static final String osName = "Android";
-    private static final String verName = "2.0";
+    private static final String verName = "2.1";
     private static boolean isTest = false;//测试  ？
     private static String apidString = isTest ? "school.feimayun.com" : "yun.aura.cn";
 

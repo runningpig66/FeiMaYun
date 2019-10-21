@@ -61,7 +61,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 /**
  * 描述：主活动
  */
-
 public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, EasyPermissions.PermissionCallbacks {
     public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static Handler handleIndexStart;
@@ -114,7 +113,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
     private void parseUpdate(String s) {
-//        Util.d("061401", s);
+        Util.d("061401", s);
         JSONTokener jsonTokener = new JSONTokener(s);
         try {
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -123,9 +122,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 String errno = jsonObject.getString("errno");
                 if (errno.equals("E1001")) {//有新版本
                     String url = jsonObject.getString("url");//获取新版本下载地址
-
                     targetUrl = url.replaceFirst("yun", "us");
-
                     View view = LayoutInflater.from(this).inflate(R.layout.dialog_call, null);
                     TextView dialog_call_textview1 = view.findViewById(R.id.dialog_call_textview1);
                     TextView dialog_call_textview2 = view.findViewById(R.id.dialog_call_textview2);

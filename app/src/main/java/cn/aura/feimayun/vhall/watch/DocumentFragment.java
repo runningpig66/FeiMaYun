@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -409,7 +410,7 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
             root.addView(myControlView, params);
 //            pb.setVisibility(View.VISIBLE);
             //公告信息不为空才显示
-            if (mNoticeString != null && !TextUtils.isEmpty(mNoticeString)) {
+            if (mNoticeString != null && !TextUtils.isEmpty(mNoticeString) && !isTimeCountDonw) {
                 document_textview_marquee.setVisibility(View.VISIBLE);
             }
             if (type == VhallUtil.WATCH_PLAYBACK) {
@@ -464,10 +465,17 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
     }
 
     private String mNoticeString = "";
+    private CountDownTimer countDownTimer;
+    //公告只显示60秒
+    int mCount = 10;
+    private boolean isTimeCountDonw = false;
 
     //设置公告信息
     public void setNotice(String noticeString) {
-        Log.d("asdfasdf", "setNotice: ");
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        isTimeCountDonw = false;
         if (noticeString == null | TextUtils.isEmpty(noticeString)) {
             document_textview_marquee.setVisibility(View.INVISIBLE);
             document_textview_marquee.setText("");
@@ -478,5 +486,16 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
             }
             document_textview_marquee.setText("公告：" + noticeString);
         }
+        countDownTimer = new CountDownTimer(mCount * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                isTimeCountDonw = true;
+                document_textview_marquee.setVisibility(View.INVISIBLE);
+            }
+        }.start();
     }
 }

@@ -7,6 +7,7 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -388,7 +389,7 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
             root.addView(mGestureView, params);
             root.addView(myControlView, params);
             //公告信息不为空才显示
-            if (mNoticeString != null && !TextUtils.isEmpty(mNoticeString)) {
+            if (mNoticeString != null && !TextUtils.isEmpty(mNoticeString) && !isTimeCountDonw) {
                 live_textview_marquee.setVisibility(View.VISIBLE);
             }
         } else {
@@ -469,9 +470,17 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
     }
 
     private String mNoticeString = "";
+    private CountDownTimer countDownTimer;
+    //公告只显示60秒
+    int mCount = 10;
+    private boolean isTimeCountDonw = false;
 
     //设置公告信息
     public void setNotice(String noticeString) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        isTimeCountDonw = false;
         if (noticeString == null | TextUtils.isEmpty(noticeString)) {
             live_textview_marquee.setVisibility(View.INVISIBLE);
             live_textview_marquee.setText("");
@@ -482,6 +491,17 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
             }
             live_textview_marquee.setText("公告：" + noticeString);
         }
+        countDownTimer = new CountDownTimer(mCount * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                isTimeCountDonw = true;
+                live_textview_marquee.setVisibility(View.INVISIBLE);
+            }
+        }.start();
     }
 
 }
