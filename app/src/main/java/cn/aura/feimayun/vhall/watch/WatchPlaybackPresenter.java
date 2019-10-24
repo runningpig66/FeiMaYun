@@ -126,6 +126,9 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
         //游客ID及昵称 已登录用户可传空
         TelephonyManager telephonyMgr = (TelephonyManager) watchView.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         @SuppressLint("MissingPermission") String customeId = telephonyMgr.getDeviceId();
+        if (customeId == null) {
+            customeId = "";
+        }
         String customNickname = Build.BRAND + "手机用户";
         VhallSDK.initWatch(param.watchId, customeId, customNickname, param.key, getWatchPlayback(), WebinarInfo.VIDEO, new RequestCallback() {
             @Override

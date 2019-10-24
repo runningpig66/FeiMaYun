@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
@@ -81,15 +82,15 @@ public class MyApplication extends Application {
                 processName = processName.trim();
             }
             return processName;
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        } catch (Throwable e) {
+            e.printStackTrace();
         } finally {
             try {
                 if (reader != null) {
                     reader.close();
                 }
-            } catch (IOException exception) {
-                exception.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return null;
@@ -99,6 +100,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
         context = this;
         getParam();
 //        VhallSDK.init(this, getResources().getString(R.string.vhall_app_key1), getResources().getString(R.string.vhall_app_secret_key1));

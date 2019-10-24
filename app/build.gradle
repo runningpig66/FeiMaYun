@@ -6,13 +6,14 @@ android {
         applicationId "cn.aura.feimayun"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 17
-        versionName "2.1"
+        versionCode 18
+        versionName "2.2"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a', "mips"
         }
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -41,6 +42,10 @@ android {
         }
     }
     productFlavors {
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -86,6 +91,8 @@ dependencies {
     implementation project(path: ':AVMP_SkinLibrary')
     implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1310_43612_sharewithdownload_withoutGame_obfs_20180706_163319.jar')
     implementation project(':RCLayout')
+    implementation 'com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha2'
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 configurations.all {

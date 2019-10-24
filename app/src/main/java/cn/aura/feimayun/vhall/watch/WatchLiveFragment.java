@@ -23,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import com.alivc.player.VcPlayerLog;
 import com.aliyun.vodplayerview.view.GestureDialogManager;
 import com.aliyun.vodplayerview.view.gesture.GestureView;
@@ -36,7 +38,6 @@ import cn.aura.feimayun.application.MyApplication;
 import cn.aura.feimayun.view.MyControlView;
 
 import static android.view.View.VISIBLE;
-
 
 /**
  * 观看直播的Fragment
@@ -246,7 +247,9 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
         myControlView.setOnPlayStateClickListener(new MyControlView.OnPlayStateClickListener() {
             @Override
             public void onPlayStateClick() {
-                mPresenter.onWatchBtnClick();
+                if (mPresenter != null) {
+                    mPresenter.onWatchBtnClick();
+                }
             }
         });
         //点击锁屏的按钮
@@ -263,7 +266,9 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
                 if (mIsFullScreenLocked) {
                     return;
                 }
-                mPresenter.changeOriention();
+                if (mPresenter != null) {
+                    mPresenter.changeOriention();
+                }
             }
         });
         //点击了标题栏的返回按钮
@@ -350,7 +355,9 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
         } else {
             releaseTheAudioFocusSDK19(mAudioFocusChangeListener);
         }
-        mPresenter.stopWatch();
+        if (mPresenter != null) {
+            mPresenter.stopWatch();
+        }
     }
 
     @Override
@@ -458,6 +465,7 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
     }
 
     //sdk26再使用时做判断
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void releaseTheAudioFocusSDK26(AudioFocusRequest mAudioFocusRequest) {
         if (mAudioManager != null && mAudioFocusRequest != null) {
             mAudioManager.abandonAudioFocusRequest(mAudioFocusRequest);

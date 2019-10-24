@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding3.view.RxView;
 import com.timmy.tdialog.TDialog;
 import com.timmy.tdialog.base.BindViewHolder;
 import com.timmy.tdialog.listener.OnViewClickListener;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.adapter.ExamCardAdapter;
@@ -59,6 +61,9 @@ import cn.aura.feimayun.view.MyGuideView;
 import cn.aura.feimayun.view.ProgressDialog;
 import cn.aura.feimayun.view.SelfDialog;
 import cn.aura.feimayun.view.SelfDialog2;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import kotlin.Unit;
 
 import static cn.aura.feimayun.activity.PaperListActivity.refreshPaper;
 
@@ -696,12 +701,79 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
         activity_exam_detail_textview1 = findViewById(R.id.activity_exam_detail_textview1);//倒计时
         activity_exam_detail_imageview1 = findViewById(R.id.activity_exam_detail_imageview1);
         activity_exam_detail_imageview2 = findViewById(R.id.activity_exam_detail_imageview2);
-        //保存不提交
         activity_exam_detail_textview2 = findViewById(R.id.activity_exam_detail_textview2);
-        activity_exam_detail_textview2.setOnClickListener(this);
-        //提交
         activity_exam_detail_textview3 = findViewById(R.id.activity_exam_detail_textview3);
-        activity_exam_detail_textview3.setOnClickListener(this);
+        //保存不提交 点击间隔
+        Disposable disposable = RxView.clicks(activity_exam_detail_textview2).throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        if (haveData) {//如果购买了试卷，才能提交，否则只提示
+                            if (isConnected) {
+                                //构建答案JSON
+                                Set<Integer> answerKeySet = answerMap.keySet();
+                                JSONArray answer = new JSONArray();
+                                for (Object anAnswerKeySet : answerKeySet) {
+                                    int key = (int) anAnswerKeySet;
+                                    String val = answerMap.get(key).toLowerCase();
+                                    String answerString = "{\"key\":\"" + key + "\",\"val\":\"" + val + "\"}";
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(answerString);
+                                        answer.put(jsonObject);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                String uid = Util.getUid();
+                                //TODO 发送答案
+                                Map<String, String> paramsMap = new HashMap<>();
+                                paramsMap.put("sid", sid);
+                                paramsMap.put("uid", uid);
+                                paramsMap.put("tid", tid);
+                                paramsMap.put("state", "0");
+
+                                long timelest = countDownMillis / 1000;//剩余时间
+                                long examtime = Long.parseLong(Objects.requireNonNull(dataMap.get("answer_time")));//考试要求时间/秒
+                                long result = examtime - timelest;
+
+                                paramsMap.put("times", result + "");
+                                paramsMap.put("answers", answer.toString());
+                                Util.d("052801", "times:" + result);
+                                RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest1, paramsMap, ExamDetailActivity.this);//保存不提交
+                            } else {
+                                if (mSelfDialog2 == null) {
+                                    mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
+                                    mSelfDialog2.setTitle("温馨提示");
+                                    mSelfDialog2.setMessage("当前无网络！答题记录将保存到本地");
+                                    mSelfDialog2.setYesOnclickListener("确认", new SelfDialog2.onYesOnclickListener() {
+                                        @Override
+                                        public void onYesClick() {
+                                            finish();
+                                        }
+                                    });
+                                    WindowManager.LayoutParams params = mSelfDialog2.getWindow().getAttributes();
+                                    params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
+                                    params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                    mSelfDialog2.getWindow().setAttributes(params);
+                                }
+                                mSelfDialog2.show();
+                                if (countDownTimer != null) {
+                                    countDownTimer.cancel();//暂停计时
+                                }
+                            }
+                        } else {
+                            Toast.makeText(ExamDetailActivity.this, "您未购买该试卷所在的课程或题库~", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        //提交 点击间隔
+        Disposable disposable2 = RxView.clicks(activity_exam_detail_textview3).throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        onTijiao(activity_exam_detail_textview3);
+                    }
+                });
         activity_exam_detail_viewpager1 = findViewById(R.id.activity_exam_detail_viewpager1);
         //左箭头的布局
         RelativeLayout activity_exam_detail_layout3 = findViewById(R.id.activity_exam_detail_layout3);
@@ -735,67 +807,6 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
                 } else {
                     activity_exam_detail_viewpager1.setCurrentItem(position2 + 1);
                 }
-                break;
-            case R.id.activity_exam_detail_textview2://保存不提交
-                if (haveData) {//如果购买了试卷，才能提交，否则只提示
-                    if (isConnected) {
-                        //构建答案JSON
-                        Set<Integer> answerKeySet = answerMap.keySet();
-                        JSONArray answer = new JSONArray();
-                        for (Object anAnswerKeySet : answerKeySet) {
-                            int key = (int) anAnswerKeySet;
-                            String val = answerMap.get(key).toLowerCase();
-                            String answerString = "{\"key\":\"" + key + "\",\"val\":\"" + val + "\"}";
-                            try {
-                                JSONObject jsonObject = new JSONObject(answerString);
-                                answer.put(jsonObject);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        String uid = Util.getUid();
-                        //TODO 发送答案
-                        Map<String, String> paramsMap = new HashMap<>();
-                        paramsMap.put("sid", sid);
-                        paramsMap.put("uid", uid);
-                        paramsMap.put("tid", tid);
-                        paramsMap.put("state", "0");
-
-                        long timelest = countDownMillis / 1000;//剩余时间
-                        long examtime = Long.parseLong(Objects.requireNonNull(dataMap.get("answer_time")));//考试要求时间/秒
-                        long result = examtime - timelest;
-
-                        paramsMap.put("times", result + "");
-                        paramsMap.put("answers", answer.toString());
-                        Util.d("052801", "times:" + result);
-                        RequestURL.sendPOST("https://app.feimayun.com/Tiku/saveTest", handleSaveTest1, paramsMap, ExamDetailActivity.this);//保存不提交
-                    } else {
-                        if (mSelfDialog2 == null) {
-                            mSelfDialog2 = new SelfDialog2(ExamDetailActivity.this);
-                            mSelfDialog2.setTitle("温馨提示");
-                            mSelfDialog2.setMessage("当前无网络！答题记录将保存到本地");
-                            mSelfDialog2.setYesOnclickListener("确认", new SelfDialog2.onYesOnclickListener() {
-                                @Override
-                                public void onYesClick() {
-                                    finish();
-                                }
-                            });
-                            WindowManager.LayoutParams params = mSelfDialog2.getWindow().getAttributes();
-                            params.width = (int) (ScreenUtils.getWidth(ExamDetailActivity.this) * 0.7);
-                            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                            mSelfDialog2.getWindow().setAttributes(params);
-                        }
-                        mSelfDialog2.show();
-                        if (countDownTimer != null) {
-                            countDownTimer.cancel();//暂停计时
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, "您未购买该试卷所在的课程或题库~", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.activity_exam_detail_textview3://提交按钮
-                onTijiao(v);
                 break;
             case R.id.headtitle_layout://左上角返回按钮，共用提交按钮的方法
 //                onTijiao(v);
