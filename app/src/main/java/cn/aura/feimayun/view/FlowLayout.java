@@ -65,7 +65,6 @@ public class FlowLayout extends ViewGroup {
             View childView = getChildAt(i);
             // 测量孩子
             measureChild(childView, widthMeasureSpec, heightMeasureSpec);
-
             // 测量完需要将孩子添加到管理行的孩子的集合中，将行添加到管理行的集合中
 
             if (mCurrentLine == null) {
@@ -212,7 +211,6 @@ public class FlowLayout extends ViewGroup {
                         MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY));
                 // 重新获取宽度值
                 measuredWidth = view.getMeasuredWidth();
-
 
                 int top = t;
                 int left = l;

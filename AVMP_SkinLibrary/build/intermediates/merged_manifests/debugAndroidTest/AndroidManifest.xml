@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aliyun.vodplayerview.widget.test">
+    package="com.aliyun.vodplayerview.widget.test" >
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
-    <application android:debuggable="true">
+    <application android:debuggable="true" >
         <uses-library android:name="android.test.runner" />
     </application>
 

@@ -3,6 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.aura.feimayun">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -14,6 +24,7 @@
         android:theme="@style/ImageTranslucentTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
+        <activity android:name=".activity.MaiAuthen"></activity>
         <activity
             android:name=".activity.SingleCourseActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -133,7 +144,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.PhotoViewActivity" />
-
         <activity android:name=".activity.CourseQuestion" />
 
         <provider
@@ -146,16 +156,5 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 </manifest>

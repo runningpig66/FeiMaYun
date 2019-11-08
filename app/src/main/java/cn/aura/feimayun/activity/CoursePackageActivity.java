@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +43,7 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
     private TextView activity_course_package_textview2;
     private TextView activity_course_package_textview3;
     private TextView activity_course_package_textview4;
+    private LinearLayout activity_course_package_linearLayout;
     //存放intent中获取到的数据
     private String data_id;
     private String data_teach_type;
@@ -158,7 +161,6 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,14 +207,22 @@ public class CoursePackageActivity extends BaseActivity implements View.OnClickL
 
         adapter = new CoursePackageActivity_ListView1_Adapter(this);
         activity_course_package_listview1.setAdapter(adapter);
+        activity_course_package_linearLayout = findViewById(R.id.activity_course_package_linearLayout);
+        activity_course_package_linearLayout.setOnClickListener(v -> {
+            String apud = Util.getUid();
+            if (TextUtils.isEmpty(apud)) {
+                Toast.makeText(this, "请登录~", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(this, MaiAuthen.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.headtitle_layout://左上角的返回按钮
-                finish();
-                break;
+        if (v.getId() == R.id.headtitle_layout) {//左上角的返回按钮
+            finish();
         }
     }
 }

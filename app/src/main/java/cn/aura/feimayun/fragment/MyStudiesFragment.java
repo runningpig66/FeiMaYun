@@ -13,12 +13,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -33,6 +35,7 @@ import java.util.List;
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.InformationActivity;
 import cn.aura.feimayun.activity.LoginActivity;
+import cn.aura.feimayun.activity.MaiAuthen;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.adapter.MyStudies_ViewPager_Adapter;
 import cn.aura.feimayun.application.MyApplication;
@@ -68,6 +71,7 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
     private List<Fragment> fragments = new ArrayList<>();
     private MyStudiesFragment1 myStudiesFragment1 = null;
     private MyStudiesFragment2 myStudiesFragment2 = null;
+    private LinearLayout fragment_my_studies_linearLayout1;
 
     @SuppressLint("HandlerLeak")
     private void handler() {
@@ -150,6 +154,17 @@ public class MyStudiesFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup
             container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_studies, container, false);
+        fragment_my_studies_linearLayout1 = view.findViewById(R.id.fragment_my_studies_linearLayout1);
+
+        fragment_my_studies_linearLayout1.setOnClickListener(v -> {
+            String apud = Util.getUid();
+            if (TextUtils.isEmpty(apud)) {
+                Toast.makeText(mainActivity, "请登录~", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(getContext(), MaiAuthen.class);
+                startActivity(intent);
+            }
+        });
         fragment_my_studies_imageView1 = view.findViewById(R.id.fragment_my_studies_imageView1);
         fragment_my_studies_textView1 = view.findViewById(R.id.fragment_my_studies_textView1);
         //去发现感兴趣的内容
