@@ -37,7 +37,7 @@ public class Util {
     /**
      * 正则表达式：验证手机号
      */
-    private static final String REGEX_TEL = "^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\\d{8}$";//
+    private static final String REGEX_TEL = "^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\\d{8}$";
     private static List<TDialog> dialogList = new LinkedList<>();
 
     public static void getDensity(Activity activity) {

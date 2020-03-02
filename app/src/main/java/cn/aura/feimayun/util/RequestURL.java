@@ -29,10 +29,10 @@ import static android.content.Context.MODE_PRIVATE;
  * 描述：访问网络的模板类
  */
 public class RequestURL {
-    public static final String version = "18";
+    public static final String version = "19";
     private static final String osName = "Android";
-    private static final String verName = "2.2";
-    private static boolean isTest = false;//测试  ？
+    private static final String verName = "2.3";
+    private static boolean isTest = true;//测试  ？
     private static String apidString = isTest ? "school.feimayun.com" : "yun.aura.cn";
 
     //在子线程中访问网络，GET访问
