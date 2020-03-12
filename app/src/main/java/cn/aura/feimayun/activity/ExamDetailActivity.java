@@ -656,7 +656,7 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             SharedPreferences spf = getSharedPreferences("my_guide_record", Context.MODE_PRIVATE);
             boolean hasShown = spf.getBoolean("has_shown_exam", false);
-            root = getWindow().getDecorView().findViewById(R.id.root);
+            root = getWindow().getDecorView().findViewById(R.id.root1);
             if (!hasShown) {
                 MyGuideView myGuideView = new MyGuideView(this);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

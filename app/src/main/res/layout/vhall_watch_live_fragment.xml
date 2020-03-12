@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
+    android:id="@+id/root1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,11 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.vhall.business.widget.ContainerLayout
+        <RelativeLayout
             android:id="@+id/rl_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/guanghuanguoji_auto" />
+            android:background="@android:color/black" />
 
         <TextView
             android:id="@+id/live_textview_marquee"

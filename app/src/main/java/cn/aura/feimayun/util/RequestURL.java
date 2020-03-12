@@ -162,6 +162,8 @@ public class RequestURL {
                     connection.setConnectTimeout(4000);
                     //读取超时，单位毫秒
                     connection.setReadTimeout(4000);
+
+                    //添加HEAD头
                     connection.setRequestProperty("secket", secret);
                     connection.setRequestProperty("apud", apud);
                     connection.setRequestProperty("aptk", aptk);

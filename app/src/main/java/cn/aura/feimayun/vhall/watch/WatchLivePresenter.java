@@ -1,24 +1,31 @@
 package cn.aura.feimayun.vhall.watch;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.vhall.business.ChatServer;
 import com.vhall.business.MessageServer;
 import com.vhall.business.VhallSDK;
-import com.vhall.business.Watch;
 import com.vhall.business.WatchLive;
+import com.vhall.business.common.Constants;
 import com.vhall.business.data.RequestCallback;
 import com.vhall.business.data.UserInfo;
 import com.vhall.business.data.WebinarInfo;
 import com.vhall.business.data.source.UserInfoDataSource;
-import com.vhall.vhalllive.common.Constants;
-import com.vhall.vhalllive.playlive.GLPlayInterface;
+import com.vhall.player.VHPlayerListener;
+import com.vhall.player.stream.play.impl.VHVideoPlayerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,37 +35,57 @@ import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.Param;
 import cn.aura.feimayun.vhall.chat.ChatContract;
 import cn.aura.feimayun.vhall.chat.ChatFragment;
+import cn.aura.feimayun.vhall.chat.MessageChatData;
 import cn.aura.feimayun.vhall.util.emoji.InputUser;
 import cn.aura.feimayun.view.MyControlView;
 import cn.aura.feimayun.view.SelfDialog2;
+//TODO 投屏相关
+//import com.vhall.business_support.Watch_Support;
+//import com.vhall.business_support.dlna.DeviceDisplay;
+//import com.vhall.business_support.WatchLive;
+//import org.fourthline.cling.android.AndroidUpnpService;
 
 /**
- * 观看直播的Presenter HAVE DONE
+ * 观看直播的Presenter
  */
-public class WatchLivePresenter implements WatchContract.LivePresenter, ChatContract.ChatPresenter {
+public class WatchLivePresenter implements WatchContract.LivePresenter,
+        ChatContract.ChatPresenter {
     private static final String TAG = "WatchLivePresenter";
-    public boolean isWatching = false;
-    DocumentFragment documentFragment;
+    private Param params;
+    private WatchContract.LiveView liveView;
+
     WatchContract.DocumentView documentView;
     WatchContract.WatchView watchView;
     ChatContract.ChatView chatView;
+//    ChatContract.ChatView questionView;
+
+    public boolean isWatching = false;
+    private WatchLive watchLive;
+
     int[] scaleTypes = new int[]{Constants.DrawMode.kVHallDrawModeAspectFit.getValue(), Constants.DrawMode.kVHallDrawModeAspectFill.getValue(), Constants.DrawMode.kVHallDrawModeNone.getValue()};
     int currentPos = 0;
-    //    ChatContract.ChatView questionView;
-    CountDownTimer onHandDownTimer;
-    boolean force = false;
-    private Param params;
-    private WatchContract.LiveView liveView;
-    private WatchLive watchLive;
     private int scaleType = Constants.DrawMode.kVHallDrawModeAspectFit.getValue();
-    private GLPlayInterface mPlayView;
+
+    private VHVideoPlayerView mPlayView;
     private boolean isHand = false;
     private int isHandStatus = 1;
+
+    CountDownTimer onHandDownTimer;
     private int durationSec = 30; // 举手上麦倒计时
+
+    DocumentFragment documentFragment;
+
+    //自定义
     private WatchLiveFragment liveFragment;
     private String vhall_account = "1";
 
-    WatchLivePresenter(WatchContract.LiveView liveView, WatchContract.DocumentView documentView, ChatContract.ChatView chatView, WatchContract.WatchView watchView, Param param, DocumentFragment fragment, String vhall_account) {
+    public WatchLivePresenter(WatchContract.LiveView liveView,
+                              WatchContract.DocumentView documentView,
+                              ChatContract.ChatView chatView,
+                              WatchContract.WatchView watchView,
+                              Param param,
+                              DocumentFragment fragment,
+                              String vhall_account) {
         this.params = param;
         this.liveView = liveView;
         this.documentView = documentView;
@@ -72,15 +99,10 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         this.vhall_account = vhall_account;
     }
 
-    public void setParams(Param params) {
-        this.params = params;
-    }
-
     @Override
     public void start() {
         getWatchLive().setVRHeadTracker(true);
         getWatchLive().setScaleType(Constants.DrawMode.kVHallDrawModeAspectFit.getValue());
-        Log.i("061201", "start()");
         initWatch();
     }
 
@@ -92,7 +114,6 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
             if (getWatchLive().isAvaliable()) {
                 startWatch();
             } else {
-                Log.i("061201", "onWatchBtnClick()");
                 initWatch();
             }
         }
@@ -116,21 +137,86 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
 
             @Override
             public void onError(int errorCode, String reason) {
-                Log.e(TAG, " reason == " + reason);
                 chatView.showToast(reason);
             }
         });
     }
 
+//    @Override
+//    public void sendCustom(JSONObject text) {
+//        if (!VhallSDK.isLogin()) {
+//            watchView.showToast(R.string.vhall_login_first);
+//            return;
+//        }
+//        getWatchLive().sendCustom(text, new RequestCallback() {
+//            @Override
+//            public void onSuccess() {
+//            }
+//
+//            @Override
+//            public void onError(int errorCode, String reason) {
+//                chatView.showToast(reason);
+//            }
+//        });
+//    }
+
+//    @Override
+//    public void sendQuestion(String content) {
+//        if (!VhallSDK.isLogin()) {
+//            watchView.showToast(R.string.vhall_login_first);
+//            return;
+//        }
+//        getWatchLive().sendQuestion(content, new RequestCallback() {
+//            @Override
+//            public void onSuccess() {
+//
+//            }
+//
+//            @Override
+//            public void onError(int errorCode, String reason) {
+//                questionView.showToast(reason);
+//            }
+//        });
+//    }
+
     @Override
     public void onLoginReturn() {
-        Log.i("061201", "onLoginReturn()");
         initWatch();
     }
 
+//    @Override
+//    public void showSurvey(String url, String title) {
+//        if (!VhallSDK.isLogin()) {
+//            watchView.showToast(R.string.vhall_login_first);
+//            return;
+//        }
+//        watchView.showSurvey(url, title);
+//    }
+
+//    @Override
+//    public void showSurvey(String surveyid) {
+//        if (!VhallSDK.isLogin()) {
+//            watchView.showToast(R.string.vhall_login_first);
+//            return;
+//        }
+//        VhallSDK.getSurveyInfo(surveyid, new SurveyDataSource.SurveyInfoCallback() {
+//            @Override
+//            public void onSuccess(Survey survey) {
+//                watchView.showSurvey(survey);
+//            }
+//
+//            @Override
+//            public void onError(int errorCode, String errorMsg) {
+//                chatView.showToast(errorMsg);
+//            }
+//        });
+//    }
+
+    boolean force = false;
+
     @Override
-    public void onSwitchPixel(int level) {
-        if (getWatchLive().getDefinition() == level && !force) {
+    public void onSwitchPixel(String dpi) {
+        if (getWatchLive().getDefinition().equals(dpi) && !force) {
             return;
         }
         force = false;
@@ -141,20 +227,21 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
     }
 
     @Override
-    public void onMobileSwitchRes(int res) {
-        if (getWatchLive().getDefinition() == res && !force) {
+    public void onMobileSwitchRes(String dpi) {
+        if (getWatchLive().getDefinition().equals(dpi) && !force) {
             return;
         }
-        if (isWatching) {
-            stopWatch();
-        }
+        //TODO CHANGE
+//        if (isWatching) {
+//            stopWatch();
+//        }
         force = false;
-        getWatchLive().setDefinition(res);
+        getWatchLive().setDefinition(dpi);
     }
 
     @Override
     public int setScaleType() {
-        int scaleType = scaleTypes[(++currentPos) % scaleTypes.length];
+        scaleType = scaleTypes[(++currentPos) % scaleTypes.length];
         getWatchLive().setScaleType(scaleType);
 //        liveView.setScaleButtonText(scaleType);
         return scaleType;
@@ -187,7 +274,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
     }
 
     @Override
-    public int getCurrentPixel() {
+    public String getCurrentPixel() {
         return getWatchLive().getDefinition();
     }
 
@@ -199,15 +286,33 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         return -1;
     }
 
+//    @Override
+//    public void setHeadTracker() {
+//        if (!getWatchLive().isVR()) {
+//            watchView.showToast("当前活动为非VR活动，不可使用陀螺仪");
+//            return;
+//        }
+//        getWatchLive().setVRHeadTracker(!getWatchLive().isVRHeadTracker());
+//        liveView.reFreshView();
+//    }
+
+//    @Override
+//    public boolean isHeadTracker() {
+//        return getWatchLive().isVRHeadTracker();
+//    }
+
     @Override
     public void initWatch() {
-        Log.i("061201", "initWatch()");
+        //游客ID及昵称 已登录用户可传空
+        TelephonyManager telephonyMgr = (TelephonyManager) watchView.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+//        String customeId = telephonyMgr.getDeviceId();
+
         //登录聊天账号
         String uid = Util.getUid();
         //登录微吼账号，用于聊天
         String username = vhall_account.equals("1") ? "wxh" + uid : "sch" + uid;
         String userpass = "1q2w3e4r5t6y7u8i9o";
-        Log.i("0610051", username + "      " + userpass);
+//        Log.i("0610051", username + "      " + userpass);
         VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
             @Override
             public void onSuccess(UserInfo userInfo) {
@@ -221,6 +326,8 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                         chatView.clearChatData();
                         getChatHistory();
                         startWatch();//initWatch成功，直接开始播放直播
+                        //根据房间信息设置，是否展示文档
+// TODO                       operationDocument();
                     }
 
                     @Override
@@ -230,7 +337,6 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                             Toast.makeText(watchView.getActivity(), msg, Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 });
             }
 
@@ -246,7 +352,6 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                     customeId = Build.BOARD + Build.DEVICE + Build.SERIAL;//SERIAL  串口序列号 保证唯一值
                     customNickname = Build.BRAND + "手机用户";
                 }
-
                 VhallSDK.initWatch(params.watchId, customeId, customNickname, params.key, getWatchLive(), WebinarInfo.LIVE, new RequestCallback() {
                     @Override
                     public void onSuccess() {
@@ -256,6 +361,8 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                         getChatHistory();
 //                getAnswerList();
                         startWatch();//initWatch成功，直接开始播放直播
+                        //根据房间信息设置，是否展示文档
+// TODO                       operationDocument();
                     }
 
                     @Override
@@ -272,8 +379,21 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
 
         });
 
-
     }
+
+//    private void getAnswerList() {
+//        VhallSDK.getAnswerList(params.watchId, new ChatServer.ChatRecordCallback() {
+//            @Override
+//            public void onDataLoaded(List<ChatServer.ChatInfo> list) {
+//                questionView.notifyDataChangedQe(ChatFragment.CHAT_EVENT_QUESTION, list);
+//            }
+//
+//            @Override
+//            public void onFailed(int errorcode, String messaage) {
+////                Toast.makeText(watchView.getActivity(), messaage, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     @Override
     public void startWatch() {
@@ -294,9 +414,10 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
 
     private WatchLive getWatchLive() {
         if (watchLive == null) {
+            RelativeLayout watchLayout = liveView.getWatchLayout();
             WatchLive.Builder builder = new WatchLive.Builder()
                     .context(watchView.getActivity().getApplicationContext())
-                    .containerLayout(liveView.getWatchLayout())
+                    .containerLayout(watchLayout)
                     .bufferDelay(params.bufferSecond)
                     .callback(new WatchCallback())
                     .messageCallback(new MessageEventCallback())
@@ -304,21 +425,21 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                     .chatCallback(new ChatCallback());
             watchLive = builder.build();
         }
+        //狄拍builder
+//        if (watchLive == null) {
+//            WatchLive.Builder builder = new WatchLive.Builder()
+//                    .context(watchView.getActivity().getApplicationContext())
+//                    .bufferDelay(params.bufferSecond)
+//                    .callback(new WatchCallback())
+//                    .messageCallback(new MessageEventCallback())
+//                    .connectTimeoutMils(5000)
+//                    .playView(mPlayView = new VRPlayView(watchView.getActivity().getApplicationContext()))//todo 添加到自定义布局中，非new
+//                    .chatCallback(new ChatCallback());
+//            watchLive = builder.build();
+//            liveView.getWatchLayout().addView((VRPlayView) mPlayView, 640, 480);
+//            ((VRPlayView) mPlayView).getHolder().setFixedSize(640, 480);
+//        }
         return watchLive;
-    }
-
-    private void getChatHistory() {
-        getWatchLive().acquireChatRecord(true, new ChatServer.ChatRecordCallback() {
-            @Override
-            public void onDataLoaded(List<ChatServer.ChatInfo> list) {
-                chatView.notifyDataChanged(ChatFragment.CHAT_EVENT_CHAT, list);
-            }
-
-            @Override
-            public void onFailed(int errorcode, String messaage) {
-                Log.e(TAG, "onFailed->" + errorcode + ":" + messaage);
-            }
-        });
     }
 
     //签到
@@ -342,72 +463,208 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         });
     }
 
+    //提交问卷 需要先登录且watch已初始化完成
+//    @Override
+//    public void submitSurvey(String result) {
+//        /*if (!VhallSDK.isLogin()) {
+//            watchView.showToast("请先登录！");
+//            return;
+//        }
+//        JSONObject obj = null;
+//        try {
+//            obj = new JSONObject(result);
+//            String qId = obj.optString("question_id");
+//            VhallSDK.submitSurveyInfo(getWatchLive(), qId, result, new RequestCallback() {
+//                @Override
+//                public void onSuccess() {
+//                    watchView.showToast("提交成功！");
+//                    watchView.dismissSurvey();
+//                }
+//
+//                @Override
+//                public void onError(int errorCode, String errorMsg) {
+//                    watchView.showToast(errorMsg);
+//                    if (errorCode == 10821) {
+//                        watchView.dismissSurvey();
+//                    }
+//                }
+//            });
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }*/
+//    }
+
+//    @Override
+//    public void submitSurvey(Survey survey, String result) {
+//        if (survey == null)
+//            return;
+//        if (!VhallSDK.isLogin()) {
+//            watchView.showToast("请先登录！");
+//            return;
+//        }
+//        VhallSDK.submitSurveyInfo(getWatchLive(), survey.surveyid, result, new RequestCallback() {
+//            @Override
+//            public void onSuccess() {
+//                watchView.showToast("提交成功！");
+//                watchView.dismissSurvey();
+//            }
+//
+//            @Override
+//            public void onError(int errorCode, String errorMsg) {
+//                watchView.showToast(errorMsg);
+//                if (errorCode == 10821)
+//                    watchView.dismissSurvey();
+//            }
+//        });
+//    }
+
+//    @Override
+//    public void onRaiseHand() {
+//        getWatchLive().onRaiseHand(params.watchId, isHand ? 0 : 1, new RequestCallback() {
+//            @Override
+//            public void onSuccess() {
+//                if (isHand) {
+//                    isHand = false;
+//                    watchView.refreshHand(0);
+//                    if (onHandDownTimer != null) {
+//                        onHandDownTimer.cancel();
+//                    }
+//                } else {
+//                    Log.e(TAG, "举手成功");
+//                    startDownTimer(durationSec);
+//                    isHand = true;
+//                }
+//            }
+//
+//            @Override
+//            public void onError(int errorCode, String errorMsg) {
+//                watchView.showToast("举手失败，errorMsg:" + errorMsg);
+//            }
+//        });
+//    }
+
+//    @Override
+//    public void replyInvite(int type) {
+//        getWatchLive().replyInvitation(params.watchId, type, new RequestCallback() {
+//            @Override
+//            public void onSuccess() {
+//
+//            }
+//
+//            @Override
+//            public void onError(int errorCode, String errorMsg) {
+//                watchView.showToast("上麦状态反馈异常，errorMsg:" + errorMsg);
+//            }
+//        });
+//    }
+
+    //TODO 投屏相关
+//
+//    @Override
+//    public void dlnaPost(DeviceDisplay deviceDisplay, AndroidUpnpService service) {
+//        getWatchLive().dlnaPost(deviceDisplay, service, new Watch_Support.DLNACallback() {
+//
+//            @Override
+//            public void onError(int errorCode) {
+//                watchView.showToast("投屏失败，errorCode:" + errorCode);
+////            }
+//
+//            @Override
+//            public void onSuccess() {
+//                watchView.showToast("投屏成功!");
+//                stopWatch();
+//            }
+//
+//        });
+//    }
+//
+//    @Override
+//    public void showDevices() {
+//        watchView.showDevices();
+//    }
+//
+//    @Override
+//    public void dismissDevices() {
+//        watchView.dismissDevices();
+//    }
+
     /**
      * 观看过程中事件监听
      */
-    private class WatchCallback implements Watch.WatchEventCallback {
+    private class WatchCallback implements VHPlayerListener {
         @Override
-        public void onError(int errorCode, String errorMsg) {
+        public void onStateChanged(com.vhall.player.Constants.State state) {
+            switch (state) {
+                case START:
+                    isWatching = true;
+                    liveView.showLoading(false);
+//                    liveView.setPlayPicture(isWatching);
+                    liveFragment.updateViewState(MyControlView.PlayState.Playing);
+                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
+                    ((WatchActivity) liveFragment.getActivity()).setPlace();
+                    ((WatchActivity) liveFragment.getActivity()).setPlace();
+                    ((WatchActivity) liveFragment.getActivity()).setFirstIntMoveModeSize();
+                    break;
+                case BUFFER:
+                    if (isWatching) {
+                        liveView.showLoading(true);
+                    }
+                    break;
+                case STOP:
+                    isWatching = false;
+                    liveView.showLoading(false);
+//                    liveView.setPlayPicture(isWatching);
+                    liveFragment.updateViewState(MyControlView.PlayState.Playing);
+                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
+                    break;
+            }
+        }
+
+        public void onEvent(int event, String msg) {
+            switch (event) {
+                case com.vhall.player.Constants.Event.EVENT_DOWNLOAD_SPEED:
+//                    liveView.setDownSpeed("速率" + msg + "/kbps");
+                    break;
+                case com.vhall.player.Constants.Event.EVENT_DPI_CHANGED:
+                    //分辨率切换
+                    Log.i(TAG, msg);
+                    break;
+                case com.vhall.player.Constants.Event.EVENT_DPI_LIST:
+                    //支持的分辨率 msg
+                    try {
+                        JSONArray array = new JSONArray(msg);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case com.vhall.player.Constants.Event.EVENT_VIDEO_SIZE_CHANGED:
+                    Log.i(TAG, msg);
+                    break;
+                case com.vhall.player.Constants.Event.EVENT_STREAM_START://发起端开始推流
+                    break;
+                case com.vhall.player.Constants.Event.EVENT_STREAM_STOP://发起端停止推流
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void onError(int errorCode, int innerCode, String msg) {
             switch (errorCode) {
-                case WatchLive.ERROR_CONNECT:
+                case com.vhall.player.Constants.ErrorCode.ERROR_CONNECT:
                     Log.e(TAG, "ERROR_CONNECT  ");
                     isWatching = false;
                     liveView.showLoading(false);
+//                    liveView.setPlayPicture(isWatching);
                     liveFragment.updateViewState(MyControlView.PlayState.Playing);
                     documentFragment.updateViewState(MyControlView.PlayState.Playing);
                     Toast.makeText(watchView.getActivity(), "连接失败", Toast.LENGTH_SHORT).show();
-//                    liveView.setPlayPicture(isWatching);
 //                    documentFragment.setPlayIcon(!isWatching);
 //                    watchView.showToast(errorMsg);
                     break;
                 default:
 //                    watchView.showToast(errorMsg);
-            }
-        }
-
-        @Override
-        public void onStateChanged(int stateCode) {
-            switch (stateCode) {
-                case WatchLive.STATE_CONNECTED:
-                    Log.e(TAG, "STATE_CONNECTED  ");
-                    isWatching = true;
-                    liveFragment.updateViewState(MyControlView.PlayState.Playing);
-                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
-                    break;
-                case WatchLive.STATE_BUFFER_START:
-                    Log.e(TAG, "STATE_BUFFER_START  ");
-                    if (isWatching)
-                        liveView.showLoading(true);
-                    break;
-                case WatchLive.STATE_BUFFER_STOP:
-                    Log.e(TAG, "STATE_BUFFER_STOP  ");
-                    liveView.showLoading(false);
-                    break;
-                case WatchLive.STATE_STOP:
-                    Log.e(TAG, "STATE_STOP  ");
-                    isWatching = false;
-                    liveView.showLoading(false);
-                    liveFragment.updateViewState(MyControlView.PlayState.Playing);
-                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
-                    break;
-            }
-        }
-
-        @Override
-        public void onVhallPlayerStatue(boolean playWhenReady, int playbackState) {
-            // 播放器状态回调  只在看回放时使用
-        }
-
-        @Override
-        public void uploadSpeed(String kbps) {
-//            liveView.setDownSpeed("速率" + kbps + "/kbps");
-        }
-
-        @Override
-        public void videoInfo(int width, int height) {
-            if (mPlayView != null) {
-                mPlayView.init(width, height);
-                // INIT STUF
             }
         }
     }
@@ -490,7 +747,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                 case MessageServer.EVENT_DIFINITION_CHANGED:
 //                    Log.e(TAG, "EVENT_DIFINITION_CHANGED PC 端切换分辨率");
 //                    liveView.showRadioButton(getWatchLive().getDefinitionAvailable());
-                    onSwitchPixel(WatchLive.DPI_DEFAULT);
+                    onSwitchPixel(com.vhall.player.Constants.Rate.DPI_SAME);
 //                    if (!getWatchLive().isDifinitionAvailable(getWatchLive().getDefinition())) {
 //                        onSwitchPixel(WatchLive.DPI_DEFAULT);
 //                    }
@@ -513,17 +770,35 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
 //                    watchView.showToast("问答功能已" + (messageInfo.status == 0 ? "关闭" : "开启"));
                     break;
                 case MessageServer.EVENT_SURVEY://问卷
-                    ChatServer.ChatInfo chatInfo = new ChatServer.ChatInfo();
-                    chatInfo.event = "survey";
-                    chatInfo.id = messageInfo.id;
-                    chatView.notifyDataChanged(chatInfo);
+
+                    /**
+                     * 获取msg内容
+                     */
+
+                    MessageChatData surveyData = new MessageChatData();
+                    surveyData.event = MessageChatData.eventSurveyKey;
+                    surveyData.setUrl(VhallSDK.getSurveyUrl(messageInfo.id, messageInfo.webinar_id, messageInfo.user_id));
+                    surveyData.setId(messageInfo.id);
+                    chatView.notifyDataChangedChat(surveyData);
+                    break;
+                case MessageServer.EVENT_SHOWDOC://文档开关指令 1 使用文档 0 关闭文档
+                    Log.e(TAG, "onEvent:show_docType:watchType= " + messageInfo.watchType);
+                    getWatchLive().setIsUseDoc(messageInfo.watchType);
+// TODO                   operationDocument();
                     break;
                 case MessageServer.EVENT_CLEARBOARD:
                 case MessageServer.EVENT_DELETEBOARD:
                 case MessageServer.EVENT_INITBOARD:
                 case MessageServer.EVENT_PAINTBOARD:
+                    if (getWatchLive().isUseDoc()) {
+                        documentView.paintBoard(messageInfo);
+                    }
+                    break;
                 case MessageServer.EVENT_SHOWBOARD:
-                    documentView.paintBoard(messageInfo);
+                    getWatchLive().setIsUseBoard(messageInfo.showType);
+                    if (getWatchLive().isUseDoc()) {
+                        documentView.paintBoard(messageInfo);
+                    }
                     break;
                 case MessageServer.EVENT_CHANGEDOC://PPT翻页消息
                 case MessageServer.EVENT_CLEARDOC:
@@ -552,21 +827,11 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
                 case MessageServer.EVENT_INTERACTIVE_ALLOW_HAND:
 //                    watchView.showToast(messageInfo.status == 0 ? "举手按钮关闭" : "举手按钮开启");
                     break;
+                case MessageServer.EVENT_INVITED_MIC://被邀请上麦
+//                    watchView.showInvited();
+                    break;
             }
         }
-
-//        int parseTime(String str, int defaultTime) {
-//            int currentTime = 0;
-//            try {
-//                currentTime = Integer.parseInt(str);
-//                if (currentTime == 0) {
-//                    return defaultTime;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return currentTime;
-//        }
 
         public int parseTime(String str, int defaultTime) {
             int currentTime = 0;
@@ -595,13 +860,47 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         }
     }
 
+    /**
+     * 根据文档状态选择展示
+     */
+    private void operationDocument() {
+        if (!getWatchLive().isUseDoc()) {
+            documentView.showType(2);//关闭文档
+        } else {
+            //展示文档
+            if (getWatchLive().isUseBoard()) {
+                //当前为白板
+                documentView.showType(1);
+            } else {
+                documentView.showType(0);
+            }
+        }
+    }
+
+//    public void startDownTimer(int secondTimer) {
+//        onHandDownTimer = new CountDownTimer(secondTimer * 1000 + 1080, 1000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                watchView.refreshHand((int) millisUntilFinished / 1000 - 1);
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                onHandDownTimer.cancel();
+//                onRaiseHand();
+//            }
+//        }.start();
+//    }
+
     private class ChatCallback implements ChatServer.Callback {
         @Override
         public void onChatServerConnected() {
+            Log.e(TAG, "CHAT CONNECTED ");
         }
 
         @Override
         public void onConnectFailed() {
+            Log.e(TAG, "CHAT CONNECT FAILED");
             getWatchLive().connectChatServer();
         }
 
@@ -609,20 +908,27 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         public void onChatMessageReceived(ChatServer.ChatInfo chatInfo) {
             switch (chatInfo.event) {
                 case ChatServer.eventMsgKey:
-                    chatView.notifyDataChanged(chatInfo);
+                    Log.d(TAG, "eventMsgKey: ");
+                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
 //                    liveView.addDanmu(chatInfo.msgData.text);
                     break;
                 case ChatServer.eventCustomKey:
-//                    chatView.notifyDataChanged(chatInfo);
+                    Log.d(TAG, "eventCustomKey: ");
+                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
                     break;
                 case ChatServer.eventOnlineKey:
-//                    chatView.notifyDataChanged(chatInfo);
+                    Log.d(TAG, "eventOnlineKey: ");
+                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
                     break;
                 case ChatServer.eventOfflineKey:
-//                    chatView.notifyDataChanged(chatInfo);
+                    Log.d(TAG, "eventOfflineKey: ");
+                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
                     break;
                 case ChatServer.eventQuestion:
-//                    questionView.notifyDataChanged(chatInfo);
+                    Log.d(TAG, "eventQuestion: ");
+//                    questionView.notifyDataChangedQe(chatInfo);
+                    break;
+                default:
                     break;
             }
         }
@@ -631,5 +937,77 @@ public class WatchLivePresenter implements WatchContract.LivePresenter, ChatCont
         public void onChatServerClosed() {
         }
     }
+
+    private void getChatHistory() {
+        getWatchLive().acquireChatRecord(true, new ChatServer.ChatRecordCallback() {
+            @Override
+            public void onDataLoaded(List<ChatServer.ChatInfo> list) {
+                List<MessageChatData> list1 = new ArrayList<>();
+                for (ChatServer.ChatInfo chatInfo : list) {
+                    list1.add(MessageChatData.getChatData(chatInfo));
+                }
+                chatView.notifyDataChangedChat(ChatFragment.CHAT_EVENT_CHAT, list1);
+            }
+
+            @Override
+            public void onFailed(int errorcode, String messaage) {
+//                Log.e(TAG, "onFailed->" + errorcode + ":" + messaage);
+            }
+        });
+    }
+
+    public void setParams(Param params) {
+        this.params = params;
+    }
+
+        /*
+    //核心模块中已经实现VR渲染器，可直接使用
+    //狄拍自定义渲染
+    public class VRPlayView extends GL_Preview_YUV implements IVHVideoPlayer {
+        AtomicBoolean mIsReady = new AtomicBoolean(false);
+        public VRPlayView(Context var1) {
+            super(var1);
+        }
+
+        public VRPlayView(Context var1, AttributeSet var2) {
+            super(var1, var2);
+        }
+
+        public void setDrawMode(int model) {
+            super.setDrawMode(model);
+        }
+
+        public void setIsHeadTracker(boolean head) {
+            super.setIsHeadTracker(head);
+        }
+
+        public boolean init(int width, int height) {
+            super.setPreviewW(width);
+            super.setPreviewH(height);
+            super.setIsFlip(true);
+            super.setColorFormat(19);
+            mIsReady.set(true);
+            return false;
+        }
+
+        @Override
+        public void play(byte[] bytes, int i, int i1) {
+
+        }
+
+        public void playView(byte[] YUV) {
+            if (this.isReady()) {
+                this.setdata(YUV);
+            }
+        }
+
+        public boolean isReady() {
+            return mIsReady.get();
+        }
+
+        public void release() {
+            this.setRelease();
+        }
+    }*/
 }
 

@@ -86,7 +86,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             TextView activity_login_textView2 = findViewById(R.id.activity_login_textView2);
             activity_login_textview3 = findViewById(R.id.activity_login_textview3);
             activity_login_layout4 = findViewById(R.id.activity_login_layout4);
-            root = findViewById(R.id.root);
+            root = findViewById(R.id.root1);
 
             activity_login_layout0.setOnClickListener(this);
             activity_login_editText1.setOnClickListener(this);

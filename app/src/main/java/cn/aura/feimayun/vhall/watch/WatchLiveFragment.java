@@ -31,7 +31,6 @@ import com.aliyun.vodplayerview.view.gesture.GestureView;
 import com.aliyun.vodplayerview.view.interfaces.ViewAction;
 import com.aliyun.vodplayerview.widget.AliyunScreenMode;
 import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
-import com.vhall.business.widget.ContainerLayout;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.application.MyApplication;
@@ -42,14 +41,15 @@ import static android.view.View.VISIBLE;
 /**
  * 观看直播的Fragment
  */
-public class WatchLiveFragment extends Fragment implements WatchContract.LiveView {
+public class WatchLiveFragment extends Fragment
+        implements WatchContract.LiveView {
     ProgressBar progressbar;
     //用AudioManager获取音频焦点避免音视频声音并发问题
     AudioManager mAudioManager;
     AudioFocusRequest mFocusRequest;
     AudioManager.OnAudioFocusChangeListener mAudioFocusChangeListener;
     private WatchContract.LivePresenter mPresenter;
-    private ContainerLayout mContainerLayout;
+    private RelativeLayout mContainerLayout;
     private WatchActivity context;
     //是否锁定全屏
     private boolean mIsFullScreenLocked = false;
@@ -147,7 +147,7 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
         View view = inflater.inflate(R.layout.vhall_watch_live_fragment, container, false);
         mContainerLayout = view.findViewById(R.id.rl_container);
         progressbar = view.findViewById(R.id.progressbar);
-        root = view.findViewById(R.id.root);
+        root = view.findViewById(R.id.root1);
         live_textview_marquee = view.findViewById(R.id.live_textview_marquee);
         live_textview_marquee.setSelected(true);
 //        if (mPresenter != null) {
@@ -335,7 +335,7 @@ public class WatchLiveFragment extends Fragment implements WatchContract.LiveVie
     }
 
     @Override
-    public ContainerLayout getWatchLayout() {
+    public RelativeLayout getWatchLayout() {
         return mContainerLayout;
     }
 

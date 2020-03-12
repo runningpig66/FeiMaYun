@@ -6,19 +6,19 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.vhall.business.ChatServer;
 import com.vhall.business.MessageServer;
 import com.vhall.business.VhallSDK;
-import com.vhall.business.Watch;
-import com.vhall.business.WatchLive;
 import com.vhall.business.WatchPlayback;
 import com.vhall.business.data.RequestCallback;
 import com.vhall.business.data.WebinarInfo;
-import com.vhall.playersdk.player.VHExoPlayer;
-import com.vhall.playersdk.player.vhallplayer.VHallPlayer;
+import com.vhall.player.Constants;
+import com.vhall.player.VHPlayerListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,32 +27,59 @@ import cn.aura.feimayun.R;
 import cn.aura.feimayun.vhall.Param;
 import cn.aura.feimayun.vhall.chat.ChatContract;
 import cn.aura.feimayun.vhall.chat.ChatFragment;
+import cn.aura.feimayun.vhall.chat.MessageChatData;
 import cn.aura.feimayun.vhall.util.VhallUtil;
 import cn.aura.feimayun.vhall.util.emoji.InputUser;
 import cn.aura.feimayun.view.MyControlView;
 
-/**
- * 观看回放的Presenter HAVE DONE
- */
-public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, ChatContract.ChatPresenter {
+import static com.vhall.business.MessageServer.EVENT_SHOWBOARD;
+import static com.vhall.business.MessageServer.EVENT_SHOWDOC;
+import static com.vhall.business.WatchPlayback.SHOW_DOC_KEY;
 
+//TODO  投屏相关
+//import com.vhall.business_support.Watch_Support;
+//import com.vhall.business_support.dlna.DeviceDisplay;
+//import com.vhall.business_support.WatchLive;
+//import com.vhall.business_support.WatchPlayback;
+//import org.fourthline.cling.android.AndroidUpnpService;
+
+/**
+ * 观看回放的Presenter
+ */
+public class WatchPlaybackPresenter implements
+        WatchContract.PlaybackPresenter,
+        ChatContract.ChatPresenter {
+    private static final String TAG = "PlaybackPresenter";
     private Param param;
-    private WatchContract.PlaybackView playbackView;
-    private WatchContract.DocumentView documentView;
-    private WatchContract.WatchView watchView;
-    private ChatContract.ChatView chatView;
-    private DocumentFragment documentFragment;
+    WatchContract.PlaybackView playbackView;
+    WatchContract.DocumentView documentView;
+    WatchContract.WatchView watchView;
+    ChatContract.ChatView chatView;
     private WatchPlayback watchPlayback;
-    private int[] scaleTypeList = new int[]{WatchLive.FIT_DEFAULT, WatchLive.FIT_CENTER_INSIDE, WatchLive.FIT_X, WatchLive.FIT_Y, WatchLive.FIT_XY};
-    private int currentPos = 0;
-    private int scaleType = WatchLive.FIT_DEFAULT;
+
+    //FIT_XY = 0;FIT = 1;FILL= 2;
+    int[] scaleTypeList = new int[]{0, 1, 2};
+    int currentPos = 0;
+    private int scaleType = 0;//FIT_XY
+
+    String[] speedStrs = new String[]{"0.25", "0.50", "1.00", "1.25", "1.50", "2.00"};
+    int currentSpeed = 2;
+
     private int limit = 5;
     private int pos = 0;
+
     private long playerCurrentPosition = 0L; // 当前的进度
+    private long playerDuration;
     private String playerDurationTimeStr = "00:00:00";
+
     private boolean loadingVideo = false;
     private boolean loadingComment = false;
+
     private Timer timer;
+
+    WatchPlaybackFragment fragment;
+    DocumentFragment documentFragment;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -74,12 +101,14 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
             }
         }
     };
-    private WatchPlaybackFragment fragment;
 
-    WatchPlaybackPresenter(WatchContract.PlaybackView playbackView, WatchContract.DocumentView documentView, ChatContract.ChatView chatView, WatchContract.WatchView watchView, Param param, DocumentFragment documentFragment) {
-        this.documentFragment = documentFragment;
+    WatchPlaybackPresenter(WatchContract.PlaybackView playbackView,
+                           WatchContract.DocumentView documentView,
+                           ChatContract.ChatView chatView,
+                           WatchContract.WatchView watchView,
+                           Param param,
+                           DocumentFragment documentFragment) {
         this.playbackView = playbackView;
-        fragment = (WatchPlaybackFragment) playbackView;
         this.documentView = documentView;
         this.watchView = watchView;
         this.chatView = chatView;
@@ -87,6 +116,8 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
         this.playbackView.setPresenter(this);
         this.chatView.setPresenter(this);
         this.watchView.setPresenter(this);
+        this.documentFragment = documentFragment;
+        fragment = (WatchPlaybackFragment) playbackView;
     }
 
     public void setParam(Param param) {
@@ -95,9 +126,9 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
 
     @Override
     public void start() {
+//        playbackView.setScaleTypeText(scaleType);
         initWatch();
     }
-
 
     private void initCommentData(int pos) {
         if (loadingComment)
@@ -108,7 +139,11 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
             public void onDataLoaded(List<ChatServer.ChatInfo> list) {
                 chatView.clearChatData();
                 loadingComment = false;
-                chatView.notifyDataChanged(ChatFragment.CHAT_EVENT_CHAT, list);
+                List<MessageChatData> list1 = new ArrayList<>();
+                for (ChatServer.ChatInfo chatInfo : list) {
+                    list1.add(MessageChatData.getChatData(chatInfo));
+                }
+                chatView.notifyDataChangedChat(ChatFragment.CHAT_EVENT_CHAT, list1);
             }
 
             @Override
@@ -138,7 +173,9 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
                 pos = 0;
                 initCommentData(pos);
 //                watchView.showNotice(getWatchPlayback().getNotice()); //显示公告
+//                playbackView.setQuality(getWatchPlayback().getQualities());
                 fragment.handleAutoPlay.obtainMessage().sendToTarget();
+                operationDocument();
             }
 
             @Override
@@ -152,6 +189,16 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
 //                watchView.showToast(reason);
             }
         });
+    }
+
+    @Override
+    public long getDurationCustom() {
+        return getWatchPlayback().getDuration();
+    }
+
+    @Override
+    public long getCurrentPositionCustom() {
+        return getWatchPlayback().getCurrentPosition();
     }
 
     @Override
@@ -169,6 +216,7 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
             return;
         fragment.updateViewState(MyControlView.PlayState.Playing);
         documentFragment.updateViewState(MyControlView.PlayState.Playing);
+//        playbackView.setPlayIcon(false);
         getWatchPlayback().start();
     }
 
@@ -180,13 +228,18 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
             if (!getWatchPlayback().isAvaliable()) {
                 initWatch();
             } else {
-                if (getWatchPlayback().getPlayerState() == VHExoPlayer.STATE_ENDED) {
+                if (getWatchPlayback().getPlayerState() == Constants.State.END) {
                     getWatchPlayback().seekTo(0);
                 }
                 startPlay();
             }
         }
     }
+
+//    @Override
+//    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//        playbackView.setProgressLabel(VhallUtil.converLongTimeToStr(progress), playerDurationTimeStr);
+//    }
 
     @Override
     public void onStopTrackingTouch(int playerCurrentPosition) {
@@ -200,6 +253,7 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
     public int changeScaleType() {
         scaleType = scaleTypeList[(++currentPos) % scaleTypeList.length];
         getWatchPlayback().setScaleType(scaleType);
+//        playbackView.setScaleTypeText(scaleType);
         return scaleType;
     }
 
@@ -211,11 +265,19 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
     @Override
     public void onResume() {
         getWatchPlayback().onResume();
-
         if (getWatchPlayback().isAvaliable()) {
             fragment.updateViewState(MyControlView.PlayState.Playing);
             documentFragment.updateViewState(MyControlView.PlayState.Playing);
+        } else {
+            fragment.updateViewState(MyControlView.PlayState.Paused);
+            documentFragment.updateViewState(MyControlView.PlayState.Paused);
         }
+
+//        if (getWatchPlayback().isAvaliable()) {
+//            playbackView.setPlayIcon(false);
+//        } else {
+//            playbackView.setPlayIcon(true);
+//        }
     }
 
 
@@ -223,6 +285,7 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
     public void onPause() {
         //onPause只需要根据Activity的生命周期调用即可,暂停可以使用stop方法
         getWatchPlayback().onPause();
+//        playbackView.setPlayIcon(true);
         fragment.updateViewState(MyControlView.PlayState.Paused);
         documentFragment.updateViewState(MyControlView.PlayState.Paused);
     }
@@ -230,6 +293,7 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
     @Override
     public void onStop() {
         getWatchPlayback().stop();
+//        playbackView.setPlayIcon(true);
         fragment.updateViewState(MyControlView.PlayState.Paused);
         documentFragment.updateViewState(MyControlView.PlayState.Paused);
     }
@@ -240,12 +304,204 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
     }
 
     @Override
+    public void setSpeed() {
+//        String speed = speedStrs[(++currentSpeed) % speedStrs.length];
+//        if (getWatchPlayback().setSpeed(Float.parseFloat(speed)) == 0) {
+//            speed = speedStrs[(--currentSpeed) % speedStrs.length];
+//        }
+//        playbackView.setPlaySpeedText(speed);
+    }
+
     public WatchPlayback getWatchPlayback() {
         if (watchPlayback == null) {
-            WatchPlayback.Builder builder = new WatchPlayback.Builder().context(watchView.getActivity()).containerLayout(playbackView.getContainer()).callback(new WatchCallback()).docCallback(new DocCallback());
+            WatchPlayback.Builder builder = new WatchPlayback.Builder()
+                    .context(watchView.getActivity())
+//                    .containerLayout(playbackView.getContainer())
+                    .surfaceView(playbackView.getVideoView())
+                    .callback(new WatchCallback())
+                    .docCallback(new DocCallback());
             watchPlayback = builder.build();
         }
         return watchPlayback;
+    }
+
+    @Override
+    public void signIn(String signId) {
+
+    }
+
+//    @Override
+//    public void submitSurvey(String result) {
+
+//    }
+
+//    @Override
+//    public void submitSurvey(Survey survey, String result) {
+
+//    }
+
+//    @Override
+//    public void onRaiseHand() {
+
+//    }
+
+//    @Override
+//    public void replyInvite(int type) {
+
+//    }
+
+    //TODO 投屏相关
+//    @Override
+//    public void dlnaPost(DeviceDisplay deviceDisplay, AndroidUpnpService service) {
+//        getWatchPlayback().dlnaPost(deviceDisplay, service, new Watch_Support.DLNACallback() {
+//            @Override
+//            public void onError(int errorCode) {
+//                watchView.showToast("投屏失败，errorCode:" + errorCode);
+//            }
+//
+//            @Override
+//            public void onSuccess() {
+//                watchView.showToast("投屏成功!");
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void showDevices() {
+//        watchView.showDevices();
+//    }
+//
+//    @Override
+//    public void dismissDevices() {
+//        watchView.dismissDevices();
+//    }
+
+    /**
+     * 根据文档状态选择展示
+     */
+    private void operationDocument() {
+        if (!getWatchPlayback().isUseDoc()) {
+            documentView.showType(2);//关闭文档
+        } else {
+            //展示文档
+            if (getWatchPlayback().isUseBoard()) {
+                //当前为白板
+                documentView.showType(1);
+            } else {
+                documentView.showType(0);
+            }
+        }
+    }
+
+    private class DocCallback implements WatchPlayback.DocumentEventCallback {
+
+        @Override
+        public void onEvent(String key, List<MessageServer.MsgInfo> msgInfos) {
+            if (SHOW_DOC_KEY.equals(key)) {
+                if (msgInfos.size() > 0) {
+                    getWatchPlayback().setIsUseDoc(msgInfos.get(msgInfos.size() - 1).watchType);
+                    operationDocument();
+                }
+            } else {
+                if (msgInfos != null && msgInfos.size() > 0) {
+                    documentView.paintBoard(key, msgInfos);
+                    documentView.paintPPT(key, msgInfos);
+                }
+            }
+        }
+
+        @Override
+        public void onEvent(MessageServer.MsgInfo msgInfo) {
+            if (msgInfo.event == EVENT_SHOWDOC) {
+                getWatchPlayback().setIsUseDoc(msgInfo.watchType);
+                operationDocument();
+            } else {
+                if (msgInfo.event == EVENT_SHOWBOARD) {
+                    getWatchPlayback().setIsUseBoard(msgInfo.showType);
+                }
+                if (getWatchPlayback().isUseDoc()) {
+                    documentView.paintBoard(msgInfo);
+                }
+                documentView.paintPPT(msgInfo);
+            }
+        }
+    }
+
+    private class WatchCallback implements VHPlayerListener {
+
+        @Override
+        public void onStateChanged(Constants.State state) {
+            switch (state) {
+                case IDLE:
+//                    Log.e(TAG, "STATE_IDLE");
+                    break;
+                case START:
+                    playbackView.showProgressbar(false);
+//                    playbackView.setPlayIcon(false);
+                    fragment.updateViewState(MyControlView.PlayState.Playing);
+                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
+                    playerDuration = getWatchPlayback().getDuration();
+                    playerDurationTimeStr = VhallUtil.converLongTimeToStr(playerDuration);
+                    playbackView.setSeekbarMax((int) playerDuration);
+                    documentFragment.setSeekbarMax((int) playerDuration);
+//                    ((WatchActivity) fragment.getActivity()).setPlace();
+//                    ((WatchActivity) fragment.getActivity()).setPlace();
+//                    ((WatchActivity) fragment.getActivity()).setFirstIntMoveModeSize();
+                    break;
+                case BUFFER:
+                    Log.e(TAG, "STATE_BUFFERING");
+                    playbackView.showProgressbar(true);
+
+                    break;
+                case STOP:
+                    playbackView.showProgressbar(false);
+                    Log.e(TAG, "STATE_STOP");
+//                    getWatchPlayback().stop();
+//                    playbackView.setPlayIcon(true);
+                    fragment.updateViewState(MyControlView.PlayState.Paused);
+                    documentFragment.updateViewState(MyControlView.PlayState.Paused);
+                    break;
+                case END:
+                    playbackView.showProgressbar(false);
+                    Log.e(TAG, "STATE_ENDED");
+                    playerCurrentPosition = 0;
+//                    getWatchPlayback().stop();
+//                    playbackView.setPlayIcon(true);
+                    fragment.updateViewState(MyControlView.PlayState.Paused);
+                    documentFragment.updateViewState(MyControlView.PlayState.Paused);
+                    break;
+            }
+        }
+
+        @Override
+        public void onEvent(int event, String msg) {
+            switch (event) {
+                case Constants.Event.EVENT_DPI_LIST:
+
+                    break;
+                case Constants.Event.EVENT_DPI_CHANGED:
+//                    playbackView.setQualityChecked(msg);
+                    break;
+            }
+        }
+
+        @Override
+        public void onError(int errorCode, int innerErrorCode, String msg) {
+            Log.e(TAG, "errorCode:" + errorCode + "  errorMsg:" + msg);
+            switch (errorCode) {
+                case Constants.ErrorCode.ERROR_INIT:
+
+                    break;
+                case Constants.ErrorCode.ERROR_INIT_FIRST:
+
+                    break;
+            }
+            playbackView.showProgressbar(false);
+//            playbackView.setPlayIcon(true);
+            watchView.showToast("播放出错：" + msg);
+            fragment.updateViewState(MyControlView.PlayState.Paused);
+            documentFragment.updateViewState(MyControlView.PlayState.Paused);
+        }
     }
 
     //每秒获取一下进度
@@ -286,121 +542,28 @@ public class WatchPlaybackPresenter implements WatchContract.PlaybackPresenter, 
         });
     }
 
+//    @Override
+//    public void sendCustom(JSONObject text) {
+
+//    }
+
+//    @Override
+//    public void sendQuestion(String content) {
+
+//    }
+
     @Override
     public void onLoginReturn() {
-    }
-
-    @Override
-    public void signIn(String signId) {
-    }
-
-    private class DocCallback implements WatchPlayback.DocumentEventCallback {
-
-        @Override
-        public void onEvent(String key, List<MessageServer.MsgInfo> msgInfos) {
-            if (msgInfos != null && msgInfos.size() > 0) {
-                documentView.paintPPT(key, msgInfos);
-                documentView.paintBoard(key, msgInfos);
-            }
-        }
-
-        @Override
-        public void onEvent(MessageServer.MsgInfo msgInfo) {
-            documentView.paintPPT(msgInfo);
-            documentView.paintBoard(msgInfo);
-        }
-    }
-
-    private class WatchCallback implements WatchPlayback.WatchEventCallback {
-        @Override
-        public void onVhallPlayerStatue(boolean playWhenReady, int playbackState) {//播放过程中的状态信息
-            switch (playbackState) {
-                case VHallPlayer.STATE_IDLE:
-//                    Log.e(TAG, "STATE_IDLE");
-                    break;
-                case VHallPlayer.STATE_PREPARING:
-//                    Log.e(TAG, "STATE_PREPARING");
-                    fragment.updateViewState(MyControlView.PlayState.Playing);
-                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
-//                    playbackView.setPlayIcon(false);
-//                    documentFragment.setPlayIcon(false);
-                    playbackView.showProgressbar(true);
-//                    documentFragment.showProgressbar(true);
-                    break;
-                case VHallPlayer.STATE_BUFFERING:
-//                    Log.e(TAG, "STATE_BUFFERING");
-                    playbackView.showProgressbar(true);
-//                    documentFragment.showProgressbar(true);
-                    break;
-                case VHallPlayer.STATE_READY:
-                    playbackView.showProgressbar(false);
-//                    documentFragment.showProgressbar(false);
-                    documentFragment.playerDuration = getWatchPlayback().getDuration();
-                    long playerDuration = getWatchPlayback().getDuration();
-                    documentFragment.playerDurationTimeStr = VhallUtil.converLongTimeToStr(playerDuration);
-                    playerDurationTimeStr = VhallUtil.converLongTimeToStr(playerDuration);
-                    documentFragment.setSeekbarMax((int) documentFragment.playerDuration);
-                    playbackView.setSeekbarMax((int) playerDuration);
-                    if (playWhenReady) {
-//                        playbackView.setPlayIcon(false);
-                        fragment.updateViewState(MyControlView.PlayState.Playing);
-                        documentFragment.updateViewState(MyControlView.PlayState.Playing);
-//                        documentFragment.setPlayIcon(false);
-                    } else {
-                        fragment.updateViewState(MyControlView.PlayState.Idle);
-                        documentFragment.updateViewState(MyControlView.PlayState.Idle);
-//                        playbackView.setPlayIcon(true);
-//                        documentFragment.setPlayIcon(true);
-                    }
-//                    Log.e(TAG, "STATE_READY");
-                    break;
-                case VHallPlayer.STATE_ENDED:
-                    playbackView.showProgressbar(false);
-//                    documentFragment.showProgressbar(false);
-//                    Log.e(TAG, "STATE_ENDED");
-                    playerCurrentPosition = 0;
-                    documentFragment.playerCurrentPosition = 0;
-                    getWatchPlayback().stop();
-                    fragment.updateViewState(MyControlView.PlayState.Paused);
-                    documentFragment.updateViewState(MyControlView.PlayState.Paused);
-//                    playbackView.setPlayIcon(true);
-//                    documentFragment.setPlayIcon(true);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void uploadSpeed(String kbps) {
-        }
-
-        @Override
-        public void onError(int errorCode, String errorMeg) {//播放出错
-            playbackView.showProgressbar(false);
-            fragment.updateViewState(MyControlView.PlayState.Paused);
-            documentFragment.updateViewState(MyControlView.PlayState.Paused);
-            Toast.makeText(watchView.getActivity(), "播放出错", Toast.LENGTH_SHORT).show();
-//            playbackView.setPlayIcon(true);
-//            documentFragment.showProgressbar(false);
-//            documentFragment.setPlayIcon(true);
-//            watchView.showToast("播放出错");
-        }
-
-        @Override
-        public void onStateChanged(int stateCode) {
-            switch (stateCode) {
-                case Watch.STATE_CHANGE_DEFINITION:
-//                    String dpi = watchPlayback.getCurrentDPI();
-                    break;
-            }
-        }
-
-        @Override
-        public void videoInfo(int width, int height) {//视频宽高改变
-        }
 
     }
 
+//    @Override
+//    public void showSurvey(String url,String title) {
 
+//    }
+
+//    @Override
+//    public void showSurvey(String surveyid) {
+
+//    }
 }

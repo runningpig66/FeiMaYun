@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,9 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 
     public final int RequestLogin = 0;
     ListView lv_chat;
-    List<ChatServer.ChatInfo> chatData = new ArrayList<>();
+    //    List<ChatServer.ChatInfo> chatData = new ArrayList<>();
+    List<MessageChatData> chatInfoList = new ArrayList<>();
+    List<ChatServer.ChatInfo> questionData = new ArrayList<ChatServer.ChatInfo>();
     ChatAdapter chatAdapter = new ChatAdapter();
     //    QuestionAdapter questionAdapter = new QuestionAdapter();
     boolean isquestion = false;
@@ -166,34 +170,16 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 //        }
     }
 
-    @Override
-    public void notifyDataChanged(final ChatServer.ChatInfo data) {
-//        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
-//            mActivity.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (chatData.size() > 30) {
-//                        chatAdapter.notifyDataSetInvalidated();
-//                        chatData.remove(0);
-//                        chatData.add(data);
-//                    } else {
-//                        chatAdapter.notifyDataSetInvalidated();
-//                        chatData.add(data);
-//                    }
-//                    if (isquestion) {
-////            questionAdapter.notifyDataSetChanged();
-//                    } else {
-//                        chatAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//            });
-//        }
+    private static final String TAG = "ChatFragment";
 
+    @Override
+    public void notifyDataChangedChat(MessageChatData data) {
+        Log.d(TAG, "notifyDataChangedChat: 1");
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
             if (isVisiable) {
-                if (chatData.size() > 10)
-                    chatData.remove(0);
-                chatData.add(data);
+                if (chatInfoList.size() > 10)
+                    chatInfoList.remove(0);
+                chatInfoList.add(data);
                 if (!isquestion) {
                     chatAdapter.notifyDataSetChanged();
 //            questionAdapter.notifyDataSetChanged();
@@ -206,31 +192,30 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
     }
 
     @Override
-    public void notifyDataChanged(final int type, final List<ChatServer.ChatInfo> list) {
-//        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
-//            mActivity.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    chatAdapter.notifyDataSetInvalidated();
-//                    chatData.addAll(list);
-//                    if (type == CHAT_EVENT_CHAT) {
-//                        chatAdapter.notifyDataSetChanged();
-//                    }
-//            questionAdapter.notifyDataSetChanged();
-//                }
-//            });
-//        }
-        if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
-            if (isVisiable) {
-                chatData.addAll(list);
-                if (type == CHAT_EVENT_CHAT) {
-                    chatAdapter.notifyDataSetChanged();
-                }
-//            else
-//            questionAdapter.notifyDataSetChanged();
-            }
-        }
+    public void notifyDataChangedChat(int type, List<MessageChatData> list) {
+        Log.d(TAG, "notifyDataChangedChat: 2");
+        chatInfoList.addAll(list);
+        chatAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void notifyDataChangedQe(ChatServer.ChatInfo data) {
+//        if (questionData.size() > 10) {
+//            questionData.remove(0);
+//        }
+//        questionData.add(data);
+//        questionAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataChangedQe(int type, List<ChatServer.ChatInfo> list) {
+//        if (questionData.size() > 10) {
+//            questionData.remove(0);
+//        }
+//        questionData.addAll(list);
+//        questionAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public void showToast(String content) {
@@ -240,9 +225,11 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 
     @Override
     public void clearChatData() {
-        if (chatData != null) {
-            chatData.clear();
-            chatAdapter.notifyDataSetChanged();
+        if (questionData != null) {
+            questionData.clear();
+        }
+        if (chatInfoList != null) {
+            chatInfoList.clear();
         }
     }
 
@@ -289,8 +276,8 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (chatData != null) {
-            chatData.clear();
+        if (chatInfoList != null) {
+            chatInfoList.clear();
             chatAdapter.notifyDataSetChanged();
         }
     }
@@ -397,7 +384,7 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 //        TextView tv_answer_name;
 //    }
 
-//    class TestRunnable implements Runnable {
+    //    class TestRunnable implements Runnable {
 //
 //        @Override
 //        public void run() {
@@ -411,31 +398,33 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 //            }
 //        }
 //    }
+    public static final int CHAT_NORMAL = 0x00;
+    public static final int CHAT_SURVEY = 0x01;
 
     class ChatAdapter extends BaseAdapter {
 
-//        @Override
-//        public int getItemViewType(int position) {
-//            if ("survey".equals(chatData.get(position).event)) {
-//                return CHAT_SURVEY;
-//            } else {
-//                return CHAT_NORMAL;
-//            }
-//        }
+        @Override
+        public int getItemViewType(int position) {
+            if ("survey".equals(chatInfoList.get(position).event)) {
+                return CHAT_SURVEY;
+            } else {
+                return CHAT_NORMAL;
+            }
+        }
 
-//        @Override
-//        public int getViewTypeCount() {
-//            return 2;
-//        }
+        @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
 
         @Override
         public int getCount() {
-            return chatData == null ? 0 : chatData.size();
+            return chatInfoList.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return chatData.get(position);
+            return chatInfoList.get(position);
         }
 
         @Override
@@ -446,52 +435,65 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
-//            ChatSurveyHolder surveyHolder;
-            final ChatServer.ChatInfo data = chatData.get(position);
-//            switch (getItemViewType(position)) {
-//                case CHAT_NORMAL:
-            if (convertView == null) {
-                convertView = View.inflate(getActivity(), R.layout.vhall_chat_item, null);
-                viewHolder = new ViewHolder();
-                viewHolder.iv_chat_avatar = convertView.findViewById(R.id.iv_chat_avatar);
-                viewHolder.tv_chat_content = convertView.findViewById(R.id.tv_chat_content);
-                viewHolder.tv_chat_name = convertView.findViewById(R.id.tv_chat_name);
-                viewHolder.tv_chat_time = convertView.findViewById(R.id.tv_chat_time);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
+            ChatSurveyHolder surveyHolder;
+            final MessageChatData data = chatInfoList.get(position);
+            switch (getItemViewType(position)) {
+                case CHAT_NORMAL:
+                    if (convertView == null) {
+                        convertView = View.inflate(getActivity(), R.layout.vhall_chat_item, null);
+                        viewHolder = new ViewHolder();
+                        viewHolder.iv_chat_avatar = (ImageView) convertView.findViewById(R.id.iv_chat_avatar);
+                        viewHolder.tv_chat_content = (TextView) convertView.findViewById(R.id.tv_chat_content);
+                        viewHolder.tv_chat_name = (TextView) convertView.findViewById(R.id.tv_chat_name);
+                        viewHolder.tv_chat_time = (TextView) convertView.findViewById(R.id.tv_chat_time);
+                        convertView.setTag(viewHolder);
+                    } else {
+                        viewHolder = (ViewHolder) convertView.getTag();
+                    }
 
-            RequestOptions options = new RequestOptions()
-                    .fitCenter()
-                    .placeholder(R.drawable.live_userimg);
-            if (Util.isOnMainThread()) {
-                Glide.with(MyApplication.context).load(data.avatar).apply(options).into(viewHolder.iv_chat_avatar);
-            }
-
-            switch (data.event) {
-                case ChatServer.eventMsgKey:
-                    viewHolder.tv_chat_content.setVisibility(View.VISIBLE);
-                    viewHolder.tv_chat_content.setText(EmojiUtils.getEmojiText(mActivity, data.msgData.text), TextView.BufferType.SPANNABLE);
-                    viewHolder.tv_chat_name.setText(data.user_name);
+                    String avatar = data.getAvatar();
+                    if (!TextUtils.isEmpty(avatar) && !avatar.startsWith("http")) {
+                        avatar = String.format("http:%s", avatar);
+                    }
+                    RequestOptions options = new RequestOptions()
+                            .fitCenter()
+                            .placeholder(R.drawable.live_userimg);
+                    if (Util.isOnMainThread()) {
+                        Glide.with(MyApplication.context).load(avatar).apply(options).into(viewHolder.iv_chat_avatar);
+                    }
+                    switch (data.event) {
+                        case MessageChatData.eventMsgKey:
+                            if (data.getType().equals("image")) {
+                                if (!TextUtils.isEmpty(data.getImage_url())) {
+                                    viewHolder.tv_chat_content.setText(String.format("收到图片---%s", data.getImage_url()));
+                                } else if (data.getImage_urls() != null) {
+                                    viewHolder.tv_chat_content.setText(String.format("收到%d张图片", data.getImage_urls().size()));
+                                }
+                            } else {
+                                viewHolder.tv_chat_content.setText(EmojiUtils.getEmojiText(mActivity, data.getText_content()), TextView.BufferType.SPANNABLE);
+                            }
+                            viewHolder.tv_chat_content.setVisibility(View.VISIBLE);
+                            viewHolder.tv_chat_name.setText(data.getNickname());
+                            break;
+                        case MessageChatData.eventCustomKey:
+                            viewHolder.tv_chat_content.setVisibility(View.VISIBLE);
+                            viewHolder.tv_chat_content.setText(EmojiUtils.getEmojiText(mActivity, data.getText_content()), TextView.BufferType.SPANNABLE);
+                            viewHolder.tv_chat_name.setText(data.getNickname());
+                            break;
+                        case MessageChatData.eventOnlineKey:
+                            viewHolder.tv_chat_name.setText(String.format("%s上线了！", data.getNickname()));
+                            viewHolder.tv_chat_content.setVisibility(View.INVISIBLE);
+                            break;
+                        case MessageChatData.eventOfflineKey:
+                            viewHolder.tv_chat_name.setText(String.format("%s下线了！", data.getNickname()));
+                            viewHolder.tv_chat_content.setVisibility(View.INVISIBLE);
+                            break;
+                        default:
+                            break;
+                    }
+                    viewHolder.tv_chat_time.setText(data.getTime());
                     break;
-                case ChatServer.eventCustomKey:
-                    viewHolder.tv_chat_content.setVisibility(View.VISIBLE);
-                    viewHolder.tv_chat_content.setText(EmojiUtils.getEmojiText(mActivity, data.msgData.text), TextView.BufferType.SPANNABLE);
-                    viewHolder.tv_chat_name.setText(data.user_name);
-                    break;
-//                        case ChatServer.eventOnlineKey:
-//                            viewHolder.tv_chat_name.setText(data.user_name + "上线了！");
-//                            viewHolder.tv_chat_content.setVisibility(View.INVISIBLE);
-//                            break;
-//                        case ChatServer.eventOfflineKey:
-//                            viewHolder.tv_chat_name.setText(data.user_name + "下线了！");
-//                            viewHolder.tv_chat_content.setVisibility(View.INVISIBLE);
-//                            break;
-            }
-            viewHolder.tv_chat_time.setText(data.time);
-//                    break;
-//                case CHAT_SURVEY:
+                case CHAT_SURVEY:
 //                    if (convertView == null) {
 //                        convertView = View.inflate(getActivity(), R.layout.chat_item_survey, null);
 //                        surveyHolder = new ChatSurveyHolder();
@@ -503,13 +505,23 @@ public class ChatFragment extends Fragment implements ChatContract.ChatView {
 //                    surveyHolder.tv_join.setOnClickListener(new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {
-//                            mPresenter.showSurvey(data.id);
+//                            if (TextUtils.isEmpty(data.getUrl())) {
+//                                mPresenter.showSurvey(data.getId());
+//                            } else {
+//                                mPresenter.showSurvey(data.getUrl(), "");
+//                            }
 //                        }
 //                    });
-//                    break;
-//            }
+                    break;
+                default:
+                    break;
+            }
             return convertView;
         }
+    }
+
+    static class ChatSurveyHolder {
+        TextView tv_join;
     }
 }
 

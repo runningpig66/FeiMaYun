@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,10 +231,29 @@ public class WatchLeftFragment extends Fragment implements View.OnClickListener 
         int type = activity.getType();
         if (type == VhallUtil.WATCH_LIVE) {
             WatchLivePresenter mPresenter = activity.getWatchLivePresenter();
-            mPresenter.initWatch();
+            WatchLivePresenterVss mPresenterVss = activity.getWatchLivePresenterVss();
+            if (mPresenter != null) {
+                Log.d("test20200311", "hadBuy: mPresenter != null");
+                mPresenter.initWatch();
+            } else if (mPresenterVss != null) {
+                mPresenterVss.initWatch();
+                Log.d("test20200311", "hadBuy: mPresenterVss != null");
+            } else {
+                Log.d("test20200311", "hadBuy: mPresenter & mPresenterVss == null");
+            }
         } else if (type == VhallUtil.WATCH_PLAYBACK) {
             WatchPlaybackPresenter presenterPlackback = activity.getPlaybackPresenter();
-            presenterPlackback.initWatch();
+            WatchPlaybackPresenterVss presenterPlackbackVss = activity.getPlaybackPresenterVss();
+            if (presenterPlackback != null) {
+                presenterPlackback.initWatch();
+                Log.d("test20200311", "hadBuy: presenterPlackback != null");
+            } else if (presenterPlackbackVss != null) {
+                presenterPlackbackVss.initWatch();
+                Log.d("test20200311", "hadBuy: presenterPlackbackVss != null");
+
+            } else {
+                Log.d("test20200311", "hadBuy: presenterPlackback & presenterPlackbackVss == null");
+            }
         }
     }
 

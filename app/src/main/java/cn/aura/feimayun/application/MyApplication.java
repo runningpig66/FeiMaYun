@@ -21,7 +21,7 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
-import com.vhall.vhalllive.pushlive.CameraFilterView;
+import com.vhall.push.VHLivePushFormat;
 import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumConfig;
 import com.yanzhenjie.album.AlbumFile;
@@ -157,7 +157,7 @@ public class MyApplication extends Application {
 
             param.broId = sp.getString("broid", "");
             param.broToken = sp.getString("brotoken", "");
-            param.pixel_type = sp.getInt("pixeltype", CameraFilterView.TYPE_HDPI);
+            param.pixel_type = sp.getInt("pixeltype", VHLivePushFormat.PUSH_MODE_HD);
             param.videoBitrate = sp.getInt("videobitrate", 500);
             param.videoFrameRate = sp.getInt("videoframerate", 15);
 

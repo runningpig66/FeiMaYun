@@ -3,6 +3,7 @@ package cn.aura.feimayun.vhall.watch;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -14,6 +15,7 @@ import android.provider.Settings.System;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -28,7 +30,6 @@ import com.aliyun.vodplayerview.view.gesture.GestureView;
 import com.aliyun.vodplayerview.view.interfaces.ViewAction;
 import com.aliyun.vodplayerview.widget.AliyunScreenMode;
 import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
-import com.vhall.business.widget.ContainerLayout;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.application.MyApplication;
@@ -37,11 +38,13 @@ import cn.aura.feimayun.view.MyControlView;
 import static android.view.View.VISIBLE;
 
 /**
- * 观看回放的Fragment HAVE DONE
+ * 观看回放的Fragment
  */
-public class WatchPlaybackFragment extends Fragment implements WatchContract.PlaybackView {
+public class WatchPlaybackFragment extends Fragment
+        implements WatchContract.PlaybackView {
     WatchContract.PlaybackPresenter mPresenter;
-    ContainerLayout rl_video_container;//视频区容器
+    //    ContainerLayout rl_video_container;//视频区容器
+    SurfaceView surface_view;//视频区容器
     ProgressBar pb;
     WatchActivity mContext;
     //用AudioManager获取音频焦点避免音视频声音并发问题
@@ -147,12 +150,19 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.vhall_watch_playback_fragment, container, false);
-        rl_video_container = view.findViewById(R.id.rl_video_container);
+//        rl_video_container = view.findViewById(R.id.rl_video_container);
+        surface_view = view.findViewById(R.id.surface_view);
+        //把输送给surfaceView的视频画面，直接显示到屏幕上,不要维持它自身的缓冲区
         pb = view.findViewById(R.id.pb);
-        root = view.findViewById(R.id.root);
+        root = view.findViewById(R.id.root1);
         initVideoView();
         myControlView.hide(ViewAction.HideType.Normal);
         return view;
+    }
+
+    @Override
+    public SurfaceView getVideoView() {
+        return surface_view;
     }
 
     /**
@@ -190,13 +200,13 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
 
                 //水平滑动调节seek。
                 // seek需要在手势结束时操作。
-                long duration = mPresenter.getWatchPlayback().getDuration();
-                long position = mPresenter.getWatchPlayback().getCurrentPosition();
+                long duration = mPresenter.getDurationCustom();
+                long position = mPresenter.getCurrentPositionCustom();
                 long deltaPosition = 0;
 
 //                if () {
                 //在播放时才能调整大小
-                deltaPosition = (long) (nowX - downX) * duration / rl_video_container.getWidth();
+                deltaPosition = (long) (nowX - downX) * duration / surface_view.getWidth();
 //                }
 
                 if (mGestureDialogManager != null) {
@@ -208,7 +218,7 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
             @Override
             public void onLeftVerticalDistance(float downY, float nowY) {
                 //左侧上下滑动调节亮度
-                int changePercent = (int) ((nowY - downY) * 100 / rl_video_container.getHeight());
+                int changePercent = (int) ((nowY - downY) * 100 / surface_view.getHeight());
 
                 if (mGestureDialogManager != null) {
                     mGestureDialogManager.showBrightnessDialog(root);
@@ -220,7 +230,7 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
             @Override
             public void onRightVerticalDistance(float downY, float nowY) {
                 //右侧上下滑动调节音量
-                int changePercent = (int) ((nowY - downY) * 100 / rl_video_container.getHeight());
+                int changePercent = (int) ((nowY - downY) * 100 / surface_view.getHeight());
                 int volume = getVolume();
 
                 if (mGestureDialogManager != null) {
@@ -239,8 +249,8 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
                     mGestureDialogManager.dismissVolumeDialog();
 
                     int seekPosition = mGestureDialogManager.dismissSeekDialog();
-                    if (seekPosition >= mPresenter.getWatchPlayback().getDuration()) {
-                        seekPosition = (int) (mPresenter.getWatchPlayback().getDuration() - 1000);
+                    if (seekPosition >= mPresenter.getDurationCustom()) {
+                        seekPosition = (int) (mPresenter.getDurationCustom() - 1000);
                     }
 
                     if (seekPosition >= 0) {
@@ -394,11 +404,6 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
     }
 
     @Override
-    public ContainerLayout getContainer() {
-        return rl_video_container;
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         isVisible = false;
@@ -454,6 +459,11 @@ public class WatchPlaybackFragment extends Fragment implements WatchContract.Pla
             mPresenter.onPause();
         }
         isVisible = false;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     public void setVisiable(boolean canSee) {

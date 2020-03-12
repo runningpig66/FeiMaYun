@@ -1,5 +1,7 @@
 package cn.aura.feimayun.vhall.chat;
 
+import android.content.Context;
+
 import com.vhall.business.ChatServer;
 
 import java.util.List;
@@ -9,18 +11,24 @@ import cn.aura.feimayun.vhall.BaseView;
 import cn.aura.feimayun.vhall.util.emoji.InputUser;
 
 /**
- * 观看页的接口类 1121
+ * 观看页的接口类
  */
 public class ChatContract {
 
     public interface ChatView extends BaseView<ChatPresenter> {
-        void notifyDataChanged(ChatServer.ChatInfo data);
+        void notifyDataChangedChat(MessageChatData data);
 
-        void notifyDataChanged(int type, List<ChatServer.ChatInfo> list);
+        void notifyDataChangedQe(ChatServer.ChatInfo data);
+
+        void notifyDataChangedChat(int type, List<MessageChatData> list);
+
+        void notifyDataChangedQe(int type, List<ChatServer.ChatInfo> list);
 
         void showToast(String content);
 
         void clearChatData();
+
+        Context getContext();
 
         void performSend(String content, int chatEvent);
     }
@@ -37,11 +45,9 @@ public class ChatContract {
 
         void onLoginReturn();
 
-//        void onFreshData();
+//        void showSurvey(String url, String title);
 
 //        void showSurvey(String surveyid);
-
     }
-
 
 }

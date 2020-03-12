@@ -344,7 +344,7 @@ public class AnalysisActivity extends BaseActivity implements View.OnClickListen
             boolean hasShown = spf.getBoolean("has_shown_analysis", false);
 
             if (!hasShown) {
-                ViewGroup root = getWindow().getDecorView().findViewById(R.id.root);
+                ViewGroup root = getWindow().getDecorView().findViewById(R.id.root1);
                 MyGuideView myGuideView = new MyGuideView(this);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 root.addView(myGuideView, params);

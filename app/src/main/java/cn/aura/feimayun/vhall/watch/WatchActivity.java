@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,10 @@ import android.widget.Toast;
 
 import com.aliyun.vodplayerview.widget.AliyunScreenMode;
 import com.vhall.business.VhallSDK;
+import com.vhall.business.data.WebinarInfo;
+import com.vhall.business.data.source.WebinarInfoDataSource;
+import com.vhall.business.data.source.WebinarInfoRepository;
+import com.vhall.business.data.source.remote.WebinarInfoRemoteDataSource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,10 +65,13 @@ import cn.aura.feimayun.view.ProgressDialog;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static com.vhall.business.VhallSDK.getUserId;
+
 /**
  * 描述：直播活动界面
  */
-public class WatchActivity extends AppCompatActivity implements WatchContract.WatchView,
+public class WatchActivity extends AppCompatActivity
+        implements WatchContract.WatchView,
         EasyPermissions.PermissionCallbacks {
     //TODO EasyPermissions相关
     public final static String[] PERMS_WRITE = {
@@ -71,18 +79,32 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
             Manifest.permission.READ_PHONE_STATE};
     static WatchContract.WatchPresenter mPresenter;
     private static WatchLivePresenter watchLivePresenter;
+
+    public static WatchLivePresenterVss getWatchLivePresenterVss() {
+        return watchLivePresenterVss;
+    }
+
+    private static WatchLivePresenterVss watchLivePresenterVss;
     private static Handler handleDetail;
     private static Handler handlePlay;
     public WatchPlaybackFragment playbackFragment;
     public WatchLiveFragment liveFragment;
     public ChatFragment chatFragment;
+    public DocumentFragmentVss docFragmentvss;
     public DocumentFragment docFragment;
     //    public View activity_live_view;//顶部预留状态栏
     public int chatEvent = ChatFragment.CHAT_EVENT_CHAT;
     InputView inputView;
     private int type = VhallUtil.WATCH_PLAYBACK;//默认是回放
+    private WatchContract.WatchView watchView;
     private String pkid = null;
     private WatchPlaybackPresenter playbackPresenter;
+
+    public WatchPlaybackPresenterVss getPlaybackPresenterVss() {
+        return playbackPresenterVss;
+    }
+
+    private WatchPlaybackPresenterVss playbackPresenterVss;
     //判断两个模块是否一上一下- -用于点击PPT按钮置换碎片
     private boolean onTop = true;
     private MoveFrameLayout contentVideo;//播放器
@@ -292,6 +314,7 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             setContentView(R.layout.activity_live);
 
+            watchView = this;
             //TODO 刘海屏测试
 //            getNotchParams();
             handler();
@@ -315,14 +338,19 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
             contentVideo.setLayoutParams(params1);
             contentVideo.setVisibility(View.VISIBLE);
             //初始化PPT位置
+
             RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
+//            params2.width = ScreenUtils.getHeight(getActivity());
+//            params2.height = ScreenUtils.getWidth(getActivity());
             params2.width = VhallUtil.dp2px(this, 200);
             params2.height = VhallUtil.dp2px(this, 112.5f);
             params2.leftMargin = ScreenUtils.getWidth(this) - params2.width;
             params2.topMargin = 0;
             params2.addRule(RelativeLayout.BELOW, R.id.activity_live_line);
             moveMode.setLayoutParams(params2);
+//            moveMode.setVisibility(View.INVISIBLE);
             moveMode.setVisibility(View.VISIBLE);
+
             activity_live_tabLayout = findViewById(R.id.activity_live_tabLayout);
             activity_live_viewpager = findViewById(R.id.activity_live_viewpager);
             if (EasyPermissions.hasPermissions(this, PERMS_WRITE)) {
@@ -333,7 +361,6 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
             }
         }
     }
-
 
     @TargetApi(28)
     private void getNotchParams() {
@@ -549,63 +576,143 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
         fragmentLeft.setArguments(bundle);
         fragments.add(fragmentLeft);
 
-        //TODO
-        //聊天碎片
         chatFragment = ChatFragment.newInstance(type, false, vhall_account);
-        //PPT碎片
-        docFragment = DocumentFragment.newInstance();
-        docFragment.setTitleString(detailDataMap.get("name"));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        //如果是看直播
-        if (liveFragment == null && type == VhallUtil.WATCH_LIVE) {
-            //直播播放器的布局
-            liveFragment = WatchLiveFragment.newInstance();
-            watchLivePresenter = new WatchLivePresenter(liveFragment, docFragment, chatFragment, this, param, docFragment, vhall_account);
-            liveFragment.setTitleString(detailDataMap.get("name"));
-            transaction.add(R.id.moveMode, liveFragment);
 
-            //直播加载聊天页面
-            inputView = new InputView(this, KeyBoardManager.getKeyboardHeight(this), KeyBoardManager.getKeyboardHeightLandspace(this));
-            inputView.add2Window(this);
-            inputView.setClickCallback(new InputView.ClickCallback() {
-                @Override
-                public void onEmojiClick() {
-                }
-            });
-            inputView.setOnSendClickListener(new InputView.SendMsgClickListener() {
-                @Override
-                public void onSendClick(String msg, InputUser user) {
-                    if (chatFragment != null && chatEvent == ChatFragment.CHAT_EVENT_CHAT) {
-                        chatFragment.performSend(msg, chatEvent);
-                    }
-                }
-            });
-            inputView.setOnHeightReceivedListener(new InputView.KeyboardHeightListener() {
-                @Override
-                public void onHeightReceived(int screenOri, int height) {
-                    if (screenOri == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                        KeyBoardManager.setKeyboardHeight(WatchActivity.this, height);
+        initWatch(param, new WebinarInfoDataSource.LoadWebinarInfoCallback() {
+            @Override
+            public void onWebinarInfoLoaded(String s, WebinarInfo webinarInfo) {
+                if (liveFragment == null && type == VhallUtil.WATCH_LIVE) {
+                    //聊天碎片，直播展示
+                    fragments.add(chatFragment);
+
+                    //直播播放器的布局
+                    param.webinar_id = webinarInfo.webinar_id;
+                    if (!TextUtils.isEmpty(webinarInfo.vss_room_id) && !TextUtils.isEmpty(webinarInfo.vss_token)) {
+                        param.vssRoomId = webinarInfo.vss_room_id;
+                        param.vssToken = webinarInfo.vss_token;
+                        param.join_id = webinarInfo.join_id;
+                        if (docFragmentvss == null) {
+                            docFragmentvss = DocumentFragmentVss.newInstance();
+                            docFragmentvss.setTitleString(detailDataMap.get("name"));
+                            transaction.add(R.id.contentVideo, docFragment);
+                        }
+                        if (webinarInfo.notice != null && !TextUtils.isEmpty(webinarInfo.notice.content)) {
+                            param.noticeContent = webinarInfo.notice.content;
+                        }
+                        liveFragment = WatchLiveFragment.newInstance();
+                        liveFragment.setTitleString(detailDataMap.get("name"));
+                        watchLivePresenterVss = new WatchLivePresenterVss(liveFragment, docFragmentvss, chatFragment, watchView, param, docFragmentvss, vhall_account);
+
+                        transaction.add(R.id.moveMode, liveFragment);
+                        transaction.commitAllowingStateLoss();
+
+                        Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
+                        activity_live_viewpager.setAdapter(adapter);
+                        activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
                     } else {
-                        KeyBoardManager.setKeyboardHeightLandspace(WatchActivity.this, height);
+                        //flash方式直播：旧直播方式
+                        if (docFragment == null) {
+                            docFragment = DocumentFragment.newInstance();
+                            docFragment.setTitleString(detailDataMap.get("name"));
+                            transaction.add(R.id.contentVideo, docFragment);
+                        }
+                        liveFragment = WatchLiveFragment.newInstance();
+                        liveFragment.setTitleString(detailDataMap.get("name"));
+                        watchLivePresenter = new WatchLivePresenter(liveFragment, docFragment, chatFragment, watchView, param, docFragment, vhall_account);
+
+                        transaction.add(R.id.moveMode, liveFragment);
+                        transaction.commitAllowingStateLoss();
+
+                        Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
+                        activity_live_viewpager.setAdapter(adapter);
+                        activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+                    }
+                    //直播加载聊天页面
+                    inputView = new InputView(WatchActivity.this, KeyBoardManager.getKeyboardHeight(WatchActivity.this), KeyBoardManager.getKeyboardHeightLandspace(WatchActivity.this));
+                    inputView.add2Window(WatchActivity.this);
+                    inputView.setClickCallback(new InputView.ClickCallback() {
+                        @Override
+                        public void onEmojiClick() {
+                        }
+                    });
+                    inputView.setOnSendClickListener(new InputView.SendMsgClickListener() {
+                        @Override
+                        public void onSendClick(String msg, InputUser user) {
+                            if (chatFragment != null && chatEvent == ChatFragment.CHAT_EVENT_CHAT) {
+                                chatFragment.performSend(msg, chatEvent);
+                            }
+                        }
+                    });
+                    inputView.setOnHeightReceivedListener(new InputView.KeyboardHeightListener() {
+                        @Override
+                        public void onHeightReceived(int screenOri, int height) {
+                            if (screenOri == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                                KeyBoardManager.setKeyboardHeight(WatchActivity.this, height);
+                            } else {
+                                KeyBoardManager.setKeyboardHeightLandspace(WatchActivity.this, height);
+                            }
+                        }
+                    });
+                } else if (playbackFragment == null && type == VhallUtil.WATCH_PLAYBACK) { //如果是看回放
+                    //回放播放器的布局
+                    if (webinarInfo != null && !TextUtils.isEmpty(webinarInfo.vss_room_id) &&
+                            !TextUtils.isEmpty(webinarInfo.vss_token)) {
+                        param.vssRoomId = webinarInfo.vss_room_id;
+                        param.vssToken = webinarInfo.vss_token;
+                        param.join_id = webinarInfo.join_id;
+                        param.webinar_id = webinarInfo.webinar_id;
+                        if (docFragmentvss == null) {
+                            docFragmentvss = DocumentFragmentVss.newInstance();
+                            docFragmentvss.setTitleString(detailDataMap.get("name"));
+                            transaction.add(R.id.contentVideo, docFragment);
+                        }
+                        if (webinarInfo.notice != null && !TextUtils.isEmpty(webinarInfo.notice.content)) {
+                            param.noticeContent = webinarInfo.notice.content;
+                        }
+                        if (webinarInfo.filters != null && webinarInfo.filters.size() > 0) {
+                            param.filters.clear();
+                            param.filters.addAll(webinarInfo.filters);
+                        }
+                        playbackFragment = WatchPlaybackFragment.newInstance();
+                        playbackFragment.setTitleString(detailDataMap.get("name"));
+                        playbackPresenterVss = new WatchPlaybackPresenterVss(playbackFragment,
+                                docFragmentvss, chatFragment, watchView, param, docFragmentvss);
+
+                        transaction.add(R.id.moveMode, playbackFragment);
+                        transaction.commitAllowingStateLoss();
+
+                        Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
+                        activity_live_viewpager.setAdapter(adapter);
+                        activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+                    } else {
+                        //flash方式看回放：旧回放方式
+                        if (docFragment == null) {
+                            docFragment = DocumentFragment.newInstance();
+                            docFragment.setTitleString(detailDataMap.get("name"));
+                            transaction.add(R.id.contentVideo, docFragment);
+                        }
+                        playbackFragment = WatchPlaybackFragment.newInstance();
+                        playbackFragment.setTitleString(detailDataMap.get("name"));
+                        playbackPresenter = new WatchPlaybackPresenter(playbackFragment, docFragment, chatFragment, watchView, param, docFragment);
+
+                        transaction.add(R.id.moveMode, playbackFragment);
+                        transaction.commitAllowingStateLoss();
+
+                        Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
+                        activity_live_viewpager.setAdapter(adapter);
+                        activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
                     }
                 }
-            });
-            fragments.add(chatFragment);
-        } else if (playbackFragment == null && type == VhallUtil.WATCH_PLAYBACK) { //如果是看回放
-            //回放播放器的布局
-            playbackFragment = WatchPlaybackFragment.newInstance();
-            playbackPresenter = new WatchPlaybackPresenter(playbackFragment, docFragment, chatFragment, this, param, docFragment);
-            playbackFragment.setTitleString(detailDataMap.get("name"));
-            transaction.add(R.id.moveMode, playbackFragment);
-        }
-        transaction.add(R.id.contentVideo, docFragment);
-        transaction.commitAllowingStateLoss();
+            }
 
-        Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
-        activity_live_viewpager.setAdapter(adapter);
-        activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                Log.d("sdfasfsadfasdfsadf", "onError: " + errorMsg);
+            }
+        });
 
         if (progressDialog != null) {
             progressDialog.dismiss();
@@ -613,8 +720,24 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
         }
     }
 
+    public void initWatch(Param params, WebinarInfoDataSource.LoadWebinarInfoCallback callback) {
+        String customeId = Build.BOARD + Build.DEVICE + Build.SERIAL;
+        String customNickname = Build.BRAND + "手机用户";
+        String vhallId = getUserId();
+        if (TextUtils.isEmpty(vhallId) && (TextUtils.isEmpty(customNickname) || TextUtils.isEmpty(customeId))) {
+            callback.onError(-1, "error data");
+            return;
+        }
+        WebinarInfoRepository repository = WebinarInfoRepository.getInstance(WebinarInfoRemoteDataSource.getInstance());
+        repository.getWatchWebinarInfo(params.watchId, customNickname, customeId, params.key, vhallId, "", callback);
+    }
+
     public WatchLivePresenter getWatchLivePresenter() {
         return watchLivePresenter;
+    }
+
+    public void setFirstIntMoveModeSize() {
+        moveMode.setVisibility(View.VISIBLE);
     }
 
     public void setPlace() {
@@ -713,7 +836,6 @@ public class WatchActivity extends AppCompatActivity implements WatchContract.Wa
                 params2.topMargin = 0;
                 params2.rightMargin = 0;
                 moveMode.setLayoutParams(params2);
-
 
             } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 //将视频放上面大图

@@ -41,7 +41,8 @@ import static android.view.View.VISIBLE;
 /**
  * 文档页的Fragment HAVE DONE
  */
-public class DocumentFragment extends Fragment implements WatchContract.DocumentView {
+public class DocumentFragment extends Fragment
+        implements WatchContract.DocumentView {
     public long playerCurrentPosition = 0L; // 当前的进度
     public long playerDuration;
     public String playerDurationTimeStr = "00:00:00";
@@ -89,6 +90,7 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("20200311", "onCreate: ");
         super.onCreate(savedInstanceState);
         mAudioManage = (AudioManager) MyApplication.context.getSystemService(Context.AUDIO_SERVICE);
         if (mAudioManage != null) {
@@ -99,8 +101,9 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("20200311", "onCreateView: ");
         View view = inflater.inflate(R.layout.vhall_document_fragment, container, false);
-        root = view.findViewById(R.id.root);
+        root = view.findViewById(R.id.root1);
         iv_doc = view.findViewById(R.id.iv_doc);
         board = view.findViewById(R.id.board);
         document_textview_marquee = view.findViewById(R.id.document_textview_marquee);
@@ -304,6 +307,7 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
         myControlView.setOnSeekListener(new MyControlView.OnSeekListener() {
             @Override
             public void onSeekEnd(int position) {
+                Log.d("12341234", "onSeekEnd: " + position);
                 watchPlaybackPresenter.onStopTrackingTouch(position);
                 myControlView.setVideoPosition(position);
             }
@@ -364,7 +368,6 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
             } else {
                 mGestureView.show();
             }
-
         }
     }
 
@@ -390,6 +393,27 @@ public class DocumentFragment extends Fragment implements WatchContract.Document
     @Override
     public void paintPPT(String key, List<MessageServer.MsgInfo> msgInfos) {
         iv_doc.setSteps(key, msgInfos);
+    }
+
+    @Override
+    public void showType(int type) {
+        switch (type) {
+            case 0://文档
+                iv_doc.setVisibility(View.VISIBLE);
+                board.setVisibility(View.GONE);
+                board.setShowDoc(true);
+                break;
+            case 1://白板
+                iv_doc.setVisibility(View.VISIBLE);
+                board.setVisibility(View.VISIBLE);
+                board.setShowDoc(true);
+                break;
+            case 2://关闭文档
+                iv_doc.setVisibility(View.GONE);
+                board.setVisibility(View.GONE);
+                board.setShowDoc(false);
+                break;
+        }
     }
 
     @Override

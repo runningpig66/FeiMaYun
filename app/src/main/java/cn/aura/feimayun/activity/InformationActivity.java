@@ -347,7 +347,7 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
 
             inflater = LayoutInflater.from(this);
 
-            root = findViewById(R.id.root);
+            root = findViewById(R.id.root1);
 
             //左上角的返回按钮的布局
             RelativeLayout activity_information_layout2 = findViewById(R.id.activity_information_layout2);

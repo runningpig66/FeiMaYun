@@ -1,10 +1,10 @@
 package cn.aura.feimayun.vhall.watch;
 
 import android.app.Activity;
+import android.view.SurfaceView;
+import android.widget.RelativeLayout;
 
 import com.vhall.business.MessageServer;
-import com.vhall.business.WatchPlayback;
-import com.vhall.business.widget.ContainerLayout;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import cn.aura.feimayun.vhall.util.emoji.InputUser;
 //import com.vhall.business_support.dlna.DeviceDisplay;
 
 /**
- * 观看页的接口类 HAVE DONE
+ * 观看页的接口类
  */
 public class WatchContract {
 
@@ -38,6 +38,8 @@ public class WatchContract {
         void dismissSignIn();
 
         //显示问卷
+//        void showSurvey(String url, String title);
+
 //        void showSurvey(Survey survey);
 
         //隐藏问卷
@@ -55,7 +57,7 @@ public class WatchContract {
         Activity getActivity();
 
         //显示抽奖
-//        void showLottery(final MessageServer.MsgInfo messageInfo);
+//        void showLottery(MessageLotteryData data);
 
 //        void enterInteractive(); // 进入互动
         // 投屏使用
@@ -64,6 +66,9 @@ public class WatchContract {
         // void dismissDevices();
 
 //        void refreshHand(int second);
+
+        //显示被邀请上麦
+//        void showInvited();
 
     }
 
@@ -76,13 +81,24 @@ public class WatchContract {
         void paintPPT(MessageServer.MsgInfo msgInfo);
 
         void paintPPT(String key, List<MessageServer.MsgInfo> msgInfos);
+
+        void showType(int type);
+    }
+
+    interface DocumentViewVss extends BaseView<BasePresenter> {
+        void refreshView(com.vhall.document.DocumentView view);
+
+        void switchType(String type);
+    }
+
+    interface DetailView extends BaseView<BasePresenter> {
     }
 
     interface LiveView extends BaseView<LivePresenter> {
 
         WatchLiveFragment getLiveFragment();
 
-        ContainerLayout getWatchLayout();
+        RelativeLayout getWatchLayout();
 
 //        void setPlayPicture(boolean state);
 
@@ -100,8 +116,11 @@ public class WatchContract {
 
     }
 
-
     interface PlaybackView extends BaseView<PlaybackPresenter> {
+
+//        void setPlayIcon(boolean isStop);
+
+//        void setProgressLabel(String currentTime, String max);
 
         void setSeekbarMax(int max);
 
@@ -109,12 +128,25 @@ public class WatchContract {
 
         void showProgressbar(boolean show);
 
-        ContainerLayout getContainer();
+        //ContainerLayout getContainer();被替换
+        SurfaceView getVideoView();
+
+//        void setScaleTypeText(int type);
+
+//        void setQuality(List<String> qualities);
+
+//        void setQualityChecked(String dpi);
+
+//        void setPlaySpeedText(String text);
 
     }
 
     interface PlaybackPresenter extends WatchPresenter {
-        WatchPlayback getWatchPlayback();
+//        WatchPlayback getWatchPlayback();
+
+        long getDurationCustom();
+
+        long getCurrentPositionCustom();
 
         void onFragmentDestory();
 
@@ -128,6 +160,7 @@ public class WatchContract {
 
 //        void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser);
 
+        //void onStopTrackingTouch(SeekBar seekBar);
         void onStopTrackingTouch(int position);
 
         int changeScaleType();
@@ -141,6 +174,8 @@ public class WatchContract {
         void onStop();
 
         void onSwitchPixel(String pix);// 切换分辨率
+
+        void setSpeed();
     }
 
     interface LivePresenter extends WatchPresenter {
@@ -153,9 +188,9 @@ public class WatchContract {
 
         void onWatchBtnClick();
 
-        void onSwitchPixel(int pixel);// 切换分辨率
+        void onSwitchPixel(String dpi);// 切换分辨率
 
-        void onMobileSwitchRes(int res);// 切换分辨率
+        void onMobileSwitchRes(String dpi);// 切换分辨率
 
         int setScaleType();
 
@@ -165,7 +200,7 @@ public class WatchContract {
 
         void submitLotteryInfo(String id, String lottery_id, String nickname, String phone);
 
-        int getCurrentPixel();
+        String getCurrentPixel();
 
         int getScaleType();
 
@@ -178,9 +213,13 @@ public class WatchContract {
 
         void signIn(String signId);
 
+//        void submitSurvey(String result);
+
 //        void submitSurvey(Survey survey, String result);
 
 //        void onRaiseHand(); // 举手
+
+//        void replyInvite(int type);
 
         // void dlnaPost(DeviceDisplay deviceDisplay, AndroidUpnpService service);
 

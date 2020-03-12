@@ -48,7 +48,7 @@
         android:id="@+id/moveMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/guanghuanguoji_auto"
+        android:background="#AEE"
         android:visibility="gone" />
-
+<!--    android:background="@drawable/guanghuanguoji_auto"-->
 </RelativeLayout>
