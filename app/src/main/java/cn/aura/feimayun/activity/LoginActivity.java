@@ -68,6 +68,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     //处理登录信息的handler
     private Handler handleLogin;
 
+    TextView user_agreement, privacy_policy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +90,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             activity_login_layout4 = findViewById(R.id.activity_login_layout4);
             root = findViewById(R.id.root1);
 
+            user_agreement = findViewById(R.id.user_agreement);
+            privacy_policy = findViewById(R.id.privacy_policy);
+
+
             activity_login_layout0.setOnClickListener(this);
             activity_login_editText1.setOnClickListener(this);
             activity_login_editText2.setOnClickListener(this);
@@ -96,6 +102,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             activity_login_textView1.setOnClickListener(this);
             activity_login_textView2.setOnClickListener(this);
             activity_login_textview3.setOnClickListener(this);
+            user_agreement.setOnClickListener(this);
+            privacy_policy.setOnClickListener(this);
 
             //获取验证码按钮计数60秒
             int mCount = 60;
@@ -371,6 +379,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     paramsMap.put("phone", phone0);
                     RequestURL.sendPOST("https://app.feimayun.com/Login/msgSend", handleMsg, paramsMap, LoginActivity.this);
                 }
+                break;
+            case R.id.user_agreement:
+                Intent intent1 = new Intent(this, DocActivity.class);
+                intent1.putExtra("type", "a1");
+                startActivity(intent1);
+                break;
+            case R.id.privacy_policy:
+                Intent intent2 = new Intent(this, DocActivity.class);
+                intent2.putExtra("type", "a2");
+                startActivity(intent2);
                 break;
         }
     }

@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,7 +184,6 @@ public class WatchActivity extends AppCompatActivity
             paramsMap2.put("pkid", pkid);
         }
         RequestURL.sendPOST("https://app.feimayun.com/Lesson/play", handlePlay, paramsMap2, WatchActivity.this);
-
         try {
             JSONTokener jsonTokener = new JSONTokener(s);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -297,7 +295,6 @@ public class WatchActivity extends AppCompatActivity
 //                "error":"无权限。",
 //                "show":1
             }
-            //TODO 准备直播
             initView();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -315,7 +312,7 @@ public class WatchActivity extends AppCompatActivity
             setContentView(R.layout.activity_live);
 
             watchView = this;
-            //TODO 刘海屏测试
+            //刘海屏测试
 //            getNotchParams();
             handler();
             Intent intent = getIntent();
@@ -340,8 +337,6 @@ public class WatchActivity extends AppCompatActivity
             //初始化PPT位置
 
             RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
-//            params2.width = ScreenUtils.getHeight(getActivity());
-//            params2.height = ScreenUtils.getWidth(getActivity());
             params2.width = VhallUtil.dp2px(this, 200);
             params2.height = VhallUtil.dp2px(this, 112.5f);
             params2.leftMargin = ScreenUtils.getWidth(this) - params2.width;
@@ -454,7 +449,6 @@ public class WatchActivity extends AppCompatActivity
     private void initData() {
         progressDialog = new ProgressDialog(this);
         progressDialog.show();
-
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("id", data_id);
         paramsMap.put("teach_type", data_teach_type);
@@ -534,11 +528,16 @@ public class WatchActivity extends AppCompatActivity
 //                param = new Param();
 //            }
             param = new Param();
-            if (playDataMap.get("isBuy").equals("1")) {
+            String isBuy = playDataMap.get("isBuy");
+            if (isBuy != null && isBuy.equals("1")) {
                 param.watchId = webinar_id;
             }
 
-            switch (playDataMap.get("liveStatus")) {
+            String liveStatus = playDataMap.get("liveStatus");
+            if (liveStatus == null) {
+                liveStatus = "0";
+            }
+            switch (liveStatus) {
                 case "0":
                     break;
                 case "1"://直播进行中, 参加者可以进入观看直播
@@ -562,7 +561,6 @@ public class WatchActivity extends AppCompatActivity
             param = MyApplication.param;
             type = VhallUtil.WATCH_LIVE;
         }
-
         List<Fragment> fragments = new ArrayList<>();
         //添加展示信息和聊天碎片，准备创建viewpager
         WatchLeftFragment fragmentLeft = new WatchLeftFragment();
@@ -575,19 +573,15 @@ public class WatchActivity extends AppCompatActivity
         bundle.putSerializable("detailTeacherMap", bean2);
         fragmentLeft.setArguments(bundle);
         fragments.add(fragmentLeft);
-
         chatFragment = ChatFragment.newInstance(type, false, vhall_account);
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
         initWatch(param, new WebinarInfoDataSource.LoadWebinarInfoCallback() {
             @Override
             public void onWebinarInfoLoaded(String s, WebinarInfo webinarInfo) {
                 if (liveFragment == null && type == VhallUtil.WATCH_LIVE) {
                     //聊天碎片，直播展示
                     fragments.add(chatFragment);
-
                     //直播播放器的布局
                     param.webinar_id = webinarInfo.webinar_id;
                     if (!TextUtils.isEmpty(webinarInfo.vss_room_id) && !TextUtils.isEmpty(webinarInfo.vss_token)) {
@@ -605,10 +599,8 @@ public class WatchActivity extends AppCompatActivity
                         liveFragment = WatchLiveFragment.newInstance();
                         liveFragment.setTitleString(detailDataMap.get("name"));
                         watchLivePresenterVss = new WatchLivePresenterVss(liveFragment, docFragmentvss, chatFragment, watchView, param, docFragmentvss, vhall_account);
-
                         transaction.add(R.id.moveMode, liveFragment);
                         transaction.commitAllowingStateLoss();
-
                         Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
                         activity_live_viewpager.setAdapter(adapter);
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
@@ -622,10 +614,8 @@ public class WatchActivity extends AppCompatActivity
                         liveFragment = WatchLiveFragment.newInstance();
                         liveFragment.setTitleString(detailDataMap.get("name"));
                         watchLivePresenter = new WatchLivePresenter(liveFragment, docFragment, chatFragment, watchView, param, docFragment, vhall_account);
-
                         transaction.add(R.id.moveMode, liveFragment);
                         transaction.commitAllowingStateLoss();
-
                         Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
                         activity_live_viewpager.setAdapter(adapter);
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
@@ -697,10 +687,8 @@ public class WatchActivity extends AppCompatActivity
                         playbackFragment = WatchPlaybackFragment.newInstance();
                         playbackFragment.setTitleString(detailDataMap.get("name"));
                         playbackPresenter = new WatchPlaybackPresenter(playbackFragment, docFragment, chatFragment, watchView, param, docFragment);
-
                         transaction.add(R.id.moveMode, playbackFragment);
                         transaction.commitAllowingStateLoss();
-
                         Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
                         activity_live_viewpager.setAdapter(adapter);
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
@@ -710,10 +698,69 @@ public class WatchActivity extends AppCompatActivity
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                Log.d("sdfasfsadfasdfsadf", "onError: " + errorMsg);
+                if (liveFragment == null && type == VhallUtil.WATCH_LIVE) {
+                    //聊天碎片，直播展示
+                    fragments.add(chatFragment);
+
+                    //flash方式直播：旧直播方式
+                    if (docFragment == null) {
+                        docFragment = DocumentFragment.newInstance();
+                        docFragment.setTitleString(detailDataMap.get("name"));
+                        transaction.add(R.id.contentVideo, docFragment);
+                    }
+                    liveFragment = WatchLiveFragment.newInstance();
+                    liveFragment.setTitleString(detailDataMap.get("name"));
+                    watchLivePresenter = new WatchLivePresenter(liveFragment, docFragment, chatFragment, watchView, param, docFragment, vhall_account);
+                    transaction.add(R.id.moveMode, liveFragment);
+                    transaction.commitAllowingStateLoss();
+                    Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
+                    activity_live_viewpager.setAdapter(adapter);
+                    activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+
+                    //直播加载聊天页面
+                    inputView = new InputView(WatchActivity.this, KeyBoardManager.getKeyboardHeight(WatchActivity.this), KeyBoardManager.getKeyboardHeightLandspace(WatchActivity.this));
+                    inputView.add2Window(WatchActivity.this);
+                    inputView.setClickCallback(new InputView.ClickCallback() {
+                        @Override
+                        public void onEmojiClick() {
+                        }
+                    });
+                    inputView.setOnSendClickListener(new InputView.SendMsgClickListener() {
+                        @Override
+                        public void onSendClick(String msg, InputUser user) {
+                            if (chatFragment != null && chatEvent == ChatFragment.CHAT_EVENT_CHAT) {
+                                chatFragment.performSend(msg, chatEvent);
+                            }
+                        }
+                    });
+                    inputView.setOnHeightReceivedListener(new InputView.KeyboardHeightListener() {
+                        @Override
+                        public void onHeightReceived(int screenOri, int height) {
+                            if (screenOri == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                                KeyBoardManager.setKeyboardHeight(WatchActivity.this, height);
+                            } else {
+                                KeyBoardManager.setKeyboardHeightLandspace(WatchActivity.this, height);
+                            }
+                        }
+                    });
+                } else if (playbackFragment == null && type == VhallUtil.WATCH_PLAYBACK) {
+                    //flash方式看回放：旧回放方式
+                    if (docFragment == null) {
+                        docFragment = DocumentFragment.newInstance();
+                        docFragment.setTitleString(detailDataMap.get("name"));
+                        transaction.add(R.id.contentVideo, docFragment);
+                    }
+                    playbackFragment = WatchPlaybackFragment.newInstance();
+                    playbackFragment.setTitleString(detailDataMap.get("name"));
+                    playbackPresenter = new WatchPlaybackPresenter(playbackFragment, docFragment, chatFragment, watchView, param, docFragment);
+                    transaction.add(R.id.moveMode, playbackFragment);
+                    transaction.commitAllowingStateLoss();
+                    Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
+                    activity_live_viewpager.setAdapter(adapter);
+                    activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+                }
             }
         });
-
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
@@ -736,10 +783,6 @@ public class WatchActivity extends AppCompatActivity
         return watchLivePresenter;
     }
 
-    public void setFirstIntMoveModeSize() {
-        moveMode.setVisibility(View.VISIBLE);
-    }
-
     public void setPlace() {
         if (onTop) {//如果播放器在上，就放下
             if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {//竖屏
@@ -753,13 +796,11 @@ public class WatchActivity extends AppCompatActivity
                 moveMode.setLayoutParams(params2);
                 moveMode.setCanMove(false);
                 docFragment.setVisiable(false);
-
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
                 params.addRule(RelativeLayout.BELOW, R.id.moveMode);
                 activity_live_line0.setLayoutParams(params);
-
                 //将视频放下面小图
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                 params1.addRule(RelativeLayout.BELOW, R.id.activity_live_line);
@@ -769,7 +810,6 @@ public class WatchActivity extends AppCompatActivity
                 params1.topMargin = 0;
                 params1.rightMargin = 0;
                 contentVideo.setLayoutParams(params1);
-
             } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 //将PPT放上面大图
                 RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
@@ -780,13 +820,11 @@ public class WatchActivity extends AppCompatActivity
                 moveMode.setLayoutParams(params2);
                 moveMode.setCanMove(false);
                 docFragment.setVisiable(false);
-
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
                 params.addRule(RelativeLayout.BELOW, R.id.moveMode);
                 activity_live_line0.setLayoutParams(params);
-
                 //将视频放右上角
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                 params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -798,7 +836,6 @@ public class WatchActivity extends AppCompatActivity
                 params1.rightMargin = 0;
                 contentVideo.setLayoutParams(params1);
             }
-
             contentVideo.bringToFront();
             contentVideo.setCanMove(true);
             if (type == VhallUtil.WATCH_LIVE) {
@@ -820,13 +857,11 @@ public class WatchActivity extends AppCompatActivity
                 params1.height = (int) (ScreenUtils.getWidth(this) * 9.0f / 16);
                 params1.setMargins(0, 0, 0, 0);
                 contentVideo.setLayoutParams(params1);
-
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
                 params.addRule(RelativeLayout.BELOW, R.id.contentVideo);
                 activity_live_line0.setLayoutParams(params);
-
                 //将PPT放下面小图
                 RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
                 params2.addRule(RelativeLayout.BELOW, R.id.activity_live_line);
@@ -836,7 +871,6 @@ public class WatchActivity extends AppCompatActivity
                 params2.topMargin = 0;
                 params2.rightMargin = 0;
                 moveMode.setLayoutParams(params2);
-
             } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 //将视频放上面大图
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
@@ -845,13 +879,11 @@ public class WatchActivity extends AppCompatActivity
                 params1.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 params1.setMargins(0, 0, 0, 0);
                 contentVideo.setLayoutParams(params1);
-
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
                 params.addRule(RelativeLayout.BELOW, R.id.contentVideo);
                 activity_live_line0.setLayoutParams(params);
-
                 //将PPT放下面小图
                 RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
                 params2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -861,7 +893,6 @@ public class WatchActivity extends AppCompatActivity
                 params2.topMargin = 0;
                 params2.rightMargin = 0;
                 moveMode.setLayoutParams(params2);
-
             }
             moveMode.setCanMove(true);
             moveMode.bringToFront();
@@ -1003,7 +1034,6 @@ public class WatchActivity extends AppCompatActivity
                     activity_live_tabLayout.setVisibility(View.GONE);
                     activity_live_line.setVisibility(View.GONE);
                     activity_live_viewpager.setVisibility(View.GONE);
-
                     //初始化播放器位置
                     RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                     params1.removeRule(RelativeLayout.BELOW);
@@ -1012,7 +1042,6 @@ public class WatchActivity extends AppCompatActivity
                     params1.width = ViewGroup.LayoutParams.MATCH_PARENT;
                     params1.setMargins(0, 0, 0, 0);
                     contentVideo.setLayoutParams(params1);
-
                     //初始化PPT位置
                     RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
                     params2.width = VhallUtil.dp2px(this, 200);
@@ -1026,12 +1055,10 @@ public class WatchActivity extends AppCompatActivity
                     moveMode.setLayoutParams(params2);
                     moveMode.bringToFront();
                 } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     View decorView = getWindow().getDecorView();
                     int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
                     decorView.setSystemUiVisibility(uiOptions);
-
 //                    activity_live_view.setVisibility(View.VISIBLE);
                     activity_live_line0.setVisibility(View.VISIBLE);
                     activity_live_tabLayout.setVisibility(View.VISIBLE);
@@ -1047,7 +1074,6 @@ public class WatchActivity extends AppCompatActivity
                             params1.width = ViewGroup.LayoutParams.MATCH_PARENT;
                             params1.setMargins(0, 0, 0, 0);
                             contentVideo.setLayoutParams(params1);
-
                             //初始化PPT位置
                             RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
                             params2.width = VhallUtil.dp2px(getActivity(), 200);
@@ -1067,14 +1093,12 @@ public class WatchActivity extends AppCompatActivity
                 //如果PPT在上方
                 if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     hideBottomUIMenu();
-
                     //隐藏播放器下方布局
 //                    activity_live_view.setVisibility(View.GONE);
                     activity_live_line0.setVisibility(View.GONE);
                     activity_live_tabLayout.setVisibility(View.GONE);
                     activity_live_line.setVisibility(View.GONE);
                     activity_live_viewpager.setVisibility(View.GONE);
-
                     //初始化PPT位置
                     RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
                     params2.removeRule(RelativeLayout.BELOW);
@@ -1083,7 +1107,6 @@ public class WatchActivity extends AppCompatActivity
                     params2.height = ViewGroup.LayoutParams.MATCH_PARENT;
                     params2.setMargins(0, 0, 0, 0);
                     moveMode.setLayoutParams(params2);
-
                     //初始化播放器位置
                     RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                     params1.height = VhallUtil.dp2px(this, 112.5f);
@@ -1100,13 +1123,11 @@ public class WatchActivity extends AppCompatActivity
                     View decorView = getWindow().getDecorView();
                     int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
                     decorView.setSystemUiVisibility(uiOptions);
-
 //                    activity_live_view.setVisibility(View.VISIBLE);
                     activity_live_line0.setVisibility(View.VISIBLE);
                     activity_live_tabLayout.setVisibility(View.VISIBLE);
                     activity_live_line.setVisibility(View.VISIBLE);
                     activity_live_viewpager.setVisibility(View.VISIBLE);
-
                     activity_live_viewpager.post(new Runnable() {
                         @Override
                         public void run() {
@@ -1117,7 +1138,6 @@ public class WatchActivity extends AppCompatActivity
                             params2.height = (int) (ScreenUtils.getWidth(getActivity()) * 9.0f / 16);
                             params2.setMargins(0, 0, 0, 0);
                             moveMode.setLayoutParams(params2);
-
                             //初始化播放器位置
                             RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) contentVideo.getLayoutParams();
                             params1.height = VhallUtil.dp2px(getActivity(), 112.5f);
@@ -1134,7 +1154,6 @@ public class WatchActivity extends AppCompatActivity
                         }
                     });
                 }
-
             }
             if (inputView != null) {
                 inputView.dismiss();

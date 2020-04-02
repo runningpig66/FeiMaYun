@@ -7,11 +7,13 @@
     android:background="#ffffff"
     android:descendantFocusability="beforeDescendants"
     android:focusable="true"
+    android:id="@+id/root"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <!--顶部的状态栏预留-->
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:background="#000000" />

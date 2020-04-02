@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,13 +15,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,6 +63,7 @@ import java.util.Objects;
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.activity.CoursePackageActivity;
 import cn.aura.feimayun.activity.FaceToFaceActivity;
+import cn.aura.feimayun.activity.H5Activity;
 import cn.aura.feimayun.activity.LiveListActivity;
 import cn.aura.feimayun.activity.MainActivity;
 import cn.aura.feimayun.activity.PlayDetailActivity;
@@ -71,6 +77,7 @@ import cn.aura.feimayun.util.RequestURL;
 import cn.aura.feimayun.util.ScreenUtils;
 import cn.aura.feimayun.util.SetHeightUtil;
 import cn.aura.feimayun.util.StaticUtil;
+import cn.aura.feimayun.util.Util;
 import cn.aura.feimayun.vhall.watch.WatchActivity;
 import cn.aura.feimayun.view.GlideImageLoader;
 import cn.aura.feimayun.view.ProgressDialog;
@@ -127,7 +134,6 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
     //小红点布局
     private RelativeLayout notify_relativeLayout;
     private LinearLayout root_linearLayout;
-
 
     @SuppressLint("HandlerLeak")
     public void handler() {
@@ -196,6 +202,29 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
 
     //初始化布局和handler
     public void initView() {
+        //设置CutoutMode
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams params = requireActivity().getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            requireActivity().getWindow().setAttributes(params);
+        }
+        if (Build.VERSION.SDK_INT >= 28) {
+            view.findViewById(R.id.root).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                    if (displayCutout != null) {
+                        int left = displayCutout.getSafeInsetLeft();
+                        int top = displayCutout.getSafeInsetTop();
+                        int right = displayCutout.getSafeInsetRight();
+                        int bottom = displayCutout.getSafeInsetBottom();
+                        view.findViewById(R.id.view).getLayoutParams().height = top;
+                    }
+                    return windowInsets.consumeSystemWindowInsets();
+                }
+            });
+        }
+
         root_linearLayout = view.findViewById(R.id.root_linearLayout);
         notify_relativeLayout = view.findViewById(R.id.notify_relativeLayout);
         notify_relativeLayout.setOnClickListener(new OnClickListener() {
@@ -468,6 +497,8 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 //添加课程列表页面点击事件
                 String data_id = bannerItemMap.get("lid");
                 String data_teach_type = bannerItemMap.get("teach_type");
+                String link_url = bannerItemMap.get("link_url");
+                String jump_type = bannerItemMap.get("jump_type");
                 switch (Integer.parseInt(Objects.requireNonNull(data_teach_type))) {
                     case 1://直播
                         Intent intentLiveActivity = new Intent(mainActivity, WatchActivity.class);
@@ -492,6 +523,13 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                         intentFaceToFaceActivity.putExtra("data_id", data_id);
                         intentFaceToFaceActivity.putExtra("data_teach_type", data_teach_type);
                         startActivity(intentFaceToFaceActivity);
+                        break;
+                    case 0://跳转H5页面
+                        if (jump_type != null && jump_type.equals("10")) {
+                            Intent intent = new Intent(mainActivity, H5Activity.class);
+                            intent.putExtra("link_url", link_url);
+                            startActivity(intent);
+                        }
                         break;
                 }
             }
@@ -572,7 +610,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
 
     //解析后台返回的JSON数据,同时调用本碎片中各个页面加载方法，传入页面所需的数据
     private void parseJson(String jsonData) {
-//        Util.d("061701", jsonData);
+        Util.d("061701", jsonData);
         try {
             JSONTokener jsonTokener = new JSONTokener(jsonData);
             JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
@@ -593,6 +631,8 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                                 Map<String, String> bannerItemMap = new LinkedHashMap<>();
                                 bannerItemMap.put("teach_type", bannerObject.optString("teach_type"));
                                 bannerItemMap.put("lid", bannerObject.optString("lid"));
+                                bannerItemMap.put("jump_type", bannerObject.optString("jump_type"));
+                                bannerItemMap.put("link_url", bannerObject.optString("link_url"));
                                 bannerMapList.add(bannerItemMap);
                             }
                         }

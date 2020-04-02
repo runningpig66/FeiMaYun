@@ -234,7 +234,7 @@ public class WatchPlaybackPresenterVss implements
 
             @Override
             public void onError(int eventCode, String msg) {
-                watchView.showToast(msg);
+//                watchView.showToast(msg);
                 if (eventCode == 20003) {//error param!
 
                 } else {

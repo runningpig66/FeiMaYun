@@ -5,6 +5,7 @@ import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
 import com.vhall.business.MessageServer;
+import com.vhall.player.vod.VodPlayerView;
 
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class WatchContract {
         void showProgressbar(boolean show);
 
         //ContainerLayout getContainer();被替换
-        SurfaceView getVideoView();
+        VodPlayerView getVideoView();
 
 //        void setScaleTypeText(int type);
 

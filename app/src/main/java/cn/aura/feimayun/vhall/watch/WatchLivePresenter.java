@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.vhall.business.ChatServer;
 import com.vhall.business.MessageServer;
@@ -137,7 +136,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 
             @Override
             public void onError(int errorCode, String reason) {
-                chatView.showToast(reason);
+//                chatView.showToast(reason);
             }
         });
     }
@@ -268,6 +267,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 
                 @Override
                 public void onError(int errorCode, String reason) {
+                    watchView.showToast("信息提交失败：" + reason);
                 }
             });
         }
@@ -316,7 +316,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
         VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
             @Override
             public void onSuccess(UserInfo userInfo) {
-                String customId = "";
+                String customId = username;
                 String customNickname = userInfo.nick_name;
                 VhallSDK.initWatch(params.watchId, customId, customNickname, params.key, getWatchLive(), WebinarInfo.LIVE, new RequestCallback() {
                     @Override
@@ -332,9 +332,10 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 
                     @Override
                     public void onError(int errorCode, String msg) {
+//                        watchView.showToast(msg);
                         if (errorCode == 20003) {//error param!
                         } else {
-                            Toast.makeText(watchView.getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            watchView.showToast(msg);
                         }
                     }
                 });
@@ -362,16 +363,17 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 //                getAnswerList();
                         startWatch();//initWatch成功，直接开始播放直播
                         //根据房间信息设置，是否展示文档
-// TODO                       operationDocument();
+//                       operationDocument();
                     }
 
                     @Override
                     public void onError(int errorCode, String msg) {
+//                        watchView.showToast(msg);
                         if (errorCode == 20003) {//error param!
                         } else {
-                            Toast.makeText(watchView.getActivity(), msg, Toast.LENGTH_SHORT).show();
+
                         }
-//                watchView.showToast(msg);
+
                     }
 
                 });
@@ -458,7 +460,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                watchView.showToast(errorMsg);
+//                watchView.showToast(errorMsg);
             }
         });
     }
@@ -601,9 +603,6 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 //                    liveView.setPlayPicture(isWatching);
                     liveFragment.updateViewState(MyControlView.PlayState.Playing);
                     documentFragment.updateViewState(MyControlView.PlayState.Playing);
-                    ((WatchActivity) liveFragment.getActivity()).setPlace();
-                    ((WatchActivity) liveFragment.getActivity()).setPlace();
-                    ((WatchActivity) liveFragment.getActivity()).setFirstIntMoveModeSize();
                     break;
                 case BUFFER:
                     if (isWatching) {
@@ -614,8 +613,8 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
                     isWatching = false;
                     liveView.showLoading(false);
 //                    liveView.setPlayPicture(isWatching);
-                    liveFragment.updateViewState(MyControlView.PlayState.Playing);
-                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
+                    liveFragment.updateViewState(MyControlView.PlayState.Paused);
+                    documentFragment.updateViewState(MyControlView.PlayState.Paused);
                     break;
             }
         }
@@ -659,12 +658,10 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 //                    liveView.setPlayPicture(isWatching);
                     liveFragment.updateViewState(MyControlView.PlayState.Playing);
                     documentFragment.updateViewState(MyControlView.PlayState.Playing);
-                    Toast.makeText(watchView.getActivity(), "连接失败", Toast.LENGTH_SHORT).show();
 //                    documentFragment.setPlayIcon(!isWatching);
-//                    watchView.showToast(errorMsg);
+//                    watchView.showToast(msg);
                     break;
                 default:
-//                    watchView.showToast(errorMsg);
             }
         }
     }
@@ -678,8 +675,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
             Log.e(TAG, "messageInfo " + messageInfo.event);
             switch (messageInfo.event) {
                 case MessageServer.EVENT_DISABLE_CHAT://禁言
-//                    watchView.showToast("您已被禁言");
-                    Toast.makeText(watchView.getActivity(), "您已被禁言", Toast.LENGTH_SHORT).show();
+                    watchView.showToast("您已被禁言");
                     break;
                 case MessageServer.EVENT_KICKOUT://踢出
 //                    watchView.showToast("您已被踢出");
@@ -700,23 +696,19 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
                     mSelfDialog2.show();
                     break;
                 case MessageServer.EVENT_PERMIT_CHAT://解除禁言
-//                    watchView.showToast("您已被解除禁言");
-                    Toast.makeText(watchView.getActivity(), "您已被解除禁言", Toast.LENGTH_SHORT).show();
+                    watchView.showToast("您已被解除禁言");
                     break;
                 case MessageServer.EVENT_CHAT_FORBID_ALL://全员禁言
                     if (messageInfo.status == 0) {
                         //取消全员禁言
-//                        watchView.showToast("解除全员禁言");
-                        Toast.makeText(watchView.getActivity(), "解除全员禁言", Toast.LENGTH_SHORT).show();
+                        watchView.showToast("解除全员禁言");
                     } else {
                         //全员禁言
-//                        watchView.showToast("全员禁言");
-                        Toast.makeText(watchView.getActivity(), "全员禁言中", Toast.LENGTH_SHORT).show();
+                        watchView.showToast("全员禁言");
                     }
                     break;
                 case MessageServer.EVENT_OVER://直播结束
-//                    watchView.showToast("直播已结束");
-                    Toast.makeText(watchView.getActivity(), "直播已结束", Toast.LENGTH_SHORT).show();
+                    watchView.showToast("直播已结束");
 
 //                    final SelfDialog mSelfDialog = new SelfDialog(watchView.getActivity());
 //                    mSelfDialog.setCancelable(true);
@@ -913,19 +905,15 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 //                    liveView.addDanmu(chatInfo.msgData.text);
                     break;
                 case ChatServer.eventCustomKey:
-                    Log.d(TAG, "eventCustomKey: ");
-                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
+//                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
                     break;
                 case ChatServer.eventOnlineKey:
-                    Log.d(TAG, "eventOnlineKey: ");
-                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
+//                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
                     break;
                 case ChatServer.eventOfflineKey:
-                    Log.d(TAG, "eventOfflineKey: ");
-                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
+//                    chatView.notifyDataChangedChat(MessageChatData.getChatData(chatInfo));
                     break;
                 case ChatServer.eventQuestion:
-                    Log.d(TAG, "eventQuestion: ");
 //                    questionView.notifyDataChangedQe(chatInfo);
                     break;
                 default:
@@ -951,7 +939,7 @@ public class WatchLivePresenter implements WatchContract.LivePresenter,
 
             @Override
             public void onFailed(int errorcode, String messaage) {
-//                Log.e(TAG, "onFailed->" + errorcode + ":" + messaage);
+                watchView.showToast(messaage);
             }
         });
     }

@@ -15,7 +15,6 @@ import android.provider.Settings.System;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,6 +29,7 @@ import com.aliyun.vodplayerview.view.gesture.GestureView;
 import com.aliyun.vodplayerview.view.interfaces.ViewAction;
 import com.aliyun.vodplayerview.widget.AliyunScreenMode;
 import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
+import com.vhall.player.vod.VodPlayerView;
 
 import cn.aura.feimayun.R;
 import cn.aura.feimayun.application.MyApplication;
@@ -44,7 +44,7 @@ public class WatchPlaybackFragment extends Fragment
         implements WatchContract.PlaybackView {
     WatchContract.PlaybackPresenter mPresenter;
     //    ContainerLayout rl_video_container;//视频区容器
-    SurfaceView surface_view;//视频区容器
+    VodPlayerView vodplayer_view;//视频区容器
     ProgressBar pb;
     WatchActivity mContext;
     //用AudioManager获取音频焦点避免音视频声音并发问题
@@ -131,7 +131,7 @@ public class WatchPlaybackFragment extends Fragment
         if (this.mContext != null) {
             VcPlayerLog.d("Player", "setScreenBrightness mContext instanceof Activity brightness = " + brightness);
             if (brightness > 0) {
-                Window localWindow = ((Activity) this.mContext).getWindow();
+                Window localWindow = this.mContext.getWindow();
                 WindowManager.LayoutParams localLayoutParams = localWindow.getAttributes();
                 localLayoutParams.screenBrightness = (float) brightness / 100.0F;
                 localWindow.setAttributes(localLayoutParams);
@@ -151,7 +151,7 @@ public class WatchPlaybackFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.vhall_watch_playback_fragment, container, false);
 //        rl_video_container = view.findViewById(R.id.rl_video_container);
-        surface_view = view.findViewById(R.id.surface_view);
+        vodplayer_view = view.findViewById(R.id.surface_view);
         //把输送给surfaceView的视频画面，直接显示到屏幕上,不要维持它自身的缓冲区
         pb = view.findViewById(R.id.pb);
         root = view.findViewById(R.id.root1);
@@ -161,8 +161,8 @@ public class WatchPlaybackFragment extends Fragment
     }
 
     @Override
-    public SurfaceView getVideoView() {
-        return surface_view;
+    public VodPlayerView getVideoView() {
+        return vodplayer_view;
     }
 
     /**
@@ -206,7 +206,7 @@ public class WatchPlaybackFragment extends Fragment
 
 //                if () {
                 //在播放时才能调整大小
-                deltaPosition = (long) (nowX - downX) * duration / surface_view.getWidth();
+                deltaPosition = (long) (nowX - downX) * duration / vodplayer_view.getWidth();
 //                }
 
                 if (mGestureDialogManager != null) {
@@ -218,7 +218,7 @@ public class WatchPlaybackFragment extends Fragment
             @Override
             public void onLeftVerticalDistance(float downY, float nowY) {
                 //左侧上下滑动调节亮度
-                int changePercent = (int) ((nowY - downY) * 100 / surface_view.getHeight());
+                int changePercent = (int) ((nowY - downY) * 100 / vodplayer_view.getHeight());
 
                 if (mGestureDialogManager != null) {
                     mGestureDialogManager.showBrightnessDialog(root);
@@ -230,7 +230,7 @@ public class WatchPlaybackFragment extends Fragment
             @Override
             public void onRightVerticalDistance(float downY, float nowY) {
                 //右侧上下滑动调节音量
-                int changePercent = (int) ((nowY - downY) * 100 / surface_view.getHeight());
+                int changePercent = (int) ((nowY - downY) * 100 / vodplayer_view.getHeight());
                 int volume = getVolume();
 
                 if (mGestureDialogManager != null) {

@@ -60,7 +60,7 @@ public class WatchPlaybackPresenter implements
     //FIT_XY = 0;FIT = 1;FILL= 2;
     int[] scaleTypeList = new int[]{0, 1, 2};
     int currentPos = 0;
-    private int scaleType = 0;//FIT_XY
+    private int scaleType = 1;//FIT_XY
 
     String[] speedStrs = new String[]{"0.25", "0.50", "1.00", "1.25", "1.50", "2.00"};
     int currentSpeed = 2;
@@ -127,6 +127,7 @@ public class WatchPlaybackPresenter implements
     @Override
     public void start() {
 //        playbackView.setScaleTypeText(scaleType);
+        getWatchPlayback().setScaleType(scaleType);
         initWatch();
     }
 
@@ -149,8 +150,8 @@ public class WatchPlaybackPresenter implements
             @Override
             public void onFailed(int errorcode, String message) {
                 loadingComment = false;
-//                Toast.makeText(watchView.getActivity(), message, Toast.LENGTH_SHORT).show();
-//                watchView.showToast(messaage);
+                Log.d(TAG, "onFailed: errorcode: " + errorcode + ", message: " + message);
+//                watchView.showToast(message);
             }
         });
     }
@@ -162,7 +163,7 @@ public class WatchPlaybackPresenter implements
         TelephonyManager telephonyMgr = (TelephonyManager) watchView.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         @SuppressLint("MissingPermission") String customeId = telephonyMgr.getDeviceId();
         if (customeId == null) {
-            customeId = "";
+            customeId = String.valueOf(System.currentTimeMillis());
         }
         String customNickname = Build.BRAND + "手机用户";
         VhallSDK.initWatch(param.watchId, customeId, customNickname, param.key, getWatchPlayback(), WebinarInfo.VIDEO, new RequestCallback() {
@@ -272,7 +273,6 @@ public class WatchPlaybackPresenter implements
             fragment.updateViewState(MyControlView.PlayState.Paused);
             documentFragment.updateViewState(MyControlView.PlayState.Paused);
         }
-
 //        if (getWatchPlayback().isAvaliable()) {
 //            playbackView.setPlayIcon(false);
 //        } else {
@@ -317,7 +317,8 @@ public class WatchPlaybackPresenter implements
             WatchPlayback.Builder builder = new WatchPlayback.Builder()
                     .context(watchView.getActivity())
 //                    .containerLayout(playbackView.getContainer())
-                    .surfaceView(playbackView.getVideoView())
+//                    .surfaceView(playbackView.getVideoView())
+                    .vodPlayView(playbackView.getVideoView())
                     .callback(new WatchCallback())
                     .docCallback(new DocCallback());
             watchPlayback = builder.build();
@@ -444,14 +445,10 @@ public class WatchPlaybackPresenter implements
                     playerDurationTimeStr = VhallUtil.converLongTimeToStr(playerDuration);
                     playbackView.setSeekbarMax((int) playerDuration);
                     documentFragment.setSeekbarMax((int) playerDuration);
-//                    ((WatchActivity) fragment.getActivity()).setPlace();
-//                    ((WatchActivity) fragment.getActivity()).setPlace();
-//                    ((WatchActivity) fragment.getActivity()).setFirstIntMoveModeSize();
                     break;
                 case BUFFER:
                     Log.e(TAG, "STATE_BUFFERING");
                     playbackView.showProgressbar(true);
-
                     break;
                 case STOP:
                     playbackView.showProgressbar(false);
@@ -477,7 +474,6 @@ public class WatchPlaybackPresenter implements
         public void onEvent(int event, String msg) {
             switch (event) {
                 case Constants.Event.EVENT_DPI_LIST:
-
                     break;
                 case Constants.Event.EVENT_DPI_CHANGED:
 //                    playbackView.setQualityChecked(msg);
@@ -487,13 +483,10 @@ public class WatchPlaybackPresenter implements
 
         @Override
         public void onError(int errorCode, int innerErrorCode, String msg) {
-            Log.e(TAG, "errorCode:" + errorCode + "  errorMsg:" + msg);
             switch (errorCode) {
                 case Constants.ErrorCode.ERROR_INIT:
-
                     break;
                 case Constants.ErrorCode.ERROR_INIT_FIRST:
-
                     break;
             }
             playbackView.showProgressbar(false);
@@ -536,7 +529,6 @@ public class WatchPlaybackPresenter implements
 
             @Override
             public void onError(int errorCode, String reason) {
-                Toast.makeText(watchView.getActivity(), reason, Toast.LENGTH_SHORT).show();
 //                watchView.showToast(reason);
             }
         });
