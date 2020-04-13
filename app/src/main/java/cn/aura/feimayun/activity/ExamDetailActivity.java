@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -15,10 +16,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -690,6 +693,29 @@ public class ExamDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
+        //设置CutoutMode
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
+        if (Build.VERSION.SDK_INT >= 28) {
+            findViewById(R.id.root1).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                    if (displayCutout != null) {
+                        int left = displayCutout.getSafeInsetLeft();
+                        int top = displayCutout.getSafeInsetTop();
+                        int right = displayCutout.getSafeInsetRight();
+                        int bottom = displayCutout.getSafeInsetBottom();
+                        findViewById(R.id.view).getLayoutParams().height = top;
+                    }
+                    return windowInsets.consumeSystemWindowInsets();
+                }
+            });
+        }
+
         //左上角返回按钮
         //返回按钮布局
         RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);

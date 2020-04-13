@@ -1,11 +1,15 @@
 package cn.aura.feimayun.activity;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -69,6 +73,29 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_register);
 
         if (MyApplication.APP_STATUS == MyApplication.APP_STATUS_NORMAL) {
+            //设置CutoutMode
+            if (Build.VERSION.SDK_INT >= 28) {
+                WindowManager.LayoutParams params = getWindow().getAttributes();
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                getWindow().setAttributes(params);
+            }
+            if (Build.VERSION.SDK_INT >= 28) {
+                findViewById(R.id.root0).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                    @Override
+                    public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                        DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                        if (displayCutout != null) {
+                            int left = displayCutout.getSafeInsetLeft();
+                            int top = displayCutout.getSafeInsetTop();
+                            int right = displayCutout.getSafeInsetRight();
+                            int bottom = displayCutout.getSafeInsetBottom();
+                            findViewById(R.id.view).getLayoutParams().height = top;
+                        }
+                        return windowInsets.consumeSystemWindowInsets();
+                    }
+                });
+            }
+
             //返回按钮布局
             RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);
             headtitle_layout.setOnClickListener(this);

@@ -2,13 +2,17 @@ package cn.aura.feimayun.activity;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.DisplayCutout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -32,6 +36,30 @@ public class MaiAuthen extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mai_authen);
+
+        //设置CutoutMode
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
+        if (Build.VERSION.SDK_INT >= 28) {
+            findViewById(R.id.root0).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                    if (displayCutout != null) {
+                        int left = displayCutout.getSafeInsetLeft();
+                        int top = displayCutout.getSafeInsetTop();
+                        int right = displayCutout.getSafeInsetRight();
+                        int bottom = displayCutout.getSafeInsetBottom();
+                        findViewById(R.id.view).getLayoutParams().height = top;
+                    }
+                    return windowInsets.consumeSystemWindowInsets();
+                }
+            });
+        }
+
         TextView headtitle_textview = findViewById(R.id.headtitle_textview);
         headtitle_textview.setText("脉脉认证");
         RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);

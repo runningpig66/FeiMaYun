@@ -2,13 +2,17 @@ package cn.aura.feimayun.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.DisplayCutout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -337,6 +341,29 @@ public class PaperListActivity extends BaseActivity implements View.OnClickListe
 
 
     private void initView() {
+        //设置CutoutMode
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
+        if (Build.VERSION.SDK_INT >= 28) {
+            findViewById(R.id.root0).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                    if (displayCutout != null) {
+                        int left = displayCutout.getSafeInsetLeft();
+                        int top = displayCutout.getSafeInsetTop();
+                        int right = displayCutout.getSafeInsetRight();
+                        int bottom = displayCutout.getSafeInsetBottom();
+                        findViewById(R.id.view).getLayoutParams().height = top;
+                    }
+                    return windowInsets.consumeSystemWindowInsets();
+                }
+            });
+        }
+
         activity_paper_list_layout1 = findViewById(R.id.activity_paper_list_layout1);
         activity_paper_list_layout2 = findViewById(R.id.activity_paper_list_layout2);
         activity_paper_list_refreshLayout = findViewById(R.id.activity_paper_list_refreshLayout);

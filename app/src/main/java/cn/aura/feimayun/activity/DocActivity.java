@@ -1,7 +1,11 @@
 package cn.aura.feimayun.activity;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -16,6 +20,29 @@ public class DocActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doc);
+        //设置CutoutMode
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
+        if (Build.VERSION.SDK_INT >= 28) {
+            findViewById(R.id.root).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                    if (displayCutout != null) {
+                        int left = displayCutout.getSafeInsetLeft();
+                        int top = displayCutout.getSafeInsetTop();
+                        int right = displayCutout.getSafeInsetRight();
+                        int bottom = displayCutout.getSafeInsetBottom();
+                        findViewById(R.id.view).getLayoutParams().height = top;
+                    }
+                    return windowInsets.consumeSystemWindowInsets();
+                }
+            });
+        }
+
         TextView headtitle_textview = findViewById(R.id.headtitle_textview);
         RelativeLayout headtitle_layout = findViewById(R.id.headtitle_layout);
         headtitle_layout.setOnClickListener(new OnClickListener() {

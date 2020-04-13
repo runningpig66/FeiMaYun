@@ -24,9 +24,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -344,6 +347,29 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             String real_name = intent.getStringExtra("real_name");
             String phone = intent.getStringExtra("phone");
             String avater = intent.getStringExtra("avater");
+
+            //设置CutoutMode
+            if (Build.VERSION.SDK_INT >= 28) {
+                WindowManager.LayoutParams params = getWindow().getAttributes();
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                getWindow().setAttributes(params);
+            }
+            if (Build.VERSION.SDK_INT >= 28) {
+                findViewById(R.id.root1).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                    @Override
+                    public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                        DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                        if (displayCutout != null) {
+                            int left = displayCutout.getSafeInsetLeft();
+                            int top = displayCutout.getSafeInsetTop();
+                            int right = displayCutout.getSafeInsetRight();
+                            int bottom = displayCutout.getSafeInsetBottom();
+                            findViewById(R.id.activity_information_view).getLayoutParams().height = top;
+                        }
+                        return windowInsets.consumeSystemWindowInsets();
+                    }
+                });
+            }
 
             inflater = LayoutInflater.from(this);
 

@@ -19,9 +19,11 @@ import android.support.v4.view.ViewPager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.DisplayCutout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -422,6 +424,29 @@ public class PlayDetailActivity extends BaseActivity implements EasyPermissions.
             data_teach_type = intent.getStringExtra("data_teach_type");
             pkid = intent.getStringExtra("pkid");
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+            //设置CutoutMode
+            if (Build.VERSION.SDK_INT >= 28) {
+                WindowManager.LayoutParams params = getWindow().getAttributes();
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                getWindow().setAttributes(params);
+            }
+            if (Build.VERSION.SDK_INT >= 28) {
+                findViewById(R.id.root0).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                    @Override
+                    public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                        DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                        if (displayCutout != null) {
+                            int left = displayCutout.getSafeInsetLeft();
+                            int top = displayCutout.getSafeInsetTop();
+                            int right = displayCutout.getSafeInsetRight();
+                            int bottom = displayCutout.getSafeInsetBottom();
+                            findViewById(R.id.playdeatil_view).getLayoutParams().height = top;
+                        }
+                        return windowInsets.consumeSystemWindowInsets();
+                    }
+                });
+            }
 
             playdeatil_view = findViewById(R.id.playdeatil_view);//顶部的预留
             playdeatil_tabLayout = findViewById(R.id.playdeatil_tabLayout);

@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -578,13 +579,14 @@ public class WatchActivity extends AppCompatActivity
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         initWatch(param, new WebinarInfoDataSource.LoadWebinarInfoCallback() {
             @Override
-            public void onWebinarInfoLoaded(String s, WebinarInfo webinarInfo) {
+            public void onWebinarInfoLoaded(String jsonStr, WebinarInfo webinarInfo) {
                 if (liveFragment == null && type == VhallUtil.WATCH_LIVE) {
                     //聊天碎片，直播展示
                     fragments.add(chatFragment);
                     //直播播放器的布局
                     param.webinar_id = webinarInfo.webinar_id;
                     if (!TextUtils.isEmpty(webinarInfo.vss_room_id) && !TextUtils.isEmpty(webinarInfo.vss_token)) {
+                        Log.d("test20200409", "直播h5: ");
                         param.vssRoomId = webinarInfo.vss_room_id;
                         param.vssToken = webinarInfo.vss_token;
                         param.join_id = webinarInfo.join_id;
@@ -605,6 +607,7 @@ public class WatchActivity extends AppCompatActivity
                         activity_live_viewpager.setAdapter(adapter);
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
                     } else {
+                        Log.d("test20200409", "直播flash: ");
                         //flash方式直播：旧直播方式
                         if (docFragment == null) {
                             docFragment = DocumentFragment.newInstance();
@@ -650,6 +653,7 @@ public class WatchActivity extends AppCompatActivity
                     //回放播放器的布局
                     if (webinarInfo != null && !TextUtils.isEmpty(webinarInfo.vss_room_id) &&
                             !TextUtils.isEmpty(webinarInfo.vss_token)) {
+                        Log.d("test20200409", "回放h5: ");
                         param.vssRoomId = webinarInfo.vss_room_id;
                         param.vssToken = webinarInfo.vss_token;
                         param.join_id = webinarInfo.join_id;
@@ -679,6 +683,7 @@ public class WatchActivity extends AppCompatActivity
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
                     } else {
                         //flash方式看回放：旧回放方式
+                        Log.d("test20200409", "回放flash: ");
                         if (docFragment == null) {
                             docFragment = DocumentFragment.newInstance();
                             docFragment.setTitleString(detailDataMap.get("name"));
@@ -698,6 +703,7 @@ public class WatchActivity extends AppCompatActivity
 
             @Override
             public void onError(int errorCode, String errorMsg) {
+                Log.e("041301", "errorCode: " + errorCode + ", errorMsg: " + errorMsg);
                 if (liveFragment == null && type == VhallUtil.WATCH_LIVE) {
                     //聊天碎片，直播展示
                     fragments.add(chatFragment);
