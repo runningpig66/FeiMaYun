@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--正式1-->
-    <string name="vhall_app_key1">a17fb7802e17d124340045ac955b4242</string>
-    <string name="vhall_app_secret_key1">8613b16d8de8164c005cfc9bbc1bc28e</string>
-    <string name="vhall_app_key2">cc5e2785026a2d34eee407aa433294fb</string>
-    <string name="vhall_app_secret_key2">af8f5240a243d3f3853dd0d1c693e580</string>
+<!--    <string name="vhall_app_key1">a17fb7802e17d124340045ac955b4242</string>-->
+<!--    <string name="vhall_app_secret_key1">8613b16d8de8164c005cfc9bbc1bc28e</string>-->
+<!--    <string name="vhall_app_key2">cc5e2785026a2d34eee407aa433294fb</string>-->
+<!--    <string name="vhall_app_secret_key2">af8f5240a243d3f3853dd0d1c693e580</string>-->
 
     <!--测试1-->
-    <!--        <string name="vhall_app_key1">55653c570e1f33496c3df177edc7d491</string>-->
-    <!--        <string name="vhall_app_secret_key1">e008a700c774ddf1ee5d7c5cde814ace</string>-->
-    <!--        <string name="vhall_app_key2">d8cb31977bb09ec454b4b587a7638908</string>-->
-    <!--        <string name="vhall_app_secret_key2">6e38f016fd3737f6e06b6e72fca12e51</string>-->
+            <string name="vhall_app_key1">55653c570e1f33496c3df177edc7d491</string>
+            <string name="vhall_app_secret_key1">e008a700c774ddf1ee5d7c5cde814ace</string>
+            <string name="vhall_app_key2">d8cb31977bb09ec454b4b587a7638908</string>
+            <string name="vhall_app_secret_key2">6e38f016fd3737f6e06b6e72fca12e51</string>
 </resources>

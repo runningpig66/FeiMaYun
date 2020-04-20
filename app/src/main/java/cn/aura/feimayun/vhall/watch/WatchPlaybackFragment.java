@@ -58,7 +58,6 @@ public class WatchPlaybackFragment extends Fragment
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-//            Toast.makeText(mContext, "我执行自动播放啦,isVisible:" + isVisible, Toast.LENGTH_SHORT).show();
             if (isVisible) {
                 mPresenter.startPlay();
             }
@@ -438,7 +437,8 @@ public class WatchPlaybackFragment extends Fragment
             mPresenter.start();
             mPresenter.onResume();
         } else {
-            mPresenter = mContext.getPlaybackPresenter();
+            mPresenter = mContext.getBackPresenter();
+//            mPresenter = mContext.getPlaybackPresenter();
             if (mPresenter != null) {
                 mPresenter.start();
                 mPresenter.onResume();

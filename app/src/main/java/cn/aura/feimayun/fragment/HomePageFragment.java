@@ -25,7 +25,6 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -499,6 +498,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                 String data_teach_type = bannerItemMap.get("teach_type");
                 String link_url = bannerItemMap.get("link_url");
                 String jump_type = bannerItemMap.get("jump_type");
+                String is_uid = bannerItemMap.get("is_uid");
                 switch (Integer.parseInt(Objects.requireNonNull(data_teach_type))) {
                     case 1://直播
                         Intent intentLiveActivity = new Intent(mainActivity, WatchActivity.class);
@@ -527,6 +527,9 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                     case 0://跳转H5页面
                         if (jump_type != null && jump_type.equals("10")) {
                             Intent intent = new Intent(mainActivity, H5Activity.class);
+                            if (Objects.equals(is_uid, "1")) {
+                                link_url += "&uid=" + Util.getUid();
+                            }
                             intent.putExtra("link_url", link_url);
                             startActivity(intent);
                         }
@@ -633,6 +636,7 @@ public class HomePageFragment extends Fragment implements View.OnClickListener {
                                 bannerItemMap.put("lid", bannerObject.optString("lid"));
                                 bannerItemMap.put("jump_type", bannerObject.optString("jump_type"));
                                 bannerItemMap.put("link_url", bannerObject.optString("link_url"));
+                                bannerItemMap.put("is_uid", bannerObject.optString("is_uid"));
                                 bannerMapList.add(bannerItemMap);
                             }
                         }

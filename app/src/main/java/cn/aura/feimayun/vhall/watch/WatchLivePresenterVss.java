@@ -1,7 +1,6 @@
 package cn.aura.feimayun.vhall.watch;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,21 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.vhall.business.ChatServer;
-import com.vhall.business.ErrorCode;
-import com.vhall.business.MessageServer;
-import com.vhall.business.VhallCallback;
 import com.vhall.business.VhallSDK;
-import com.vhall.business.WatchLive;
 import com.vhall.business.common.Constants;
 import com.vhall.business.data.RequestCallback;
-import com.vhall.business.data.Survey;
 import com.vhall.business.data.UserInfo;
-import com.vhall.business.data.WebinarInfo;
 import com.vhall.business.data.source.UserInfoDataSource;
-import com.vhall.business.data.source.UserInfoRepository;
-import com.vhall.business.data.source.local.UserInfoLocalDataSource;
-import com.vhall.business.data.source.remote.UserInfoRemoteDataSource;
-import com.vhall.ims.VHIM;
+import com.vhall.document.DocumentView;
 import com.vhall.lss.play.VHLivePlayer;
 import com.vhall.message.ConnectServer;
 import com.vhall.ops.VHOPS;
@@ -62,11 +52,9 @@ import vhall.com.vss.data.ResponseRoomInfo;
 import vhall.com.vss.data.ResponseUserStatus;
 import vhall.com.vss.data.VssMessageAnnouncementData;
 import vhall.com.vss.data.VssMessageChatData;
-import vhall.com.vss.data.VssMessageLotteryData;
 import vhall.com.vss.data.VssMessageQuestionData;
 import vhall.com.vss.data.VssMessageSignData;
 import vhall.com.vss.module.chat.VssChatManger;
-import vhall.com.vss.module.question.VssQuestionManger;
 import vhall.com.vss.module.room.VssRoomManger;
 import vhall.com.vss.module.room.callback.IVssCallBackLister;
 import vhall.com.vss.module.room.callback.IVssMessageLister;
@@ -148,67 +136,73 @@ public class WatchLivePresenterVss implements WatchContract.LivePresenter,
         this.vhall_account = vhall_account;
         context = watchView.getActivity();
 
-        VssRoomManger.getInstance().enterRoom(
-                param.vssToken, param.vssRoomId,
-                new CallBack<ResponseRoomInfo>() {
-                    @Override
-                    public void onSuccess(final ResponseRoomInfo result) {
-                        if (!VhallSDK.isLogin()) {
-                            VssSdk.getInstance().setUserId(result.getThird_party_user_id());
+        VssRoomManger.getInstance().enterRoom(param.vssToken, param.vssRoomId, new CallBack<ResponseRoomInfo>() {
+            @Override
+            public void onSuccess(final ResponseRoomInfo result) {
+                if (!VhallSDK.isLogin()) {
+                    VssSdk.getInstance().setUserId(result.getThird_party_user_id());
+                }
+                if (VhallSDK.isLogin()) {
+                    VssRtcManger vssRtcManger = new VssRtcManger();
+                    vssRtcManger.getUserStatus(new CallBack<ResponseUserStatus>() {
+                        @Override
+                        public void onSuccess(ResponseUserStatus userStatus) {
+                            if (userStatus != null && !TextUtils.isEmpty(userStatus.getIs_banned())) {
+                                canSpeak = userStatus.getIs_banned();
+                            }
                         }
-                        if (VhallSDK.isLogin()) {
-                            VssRtcManger vssRtcManger = new VssRtcManger();
-                            vssRtcManger.getUserStatus(new CallBack<ResponseUserStatus>() {
-                                @Override
-                                public void onSuccess(ResponseUserStatus userStatus) {
-                                    if (userStatus != null && !TextUtils.isEmpty(userStatus.getIs_banned())) {
-                                        canSpeak = userStatus.getIs_banned();
-                                    }
-                                }
 
-                                @Override
-                                public void onError(int eventCode, String msg) {
-                                }
-                            });
+                        @Override
+                        public void onError(int eventCode, String msg) {
+                            watchView.showToast("eventCode2: " + eventCode + ", msg: " + msg);
                         }
-                        if (result.getStatus() == 1) {
-                            isBroadcast = true;
-                        } else {
-                            isBroadcast = false;
-                            if (result.getStatus() == 2 && !TextUtils.isEmpty(result.getRecord_id())) {
-                                watchView.showToast("当前是视频回放，还没开始直播");
-                                return;
-                            }
-                            watchView.showToast("还没开始直播");
-                        }
-                        VssRoomManger.getInstance().setVssMessageLister(new MyLister(), IVssMessageLister.MESSAGE_SERVICE_TYPE_ALL);
-                        VssRoomManger.getInstance().setVssCallBackLister(new MyCallback());
-                        roomId = result.getRoom_id();
-                        accessToken = result.getPaas_access_token();
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDocument = new VHOPS(context, result.getChannel_id(), result.getRoom_id(), accessToken);
-                                mDocument.setListener(opsListener);
-                                mDocument.join();
-                            }
-                        });
-                        initWatch();
+                    });
+                }
+                if (result.getStatus() == 1) {
+                    isBroadcast = true;
+                } else {
+                    isBroadcast = false;
+                    if (result.getStatus() == 2 && !TextUtils.isEmpty(result.getRecord_id())) {
+                        watchView.showToast("当前是视频回放，还没开始直播");
+                        return;
                     }
-
+                    watchView.showToast("还没开始直播");
+                }
+                VssRoomManger.getInstance().setVssMessageLister(new MyLister(), IVssMessageLister.MESSAGE_SERVICE_TYPE_ALL);
+                VssRoomManger.getInstance().setVssCallBackLister(new MyCallback());
+                roomId = result.getRoom_id();
+                accessToken = result.getPaas_access_token();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
-                    public void onError(int eventCode, String msg) {
-                        watchView.showToast(msg);
-                        isBroadcast = false;
+                    public void run() {
+                        mDocument = new VHOPS(context, result.getChannel_id(), result.getRoom_id(), accessToken);
+                        mDocument.setListener(opsListener);
+                        mDocument.join();
                     }
                 });
+                initWatch();
+            }
+
+            @Override
+            public void onError(int eventCode, String msg) {
+                watchView.showToast("eventCode1: " + eventCode + ", msg: " + msg);
+                isBroadcast = false;
+            }
+        });
     }
+
+    public DocumentView getActiveView() {
+        return activeView;
+    }
+
+    private DocumentView activeView;
 
     private VHOPS.EventListener opsListener = new VHOPS.EventListener() {
         @Override
         public void onEvent(String event, String type, String cid) {
             if (event.equals(KEY_OPERATE)) {
                 if (type.equals(TYPE_ACTIVE)) {
+                    activeView = mDocument.getActiveView();
                     documentView.refreshView(mDocument.getActiveView());
                 } else if (type.equals(TYPE_SWITCHOFF) || type.equals(TYPE_SWITCHON)) {
                     //文档演示 开关
@@ -262,18 +256,22 @@ public class WatchLivePresenterVss implements WatchContract.LivePresenter,
         }
 //        getWatchLive().setVRHeadTracker(true);
 //        getWatchLive().setScaleType(Constants.DrawMode.kVHallDrawModeAspectFit.getValue());
-//        initWatch();
+        initWatch();
+        getPlayer().start(roomId, accessToken);
     }
 
     @Override
     public void onWatchBtnClick() {
         if (isWatching) {
             stopWatch();
+            Log.d(TAG, "onWatchBtnClick: stopWatch");
         } else {
             if (getPlayer().resumeAble()) {
                 getPlayer().resume();
+                Log.d(TAG, "onWatchBtnClick: resume");
             } else {
                 getPlayer().start(roomId, accessToken);
+                Log.d(TAG, "onWatchBtnClick: start");
             }
         }
     }
@@ -479,8 +477,32 @@ public class WatchLivePresenterVss implements WatchContract.LivePresenter,
         if (watchView.getActivity().isFinishing()) {
             return;
         }
-        chatView.clearChatData();
-        getChatHistory();
+        //游客ID及昵称 已登录用户可传空
+        TelephonyManager telephonyMgr = (TelephonyManager) watchView.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+//        String customeId = telephonyMgr.getDeviceId();
+
+        //登录聊天账号
+        String uid = Util.getUid();
+        //登录微吼账号，用于聊天
+        String username = vhall_account.equals("1") ? "wxh" + uid : "sch" + uid;
+        String userpass = "1q2w3e4r5t6y7u8i9o";
+//        Log.i("0610051", username + "      " + userpass);
+        VhallSDK.login(username, userpass, new UserInfoDataSource.UserInfoCallback() {
+            @Override
+            public void onSuccess(UserInfo userInfo) {
+                String customId = username;
+                String customNickname = userInfo.nick_name;
+                chatView.clearChatData();
+                getChatHistory();
+                startWatch();//initWatch成功，直接开始播放直播
+            }
+
+            @Override
+            public void onError(int errorCode, String reason) {
+                watchView.showToast("登录直播账号失败：" + reason);
+            }
+
+        });
     }
 
 //    private void getAnswerList() {
@@ -499,6 +521,9 @@ public class WatchLivePresenterVss implements WatchContract.LivePresenter,
 
     @Override
     public void startWatch() {
+        getPlayer().start(roomId, accessToken);
+        liveFragment.updateViewState(MyControlView.PlayState.Playing);
+        documentFragment.updateViewState(MyControlView.PlayState.Playing);
     }
 
     @Override
@@ -672,8 +697,8 @@ public class WatchLivePresenterVss implements WatchContract.LivePresenter,
                     isWatching = false;
                     liveView.showLoading(false);
 //                    liveView.setPlayPicture(isWatching);
-                    liveFragment.updateViewState(MyControlView.PlayState.Playing);
-                    documentFragment.updateViewState(MyControlView.PlayState.Playing);
+                    liveFragment.updateViewState(MyControlView.PlayState.Paused);
+                    documentFragment.updateViewState(MyControlView.PlayState.Paused);
                     break;
                 default:
                     break;

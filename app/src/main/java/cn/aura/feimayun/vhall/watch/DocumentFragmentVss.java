@@ -38,8 +38,7 @@ import static com.vhall.ops.VHOPS.TYPE_SWITCHOFF;
 /**
  * 文档页的Fragment
  */
-public class DocumentFragmentVss extends Fragment
-        implements WatchContract.DocumentViewVss {
+public class DocumentFragmentVss extends Fragment implements WatchContract.DocumentViewVss {
     public long playerCurrentPosition = 0L; // 当前的进度
     public long playerDuration;
     public String playerDurationTimeStr = "00:00:00";
@@ -47,7 +46,7 @@ public class DocumentFragmentVss extends Fragment
 //    private PPTView iv_doc;
 //    private WhiteBoardView board;
     private WatchActivity activity;
-    private WatchPlaybackPresenter watchPlaybackPresenter;
+    private WatchPlaybackPresenterVss watchPlaybackPresenterVss;
     //手势对话框控制
     private GestureDialogManager mGestureDialogManager;
     //手势操作view
@@ -67,9 +66,14 @@ public class DocumentFragmentVss extends Fragment
     private TextView document_textview_marquee;
     private String switchType = "";
     private DocumentView tempView = null;
+    private static final String ARG_PARAM1 = "param1";
+    private int stream_type;
 
-    public static DocumentFragmentVss newInstance() {
+    public static DocumentFragmentVss newInstance(int stream_type) {
         DocumentFragmentVss articleFragment = new DocumentFragmentVss();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, stream_type);
+        articleFragment.setArguments(args);
         return articleFragment;
     }
 
@@ -87,8 +91,17 @@ public class DocumentFragmentVss extends Fragment
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (WatchActivity) context;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            stream_type = getArguments().getInt(ARG_PARAM1);
+        }
         mAudioManage = (AudioManager) MyApplication.context.getSystemService(Context.AUDIO_SERVICE);
         if (mAudioManage != null) {
             maxVolume = mAudioManage.getStreamMaxVolume(3);
@@ -98,7 +111,7 @@ public class DocumentFragmentVss extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.document_fragment_vss, container, false);
+        View view = inflater.inflate(R.layout.document_fragment_vss, null);
         root = view.findViewById(R.id.root1);
         rlContainer = view.findViewById(R.id.rl_doc_container);
         if (!TextUtils.isEmpty(switchType)) {
@@ -123,8 +136,12 @@ public class DocumentFragmentVss extends Fragment
         if (tempView != null) {
             refreshView(tempView);
         }
+        int type = activity.getType();
+        if (type == VhallUtil.WATCH_LIVE) {
+        } else if (type == VhallUtil.WATCH_PLAYBACK) {
+            watchPlaybackPresenterVss = activity.getPlaybackPresenterVss();
+        }
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -213,8 +230,8 @@ public class DocumentFragmentVss extends Fragment
 
                     //水平滑动调节seek。
                     // seek需要在手势结束时操作。
-                    long duration = watchPlaybackPresenter.getWatchPlayback().getDuration();
-                    long position = watchPlaybackPresenter.getWatchPlayback().getCurrentPosition();
+                    long duration = watchPlaybackPresenterVss.getDurationCustom();
+                    long position = watchPlaybackPresenterVss.getCurrentPositionCustom();
                     long deltaPosition;
 
 //                if () {
@@ -264,17 +281,16 @@ public class DocumentFragmentVss extends Fragment
 
                     if (type == VhallUtil.WATCH_PLAYBACK) {
                         int seekPosition = mGestureDialogManager.dismissSeekDialog();
-                        if (seekPosition >= watchPlaybackPresenter.getWatchPlayback().getDuration()) {
-                            seekPosition = (int) (watchPlaybackPresenter.getWatchPlayback().getDuration() - 1000);
+                        if (seekPosition >= watchPlaybackPresenterVss.getDurationCustom()) {
+                            seekPosition = (int) (watchPlaybackPresenterVss.getDurationCustom() - 1000);
                         }
 
                         if (seekPosition >= 0) {
-                            watchPlaybackPresenter.onStopTrackingTouch(seekPosition);
+                            watchPlaybackPresenterVss.onStopTrackingTouch(seekPosition);
                             myControlView.setVideoPosition(seekPosition);
 //                        seekTo(seekPosition);
                         }
                     }
-
                 }
             }
 
@@ -295,7 +311,7 @@ public class DocumentFragmentVss extends Fragment
                 //直播时不需要双击事件
                 if (type == VhallUtil.WATCH_PLAYBACK) {
                     //双击事件，控制暂停播放
-                    watchPlaybackPresenter.onPlayClick();
+                    watchPlaybackPresenterVss.onPlayClick();
                     myControlView.show();
                 }
 
@@ -336,10 +352,10 @@ public class DocumentFragmentVss extends Fragment
             @Override
             public void onPlayStateClick() {
                 if (type == VhallUtil.WATCH_LIVE) {
-                    WatchLivePresenter presenter = activity.getWatchLivePresenter();
-                    presenter.onWatchBtnClick();
+                    WatchLivePresenterVss presenterVss = activity.getWatchLivePresenterVss();
+                    presenterVss.onWatchBtnClick();
                 } else if (type == VhallUtil.WATCH_PLAYBACK) {
-                    watchPlaybackPresenter.onPlayClick();
+                    watchPlaybackPresenterVss.onPlayClick();
                 }
             }
         });
@@ -347,7 +363,7 @@ public class DocumentFragmentVss extends Fragment
         myControlView.setOnSeekListener(new MyControlView.OnSeekListener() {
             @Override
             public void onSeekEnd(int position) {
-                watchPlaybackPresenter.onStopTrackingTouch(position);
+                watchPlaybackPresenterVss.onStopTrackingTouch(position);
                 myControlView.setVideoPosition(position);
             }
 
@@ -370,9 +386,9 @@ public class DocumentFragmentVss extends Fragment
                     return;
                 }
                 if (type == VhallUtil.WATCH_LIVE) {
-                    activity.getWatchLivePresenter().changeOriention();
-                } else if (type == VhallUtil.WATCH_PLAYBACK) {
-                    activity.getPlaybackPresenter().changeScreenOri();
+                    activity.getWatchLivePresenterVss().changeOriention();
+                } else if (type == VhallUtil.WATCH_PLAYBACK) {//TODO 回访也得改
+                    activity.getPlaybackPresenterVss().changeScreenOri();
                 }
 
             }
@@ -407,7 +423,6 @@ public class DocumentFragmentVss extends Fragment
             } else {
                 mGestureView.show();
             }
-
         }
     }
 
@@ -417,7 +432,6 @@ public class DocumentFragmentVss extends Fragment
 
     @Override
     public void setPresenter(BasePresenter presenter) {
-
     }
 
     private boolean mCanSee = true;//PPT在上方默认可见
@@ -449,18 +463,6 @@ public class DocumentFragmentVss extends Fragment
             root.removeView(myControlView);
             root.removeView(mGestureView);
             document_textview_marquee.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        activity = (WatchActivity) context;
-        int type = activity.getType();
-        if (type == VhallUtil.WATCH_LIVE) {
-
-        } else if (type == VhallUtil.WATCH_PLAYBACK) {
-            watchPlaybackPresenter = activity.getPlaybackPresenter();
         }
     }
 

@@ -101,4 +101,12 @@ public class MoveFrameLayout extends android.widget.FrameLayout {
     public void setCanMove(boolean canMove) {
         this.canMove = canMove;
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (canMove) {
+            return true;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
 }

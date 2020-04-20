@@ -370,7 +370,8 @@ public class WatchLiveFragment extends Fragment
                 Toast.makeText(context, "请关闭其他音频再开始播放", Toast.LENGTH_SHORT).show();
             }
         } else {
-            WatchLivePresenter watchLivePresenter = context.getmPresenter();
+            WatchContract.LivePresenter watchLivePresenter = context.getLivePresenter();
+//            WatchLivePresenter watchLivePresenter = context.getmPresenter();
             if (watchLivePresenter != null) {
                 watchLivePresenter.start();
                 mPresenter = watchLivePresenter;

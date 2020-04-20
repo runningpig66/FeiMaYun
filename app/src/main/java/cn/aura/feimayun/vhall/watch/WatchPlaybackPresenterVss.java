@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.vhall.business.ChatServer;
@@ -17,9 +19,11 @@ import com.vhall.business.data.source.WebinarInfoRepository;
 import com.vhall.business.data.source.local.UserInfoLocalDataSource;
 import com.vhall.business.data.source.remote.UserInfoRemoteDataSource;
 import com.vhall.business.data.source.remote.WebinarInfoRemoteDataSource;
+import com.vhall.document.DocumentView;
 import com.vhall.ops.VHOPS;
 import com.vhall.player.Constants;
 import com.vhall.player.VHPlayerListener;
+import com.vhall.player.vod.VodPlayerView;
 import com.vhall.vod.VHVodPlayer;
 
 import java.util.ArrayList;
@@ -87,6 +91,8 @@ public class WatchPlaybackPresenterVss implements
     WatchPlaybackFragment fragment;
     DocumentFragmentVss documentFragment;
 
+    private boolean bool = true;
+
     private WeakHandler handler = new WeakHandler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -100,6 +106,17 @@ public class WatchPlaybackPresenterVss implements
                         if (mDocument != null) {
                             mDocument.setTime(playerCurrentPosition);
                         }
+                        assert mDocument != null;
+                        if (bool) {
+                            WebView webView = mDocument.getActiveView();
+                            if (webView != null) {
+                                bool = false;
+                                ViewGroup.LayoutParams params = webView.getLayoutParams();
+                                params.width = -1;
+                                params.height = -1;
+                                webView.setLayoutParams(params);
+                            }
+                        }
                     }
                     break;
             }
@@ -112,7 +129,8 @@ public class WatchPlaybackPresenterVss implements
                                      ChatContract.ChatView chatView,
                                      final WatchContract.WatchView watchView,
                                      Param param,
-                                     DocumentFragmentVss documentFragmentvss) {
+                                     DocumentFragmentVss documentFragmentvss,
+                                     String vhall_account) {
         this.playbackView = playbackView;
         this.documentView = documentView;
         this.watchView = watchView;
@@ -122,20 +140,28 @@ public class WatchPlaybackPresenterVss implements
         this.chatView.setPresenter(this);
         this.watchView.setPresenter(this);
         context = watchView.getActivity();
-        this.documentFragment = documentFragment;
+        this.documentFragment = documentFragmentvss;
         fragment = (WatchPlaybackFragment) playbackView;
+        this.vhall_account = vhall_account;
     }
 
     public void setParam(Param param) {
         this.param = param;
     }
 
+    public DocumentView getActiveView() {
+        return activeView;
+    }
+
+    private DocumentView activeView;
+
     private VHOPS.EventListener opsListener = new VHOPS.EventListener() {
         @Override
         public void onEvent(String event, String type, String cid) {
             if (event.equals(KEY_OPERATE)) {
                 if (type.equals(TYPE_ACTIVE)) {
-                    documentView.refreshView(mDocument.getActiveView());
+                    activeView = mDocument.getActiveView();
+                    documentView.refreshView(activeView);
                 } else if (type.equals(TYPE_SWITCHOFF) || type.equals(TYPE_SWITCHON)) {
                     //文档演示 开关
                     documentView.switchType(type);
@@ -156,6 +182,8 @@ public class WatchPlaybackPresenterVss implements
         if (!TextUtils.isEmpty(param.noticeContent)) {
             watchView.showNotice(param.noticeContent);
         }
+        getPlay();
+        startPlay();
     }
 
     private void requestCommentHistory(String webinar_id, int limit, int pos, final ChatServer.ChatRecordCallback callback) {
@@ -206,16 +234,25 @@ public class WatchPlaybackPresenterVss implements
         });
     }
 
+    public VodPlayerView getVodPlayerView() {
+        return vodPlayerView;
+    }
+
+    private VodPlayerView vodPlayerView;
+
     private VHVodPlayer getPlay() {
         if (mPlayer == null) {
             mPlayer = new VHVodPlayer(watchView.getActivity());
-            mPlayer.setDisplay(playbackView.getVideoView());
+            vodPlayerView = playbackView.getVideoView();
+            mPlayer.setDisplay(vodPlayerView);
             mPlayer.setListener(new MyPlayer());
         }
         return mPlayer;
     }
 
-     void initWatch() {
+    private String vhall_account = "1";
+
+    void initWatch() {
         VssRoomManger.getInstance().enterRoom(param.vssToken, param.vssRoomId, new CallBack<ResponseRoomInfo>() {
             @Override
             public void onSuccess(ResponseRoomInfo result) {
@@ -230,16 +267,18 @@ public class WatchPlaybackPresenterVss implements
                 initCommentData(pos);
                 handlePosition();
                 fragment.handleAutoPlay.obtainMessage().sendToTarget();
+                Log.d("041901", "onSuccess: ");
             }
 
             @Override
             public void onError(int eventCode, String msg) {
-//                watchView.showToast(msg);
-                if (eventCode == 20003) {//error param!
-
-                } else {
-                    Toast.makeText(watchView.getActivity(), msg, Toast.LENGTH_SHORT).show();
-                }
+                watchView.showToast(eventCode + ", " + msg);
+                Log.d("041901", "eventCode: " + eventCode + ", " + msg);
+//                if (eventCode == 20003) {//error param!
+//
+//                } else {
+//                    Toast.makeText(watchView.getActivity(), msg, Toast.LENGTH_SHORT).show();
+//                }
             }
         });
     }
@@ -307,6 +346,21 @@ public class WatchPlaybackPresenterVss implements
         }
         getPlay().seekto(playerCurrentPosition);
         mDocument.seekTo(playerCurrentPosition);
+        WebView webView = mDocument.getActiveView();
+        if (webView != null) {
+            ViewGroup.LayoutParams params = webView.getLayoutParams();
+            params.width = -1;
+            params.height = -1;
+            webView.setLayoutParams(params);
+        }
+//        VodPlayerView vodPlayerView = playbackView.getVideoView();
+//        ViewGroup viewGroup = (ViewGroup) vodPlayerView.getRootView();
+//        if (viewGroup != null) {
+//            ViewGroup.LayoutParams params = viewGroup.getLayoutParams();
+//            params.height = -1;
+//            params.width = -1;
+//            viewGroup.setLayoutParams(params);
+//        }
     }
 
     @Override
@@ -492,6 +546,7 @@ public class WatchPlaybackPresenterVss implements
 //                    Log.e(TAG, "STATE_IDLE");
                     break;
                 case START:
+
                     playbackView.showProgressbar(false);
 //                    playbackView.setPlayIcon(false);
                     fragment.updateViewState(MyControlView.PlayState.Playing);
@@ -533,7 +588,8 @@ public class WatchPlaybackPresenterVss implements
             switch (event) {
                 case Constants.Event.EVENT_INIT_SUCCESS:
                     mDocument.setCue_point(mPlayer.getCurePoint());
-//                    mPlayer.start();
+                    mPlayer.start();
+                    getPlay().setDrawMode(1);
                     break;
                 case Constants.Event.EVENT_DPI_LIST:
 
@@ -556,7 +612,7 @@ public class WatchPlaybackPresenterVss implements
                     watchView.showToast("请先初始化");
                     break;
                 default:
-                    watchView.showToast("播放出错：" + msg);
+                    watchView.showToast("播放出错：" + errorCode + msg);
                     break;
             }
             playbackView.showProgressbar(false);

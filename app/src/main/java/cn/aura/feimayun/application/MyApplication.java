@@ -21,6 +21,7 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
+import com.vhall.document.DocumentView;
 import com.vhall.push.VHLivePushFormat;
 import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumConfig;
@@ -35,6 +36,9 @@ import java.util.Locale;
 import cn.aura.feimayun.activity.FlashActivity;
 import cn.aura.feimayun.util.NetStateChangeReceiver;
 import cn.aura.feimayun.vhall.Param;
+import vhall.com.vss.VssSdk;
+
+import static com.vhall.business.VhallSDK.getUserId;
 
 /**
  * 描述：程序Application
@@ -103,6 +107,9 @@ public class MyApplication extends Application {
         MultiDex.install(this);
         context = this;
         getParam();
+        VssSdk.getInstance().init(getApplicationContext(), getUserId());
+        //更新微吼SDK需要替换business-release.aar，并删除下面这句话，具体咨询微吼技术曾文凭，
+        DocumentView.setHost("https://t-static01-open.e.vhall.com/jssdk/doc-sdk/dist/dev/mobile1.1.9.html");
 //        VhallSDK.init(this, getResources().getString(R.string.vhall_app_key1), getResources().getString(R.string.vhall_app_secret_key1));
 //        VhallSDK.setLogEnable(true);
 

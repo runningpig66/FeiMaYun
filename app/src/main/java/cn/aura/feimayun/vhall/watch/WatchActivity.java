@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.vhall.business.data.WebinarInfo;
 import com.vhall.business.data.source.WebinarInfoDataSource;
 import com.vhall.business.data.source.WebinarInfoRepository;
 import com.vhall.business.data.source.remote.WebinarInfoRemoteDataSource;
+import com.vhall.player.vod.VodPlayerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,7 @@ import cn.aura.feimayun.view.MyControlView;
 import cn.aura.feimayun.view.ProgressDialog;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import vhall.com.vss.module.room.VssRoomManger;
 
 import static com.vhall.business.VhallSDK.getUserId;
 
@@ -75,12 +78,12 @@ public class WatchActivity extends AppCompatActivity
         EasyPermissions.PermissionCallbacks {
     //TODO EasyPermissions相关
     public final static String[] PERMS_WRITE = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE};
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
     static WatchContract.WatchPresenter mPresenter;
     private static WatchLivePresenter watchLivePresenter;
 
-    public static WatchLivePresenterVss getWatchLivePresenterVss() {
+    public WatchLivePresenterVss getWatchLivePresenterVss() {
         return watchLivePresenterVss;
     }
 
@@ -126,9 +129,26 @@ public class WatchActivity extends AppCompatActivity
     private String errno;
     private String vhall_account = "1";
     private SignInDialog signInDialog;
+    private int streamType = 2;//1代表H5，2代表flash
 
     public int getType() {
         return type;
+    }
+
+    public WatchContract.LivePresenter getLivePresenter() {
+        if (streamType == 1) {
+            return getWatchLivePresenterVss();
+        } else {
+            return getWatchLivePresenter();
+        }
+    }
+
+    public WatchContract.PlaybackPresenter getBackPresenter() {
+        if (streamType == 1) {
+            return getPlaybackPresenterVss();
+        } else {
+            return getPlaybackPresenter();
+        }
     }
 
     public WatchLivePresenter getmPresenter() {
@@ -336,7 +356,6 @@ public class WatchActivity extends AppCompatActivity
             contentVideo.setLayoutParams(params1);
             contentVideo.setVisibility(View.VISIBLE);
             //初始化PPT位置
-
             RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) moveMode.getLayoutParams();
             params2.width = VhallUtil.dp2px(this, 200);
             params2.height = VhallUtil.dp2px(this, 112.5f);
@@ -586,27 +605,38 @@ public class WatchActivity extends AppCompatActivity
                     //直播播放器的布局
                     param.webinar_id = webinarInfo.webinar_id;
                     if (!TextUtils.isEmpty(webinarInfo.vss_room_id) && !TextUtils.isEmpty(webinarInfo.vss_token)) {
+                        streamType = 1;
                         Log.d("test20200409", "直播h5: ");
                         param.vssRoomId = webinarInfo.vss_room_id;
                         param.vssToken = webinarInfo.vss_token;
                         param.join_id = webinarInfo.join_id;
+                        Log.d("041301", "vssRoomId: " + param.vssRoomId);
+                        Log.d("041301", "vssToken: " + param.vssToken);
+                        Log.d("041301", "join_id: " + param.join_id);
                         if (docFragmentvss == null) {
-                            docFragmentvss = DocumentFragmentVss.newInstance();
+                            docFragmentvss = DocumentFragmentVss.newInstance(streamType);//TODO DOC_VSS测试
+                            Log.d("041301", "DocumentFragmentVss: 0success");
                             docFragmentvss.setTitleString(detailDataMap.get("name"));
-                            transaction.add(R.id.contentVideo, docFragment);
+                            Log.d("041301", "DocumentFragmentVss: 1success");
+                            transaction.add(R.id.contentVideo, docFragmentvss);
                         }
+                        Log.d("041301", "DocumentFragmentVss: 2success");
                         if (webinarInfo.notice != null && !TextUtils.isEmpty(webinarInfo.notice.content)) {
                             param.noticeContent = webinarInfo.notice.content;
                         }
                         liveFragment = WatchLiveFragment.newInstance();
                         liveFragment.setTitleString(detailDataMap.get("name"));
+                        //TODO Presenter VSS TEST
                         watchLivePresenterVss = new WatchLivePresenterVss(liveFragment, docFragmentvss, chatFragment, watchView, param, docFragmentvss, vhall_account);
+                        Log.d("041301", "watchLivePresenterVss: success");
                         transaction.add(R.id.moveMode, liveFragment);
                         transaction.commitAllowingStateLoss();
                         Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
                         activity_live_viewpager.setAdapter(adapter);
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+                        Log.d("041301", "All: success");
                     } else {
+                        streamType = 2;
                         Log.d("test20200409", "直播flash: ");
                         //flash方式直播：旧直播方式
                         if (docFragment == null) {
@@ -653,35 +683,48 @@ public class WatchActivity extends AppCompatActivity
                     //回放播放器的布局
                     if (webinarInfo != null && !TextUtils.isEmpty(webinarInfo.vss_room_id) &&
                             !TextUtils.isEmpty(webinarInfo.vss_token)) {
+                        streamType = 1;
                         Log.d("test20200409", "回放h5: ");
                         param.vssRoomId = webinarInfo.vss_room_id;
                         param.vssToken = webinarInfo.vss_token;
                         param.join_id = webinarInfo.join_id;
                         param.webinar_id = webinarInfo.webinar_id;
                         if (docFragmentvss == null) {
-                            docFragmentvss = DocumentFragmentVss.newInstance();
+                            Log.d("test0419", "1");
+                            docFragmentvss = DocumentFragmentVss.newInstance(streamType);
+                            Log.d("test0419", "2");
                             docFragmentvss.setTitleString(detailDataMap.get("name"));
-                            transaction.add(R.id.contentVideo, docFragment);
+                            Log.d("test0419", "3");
+                            transaction.add(R.id.contentVideo, docFragmentvss);
+                            Log.d("test0419", "4");
                         }
                         if (webinarInfo.notice != null && !TextUtils.isEmpty(webinarInfo.notice.content)) {
                             param.noticeContent = webinarInfo.notice.content;
+                            Log.d("test0419", "5");
                         }
                         if (webinarInfo.filters != null && webinarInfo.filters.size() > 0) {
                             param.filters.clear();
                             param.filters.addAll(webinarInfo.filters);
+                            Log.d("test0419", "6");
                         }
                         playbackFragment = WatchPlaybackFragment.newInstance();
+                        Log.d("test0419", "7");
                         playbackFragment.setTitleString(detailDataMap.get("name"));
                         playbackPresenterVss = new WatchPlaybackPresenterVss(playbackFragment,
-                                docFragmentvss, chatFragment, watchView, param, docFragmentvss);
+                                docFragmentvss, chatFragment, watchView, param, docFragmentvss, vhall_account);
+                        Log.d("test0419", "8");
 
                         transaction.add(R.id.moveMode, playbackFragment);
                         transaction.commitAllowingStateLoss();
+                        Log.d("test0419", "9");
 
                         Watch_ViewPager_Adapter adapter = new Watch_ViewPager_Adapter(getSupportFragmentManager(), fragments);
                         activity_live_viewpager.setAdapter(adapter);
                         activity_live_tabLayout.setupWithViewPager(activity_live_viewpager);
+                        Log.d("test0419", "10");
+
                     } else {
+                        streamType = 2;
                         //flash方式看回放：旧回放方式
                         Log.d("test20200409", "回放flash: ");
                         if (docFragment == null) {
@@ -790,6 +833,37 @@ public class WatchActivity extends AppCompatActivity
     }
 
     public void setPlace() {
+        if (type == VhallUtil.WATCH_LIVE) {
+            if (streamType == 1) {
+                WebView webView = getWatchLivePresenterVss().getActiveView();
+                if (webView != null) {
+                    ViewGroup.LayoutParams params = webView.getLayoutParams();
+                    params.width = -1;
+                    params.height = -1;
+                    webView.setLayoutParams(params);
+                }
+            }
+        }
+        else if (type == VhallUtil.WATCH_PLAYBACK) {
+            if (streamType == 1) {
+                WebView webView = getPlaybackPresenterVss().getActiveView();
+                if (webView != null) {
+                    ViewGroup.LayoutParams params = webView.getLayoutParams();
+                    params.width = -1;
+                    params.height = -1;
+                    webView.setLayoutParams(params);
+                }
+                VodPlayerView vodPlayerView = getPlaybackPresenterVss().getVodPlayerView();
+                if (vodPlayerView != null) {
+                    ViewGroup.LayoutParams params = vodPlayerView.getLayoutParams();
+                    params.width = -1;
+                    params.height = -1;
+                    vodPlayerView.setLayoutParams(params);
+                    vodPlayerView.refreshDrawableState();
+                }
+            }
+        }
+
         if (onTop) {//如果播放器在上，就放下
             if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {//竖屏
                 //将PPT放上面大图
@@ -801,7 +875,11 @@ public class WatchActivity extends AppCompatActivity
                 params2.setMargins(0, 0, 0, 0);
                 moveMode.setLayoutParams(params2);
                 moveMode.setCanMove(false);
-                docFragment.setVisiable(false);
+                if (streamType == 1) {
+                    docFragmentvss.setVisiable(false);
+                } else {
+                    docFragment.setVisiable(false);
+                }
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
@@ -825,7 +903,11 @@ public class WatchActivity extends AppCompatActivity
                 params2.setMargins(0, 0, 0, 0);
                 moveMode.setLayoutParams(params2);
                 moveMode.setCanMove(false);
-                docFragment.setVisiable(false);
+                if (streamType == 1) {
+                    docFragmentvss.setVisiable(false);
+                } else {
+                    docFragment.setVisiable(false);
+                }
                 //调整其他依赖布局
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) activity_live_line0.getLayoutParams();
                 params.removeRule(RelativeLayout.BELOW);
@@ -851,7 +933,11 @@ public class WatchActivity extends AppCompatActivity
                 playbackFragment.setVisiable(true);
                 playbackFragment.updatePPTState(MyControlView.PPTState.Bottom);
             }
-            docFragment.updatePPTState(MyControlView.PPTState.Bottom);
+            if (streamType == 1) {
+                docFragmentvss.updatePPTState(MyControlView.PPTState.Top);
+            } else {
+                docFragment.updatePPTState(MyControlView.PPTState.Top);
+            }
             onTop = false;
         } else {//如果播放器在下，就放上
             if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
@@ -902,7 +988,11 @@ public class WatchActivity extends AppCompatActivity
             }
             moveMode.setCanMove(true);
             moveMode.bringToFront();
-            docFragment.setVisiable(true);
+            if (streamType == 1) {
+                docFragmentvss.setVisiable(true);
+            } else {
+                docFragment.setVisiable(true);
+            }
             contentVideo.setCanMove(false);
             if (type == VhallUtil.WATCH_LIVE) {
                 liveFragment.setVisiable(false);//隐藏播放按钮等图标
@@ -911,7 +1001,11 @@ public class WatchActivity extends AppCompatActivity
                 playbackFragment.setVisiable(false);
                 playbackFragment.updatePPTState(MyControlView.PPTState.Top);
             }
-            docFragment.updatePPTState(MyControlView.PPTState.Top);
+            if (streamType == 1) {
+                docFragmentvss.updatePPTState(MyControlView.PPTState.Top);
+            } else {
+                docFragment.updatePPTState(MyControlView.PPTState.Top);
+            }
             onTop = true;
         }
     }
@@ -948,7 +1042,11 @@ public class WatchActivity extends AppCompatActivity
         //只有直播状态才显示公告
         if (type == VhallUtil.WATCH_LIVE) {
             liveFragment.setNotice(content);
-            docFragment.setNotice(content);
+            if (streamType == 1) {
+                docFragmentvss.setNotice(content);
+            } else {
+                docFragment.setNotice(content);
+            }
         }
     }
 
@@ -993,7 +1091,11 @@ public class WatchActivity extends AppCompatActivity
             } else if (type == VhallUtil.WATCH_PLAYBACK) {
                 playbackFragment.setmCurrentScreenMode(AliyunScreenMode.Full);
             }
-            docFragment.setmCurrentScreenMode(AliyunScreenMode.Full);
+            if (streamType == 1) {
+                docFragmentvss.setmCurrentScreenMode(AliyunScreenMode.Full);
+            } else {
+                docFragment.setmCurrentScreenMode(AliyunScreenMode.Full);
+            }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (type == VhallUtil.WATCH_LIVE) {
@@ -1002,7 +1104,32 @@ public class WatchActivity extends AppCompatActivity
             } else if (type == VhallUtil.WATCH_PLAYBACK) {
                 playbackFragment.setmCurrentScreenMode(AliyunScreenMode.Small);
             }
-            docFragment.setmCurrentScreenMode(AliyunScreenMode.Small);
+            if (streamType == 1) {
+                docFragmentvss.setmCurrentScreenMode(AliyunScreenMode.Small);
+            } else {
+                docFragment.setmCurrentScreenMode(AliyunScreenMode.Small);
+            }
+        }
+        if (type == VhallUtil.WATCH_LIVE) {
+            if (streamType == 1) {
+                WebView webView = getWatchLivePresenterVss().getActiveView();
+                if (webView != null) {
+                    ViewGroup.LayoutParams params = webView.getLayoutParams();
+                    params.width = -1;
+                    params.height = -1;
+                    webView.setLayoutParams(params);
+                }
+            }
+        } else if (type == VhallUtil.WATCH_PLAYBACK) {
+            if (streamType == 1) {
+                WebView webView = getPlaybackPresenterVss().getActiveView();
+                if (webView != null) {
+                    ViewGroup.LayoutParams params = webView.getLayoutParams();
+                    params.width = -1;
+                    params.height = -1;
+                    webView.setLayoutParams(params);
+                }
+            }
         }
         return getRequestedOrientation();
     }
@@ -1173,8 +1300,14 @@ public class WatchActivity extends AppCompatActivity
             int type = getType();
             if (type == VhallUtil.WATCH_LIVE) {
                 if (onTop) {
-                    if (!docFragment.ismIsFullScreenLocked()) {
-                        changeOrientation();
+                    if (streamType == 1) {
+                        if (!docFragmentvss.ismIsFullScreenLocked()) {
+                            changeOrientation();
+                        }
+                    } else {
+                        if (!docFragment.ismIsFullScreenLocked()) {
+                            changeOrientation();
+                        }
                     }
                 } else {
                     if (!liveFragment.ismIsFullScreenLocked()) {
@@ -1183,8 +1316,14 @@ public class WatchActivity extends AppCompatActivity
                 }
             } else if (type == VhallUtil.WATCH_PLAYBACK) {
                 if (onTop) {
-                    if (!docFragment.ismIsFullScreenLocked()) {
-                        changeOrientation();
+                    if (streamType == 1) {
+                        if (!docFragmentvss.ismIsFullScreenLocked()) {
+                            changeOrientation();
+                        }
+                    } else {
+                        if (!docFragment.ismIsFullScreenLocked()) {
+                            changeOrientation();
+                        }
                     }
                 } else {
                     if (!playbackFragment.ismIsFullScreenLocked()) {
@@ -1203,6 +1342,14 @@ public class WatchActivity extends AppCompatActivity
             inputView.dismiss();
         }
         super.onUserLeaveHint();
+    }
+
+    @Override
+    protected void onDestroy() {
+        VssRoomManger.leaveRoom();
+        super.onDestroy();
+        //H5 房间必需调用
+        VssRoomManger.leaveRoom();
     }
 
 }
