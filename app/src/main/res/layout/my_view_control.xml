@@ -35,8 +35,23 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/alivc_white"
-            android:textSize="@dimen/alivc_titlebar_font_size" />
+            android:textSize="@dimen/alivc_titlebar_font_size"
+            tools:text="直播标题直播标题直播标题直播标题直播标题直播标题" />
 
+        <TextView
+            android:id="@+id/tv_play_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/alivc_titlebar_title_left_margin"
+            android:layout_marginRight="@dimen/alivc_titlebar_title_left_margin"
+            android:background="@drawable/white_stroke"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:text="1.00"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!--锁定屏幕-->
@@ -49,7 +64,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/alivc_screen_lock_left_margin"
         android:layout_marginLeft="@dimen/alivc_screen_lock_left_margin"
-        android:src="@drawable/alivc_screen_unlock" />
+        android:src="@drawable/alivc_screen_unlock"
+        tools:visibility="gone" />
 
     <!--mControlBar-->
     <LinearLayout
@@ -61,7 +77,8 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/alivc_infobar_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:visibility="gone">
 
         <!--播放按钮-->
         <ImageView

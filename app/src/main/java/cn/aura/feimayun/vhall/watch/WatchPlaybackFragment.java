@@ -164,6 +164,11 @@ public class WatchPlaybackFragment extends Fragment
         return vodplayer_view;
     }
 
+    @Override
+    public void setPlaySpeedText(String text) {
+        myControlView.setSpeedText(text);
+    }
+
     /**
      * 初始化view
      */
@@ -284,6 +289,13 @@ public class WatchPlaybackFragment extends Fragment
 
     private void initControlView() {
         myControlView = new MyControlView(mContext);
+        //设置播放速度
+        myControlView.setOnSpeedTextClickListener(new MyControlView.OnSpeedTextClickListener() {
+            @Override
+            public void onSpeedTextClick() {
+                mPresenter.setSpeed();
+            }
+        });
 
         myControlView.setTheme(AliyunVodPlayerView.Theme.Orange);
         //设置PPT

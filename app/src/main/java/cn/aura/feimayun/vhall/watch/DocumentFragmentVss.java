@@ -169,6 +169,11 @@ public class DocumentFragmentVss extends Fragment implements WatchContract.Docum
         }
     }
 
+    @Override
+    public void setPlaySpeedText(String text) {
+        myControlView.setSpeedText(text);
+    }
+
     /**
      * 初始化view
      */
@@ -331,8 +336,12 @@ public class DocumentFragmentVss extends Fragment implements WatchContract.Docum
     }
 
     private void initControlView() {
-        myControlView = new MyControlView(activity);
         final int type = activity.getType();
+        if (type == VhallUtil.WATCH_LIVE) {
+            myControlView = new MyControlView(activity, true);
+        } else if (type == VhallUtil.WATCH_PLAYBACK) {
+            myControlView = new MyControlView(activity);
+        }
         if (type == VhallUtil.WATCH_LIVE) {
             myControlView.setmPlayType(MyControlView.PlayType.Play);
         }
@@ -340,6 +349,16 @@ public class DocumentFragmentVss extends Fragment implements WatchContract.Docum
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         root.addView(myControlView, params);
         myControlView.setTheme(AliyunVodPlayerView.Theme.Orange);
+        //设置播放速度
+        myControlView.setOnSpeedTextClickListener(new MyControlView.OnSpeedTextClickListener() {
+            @Override
+            public void onSpeedTextClick() {
+                if (type == VhallUtil.WATCH_LIVE) {
+                } else if (type == VhallUtil.WATCH_PLAYBACK) {
+                    watchPlaybackPresenterVss.setSpeed();
+                }
+            }
+        });
         //设置PPT
         myControlView.setmOnPPTClickListener(new MyControlView.OnPPTClickListener() {
             @Override

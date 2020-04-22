@@ -275,8 +275,22 @@ public class DocumentFragment extends Fragment
     }
 
     private void initControlView() {
-        myControlView = new MyControlView(activity);
         final int type = activity.getType();
+        if (type == VhallUtil.WATCH_LIVE) {
+            myControlView = new MyControlView(activity, true);
+        } else if (type == VhallUtil.WATCH_PLAYBACK) {
+            myControlView = new MyControlView(activity);
+        }
+        //设置播放速度
+        myControlView.setOnSpeedTextClickListener(new MyControlView.OnSpeedTextClickListener() {
+            @Override
+            public void onSpeedTextClick() {
+                if (type == VhallUtil.WATCH_LIVE) {
+                } else if (type == VhallUtil.WATCH_PLAYBACK) {
+                    watchPlaybackPresenter.setSpeed();
+                }
+            }
+        });
         if (type == VhallUtil.WATCH_LIVE) {
             myControlView.setmPlayType(MyControlView.PlayType.Play);
         }
@@ -414,6 +428,11 @@ public class DocumentFragment extends Fragment
                 board.setShowDoc(false);
                 break;
         }
+    }
+
+    @Override
+    public void setPlaySpeedText(String text) {
+        myControlView.setSpeedText(text);
     }
 
     @Override

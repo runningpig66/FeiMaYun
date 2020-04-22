@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -97,13 +96,29 @@ public class MyControlView extends RelativeLayout implements ViewAction, ITheme 
     //大小屏按钮点击监听
     private OnScreenModeClickListener mOnScreenModeClickListener;
     //PPT切换按钮点击监听
+    private TextView tv_play_speed;
     private OnPPTClickListener mOnPPTClickListener;
     private HideHandler mHideHandler = new HideHandler(this);
     private String titleString = "";
     private int duration = -1;
+    private boolean fuck = false;
+    //播放速度按钮点击监听
+    private OnSpeedTextClickListener mOnSpeedTextClickListener;
 
     public MyControlView(Context context) {
         super(context);
+        init();
+    }
+
+    /**
+     * fuck 用来区分是否显示倍速，因为直播的时候不显示倍速，fuck！
+     *
+     * @param context
+     * @param fuck
+     */
+    public MyControlView(Context context, boolean fuck) {
+        super(context);
+        this.fuck = fuck;
         init();
     }
 
@@ -158,6 +173,10 @@ public class MyControlView extends RelativeLayout implements ViewAction, ITheme 
         mOnBackClickListener = l;
     }
 
+    public void setOnSpeedTextClickListener(OnSpeedTextClickListener l) {
+        mOnSpeedTextClickListener = l;
+    }
+
     private void init() {
         //Inflate布局
         LayoutInflater.from(getContext()).inflate(R.layout.my_view_control, this, true);
@@ -186,9 +205,21 @@ public class MyControlView extends RelativeLayout implements ViewAction, ITheme 
         mSmallDurationText = findViewById(R.id.alivc_info_small_duration);
         mSmallSeekbar = findViewById(R.id.alivc_info_small_seekbar);
         seekbarLayout = findViewById(R.id.seekbarLayout);
+        tv_play_speed = findViewById(R.id.tv_play_speed);
+        if (fuck) {
+            tv_play_speed.setVisibility(View.GONE);
+        }
     }
 
     private void setViewListener() {
+        //播放速度切换
+        tv_play_speed.setOnClickListener(v -> {
+            if (mOnSpeedTextClickListener != null) {
+                tv_play_speed.setVisibility(View.VISIBLE);
+                mOnSpeedTextClickListener.onSpeedTextClick();
+            }
+        })
+        ;
         //PPT切换
         change_ppt_video.setOnClickListener(new OnClickListener() {
             @Override
@@ -323,6 +354,10 @@ public class MyControlView extends RelativeLayout implements ViewAction, ITheme 
         updatePPTBtn();
         updateSmallInfoBar();
         updateLargeInfoBar();
+    }
+
+    public void setSpeedText(String s) {
+        tv_play_speed.setText(s);
     }
 
 //    /**
@@ -698,6 +733,13 @@ public class MyControlView extends RelativeLayout implements ViewAction, ITheme 
          * 播放按钮点击事件
          */
         void onPlayStateClick();
+    }
+
+    public interface OnSpeedTextClickListener {
+        /**
+         * 切换播放速度点击事件
+         */
+        void onSpeedTextClick();
     }
 
     /**

@@ -233,7 +233,7 @@ public class WatchLiveFragment extends Fragment
     }
 
     private void initControlView() {
-        myControlView = new MyControlView(context);
+        myControlView = new MyControlView(context, true);
         myControlView.setmPlayType(MyControlView.PlayType.Play);
         myControlView.setTheme(AliyunVodPlayerView.Theme.Orange);
         //设置PPT

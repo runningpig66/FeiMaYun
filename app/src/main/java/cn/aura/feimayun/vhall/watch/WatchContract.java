@@ -84,12 +84,16 @@ public class WatchContract {
         void paintPPT(String key, List<MessageServer.MsgInfo> msgInfos);
 
         void showType(int type);
+
+        void setPlaySpeedText(String text);
     }
 
     interface DocumentViewVss extends BaseView<BasePresenter> {
         void refreshView(com.vhall.document.DocumentView view);
 
         void switchType(String type);
+
+        void setPlaySpeedText(String text);
     }
 
     interface DetailView extends BaseView<BasePresenter> {
@@ -138,8 +142,7 @@ public class WatchContract {
 
 //        void setQualityChecked(String dpi);
 
-//        void setPlaySpeedText(String text);
-
+        void setPlaySpeedText(String text);
     }
 
     interface PlaybackPresenter extends WatchPresenter {

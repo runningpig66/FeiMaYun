@@ -305,11 +305,16 @@ public class WatchPlaybackPresenter implements
 
     @Override
     public void setSpeed() {
-//        String speed = speedStrs[(++currentSpeed) % speedStrs.length];
-//        if (getWatchPlayback().setSpeed(Float.parseFloat(speed)) == 0) {
+        String speed = speedStrs[(++currentSpeed) % speedStrs.length];
+        if (getWatchPlayback().setSpeed(Float.parseFloat(speed)) == 0) {
 //            speed = speedStrs[(--currentSpeed) % speedStrs.length];
-//        }
-//        playbackView.setPlaySpeedText(speed);
+        }
+        if (playbackView != null) {
+            playbackView.setPlaySpeedText(speed);
+        }
+        if (documentView != null) {
+            documentView.setPlaySpeedText(speed);
+        }
     }
 
     public WatchPlayback getWatchPlayback() {
@@ -434,7 +439,7 @@ public class WatchPlaybackPresenter implements
         public void onStateChanged(Constants.State state) {
             switch (state) {
                 case IDLE:
-//                    Log.e(TAG, "STATE_IDLE");
+                    Log.e(TAG, "STATE_IDLE");
                     break;
                 case START:
                     playbackView.showProgressbar(false);
@@ -445,6 +450,9 @@ public class WatchPlaybackPresenter implements
                     playerDurationTimeStr = VhallUtil.converLongTimeToStr(playerDuration);
                     playbackView.setSeekbarMax((int) playerDuration);
                     documentFragment.setSeekbarMax((int) playerDuration);
+                    Log.d(TAG, "STATE_START");
+                    String speed = speedStrs[currentSpeed % speedStrs.length];
+                    getWatchPlayback().setSpeed(Float.parseFloat(speed));
                     break;
                 case BUFFER:
                     Log.e(TAG, "STATE_BUFFERING");

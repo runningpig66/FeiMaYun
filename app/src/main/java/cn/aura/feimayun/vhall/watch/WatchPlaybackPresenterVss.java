@@ -423,11 +423,16 @@ public class WatchPlaybackPresenterVss implements
 
     @Override
     public void setSpeed() {
-//        String speed = speedStrs[(++currentSpeed) % speedStrs.length];
-//        if (getPlay().setSpeed(Float.parseFloat(speed)) == 0) {
-//            speed = speedStrs[(--currentSpeed) % speedStrs.length];
-//        }
-//        playbackView.setPlaySpeedText(speed);
+        String speed = speedStrs[(++currentSpeed) % speedStrs.length];
+        if (getPlay().setSpeed(Float.parseFloat(speed)) == 0) {
+            speed = speedStrs[(--currentSpeed) % speedStrs.length];
+        }
+        if (playbackView != null) {
+            playbackView.setPlaySpeedText(speed);
+        }
+        if (documentView != null) {
+            documentView.setPlaySpeedText(speed);
+        }
     }
 
     @Override
